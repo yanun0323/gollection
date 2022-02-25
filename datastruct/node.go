@@ -1,4 +1,4 @@
-package datastruct
+package gollection
 
 type node struct {
 	index    int

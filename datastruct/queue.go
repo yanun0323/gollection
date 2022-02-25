@@ -1,4 +1,4 @@
-package datastruct
+package gollection
 
 //max stored element quantity = 2,147,483,647
 type Queue struct {
