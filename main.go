@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"main/datastruct"
+
+	"github.com/yanun0323/gollection/datastruct"
 )
 
 func main() {
