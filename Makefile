@@ -1,3 +1,3 @@
 .PHONY: run
 run:
-	go run ./main.go
+	go run ./_main.go
