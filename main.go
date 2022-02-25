@@ -1,12 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"main/datastruct"
 )
 
 func main() {
-	s := datastruct.NewStack()
 	q := datastruct.NewQueue()
-	s.Push(nil)
-	q.Enqueue(nil)
+	q.Enqueue("A")
+
+	s1 := "Hi"
+	fmt.Println(&s1)
+	s2 := "Hi"
+	fmt.Println(&s2)
+	s2 = "hi"
+	fmt.Println(&s2)
 }
