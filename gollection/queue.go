@@ -54,12 +54,15 @@ func (q *Queue) Clear() {
 	q.first = nil
 }
 
-//clone a queue but not the elements, BigO(1)
+//Clone a queue but not the elements, BigO(1)
 func (q *Queue) Clone() Queue {
-	return Queue{Count: q.Count, first: q.first, last: q.last}
+	return Queue{
+		Count: q.Count,
+		first: q.first,
+		last:  q.last}
 }
 
-//Return true if there's one element in queue, BigO(n)
+//Return true if there's any element in queue, BigO(n)
 func (q *Queue) Contains(es ...interface{}) bool {
 	if q.IsEmpty() {
 		return false
