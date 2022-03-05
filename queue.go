@@ -1,36 +1,82 @@
 package gollection
 
+//Represents a first-in, first-out collection of objects.
 //max stored element quantity = 2,147,483,647
 type Queue struct {
+	//Gets the number of elements contained in the Queue.
+	//O(1)
 	Count int
-	first *nodeB
-	last  *nodeB
+	first *node
+	last  *node
 }
 
-//BigO(1)
-func NewQueue() Queue {
-	return Queue{Count: 0, first: nil, last: nil}
+//Initializes a new instance of the Queue class that is empty and has the default initial capacity.
+//O(1)
+func NewQueue() IQueue {
+	return &Queue{Count: 0, first: nil, last: nil}
 }
 
-//BigO(1)
-func (q *Queue) Enqueue(e interface{}) {
-	n := newNodeB(&e, nil)
+//Removes all objects from the Queue.
+//O(1)
+func (q *Queue) Clear() {
+	q.Count = 0
+	q.last = nil
+	q.first = nil
+}
 
+//Clone the Queue without clone the objects inside the Queue.
+//O(1)
+func (q *Queue) Clone() IQueue {
+	return &Queue{
+		Count: q.Count,
+		first: q.first,
+		last:  q.last}
+}
+
+//Determines whether an element is in the Queue.
+//O(n)
+func (q *Queue) Contains(object T) bool {
 	if q.IsEmpty() {
-		q.first = n
-		q.first.backward = n
-		q.last = n
-		q.Count++
-		return
+		return false
 	}
 
-	q.last.backward = n
-	q.last = n
-	q.Count++
+	node := q.first
+	for {
+		if *node.data == object {
+			return true
+		}
+		node = node.backward
+		if node == nil {
+			return false
+		}
+	}
 }
 
-//Return nil if queue empty, BigO(1)
-func (q *Queue) Dequeue() interface{} {
+//Determines whether any element is in the Queue.
+//O(n)
+func (q *Queue) ContainsAny(objects ...T) bool {
+	if q.IsEmpty() {
+		return false
+	}
+
+	node := q.first
+	for {
+		for _, obj := range objects {
+			if *node.data == obj {
+				return true
+			}
+		}
+		node = node.backward
+		if node == nil {
+			return false
+		}
+	}
+}
+
+//Removes and returns the object at the beginning of the Queue.
+//Return nil when the Queue is empty.
+//O(1)
+func (q *Queue) Dequeue() T {
 	if q.IsEmpty() {
 		return nil
 	}
@@ -42,65 +88,51 @@ func (q *Queue) Dequeue() interface{} {
 	return *result.data
 }
 
-//BigO(1)
+//Adds an object to the end of the Queue.
+//O(1)
+func (q *Queue) Enqueue(e T) {
+	node := newNode(&e, nil, nil)
+
+	if q.IsEmpty() {
+		q.first = node
+		q.first.backward = node
+		q.last = node
+		q.Count++
+		return
+	}
+
+	q.last.backward = node
+	q.last = node
+	q.Count++
+}
+
+//Return true when the Queue is empty.
+//O(1)
 func (q *Queue) IsEmpty() bool {
 	return q.first == nil
 }
 
-//BigO(1)
-func (q *Queue) Clear() {
-	q.Count = 0
-	q.last = nil
-	q.first = nil
-}
-
-//Clone a queue but not the elements, BigO(1)
-func (q *Queue) Clone() Queue {
-	return Queue{
-		Count: q.Count,
-		first: q.first,
-		last:  q.last}
-}
-
-//Return true if there's any element in queue, BigO(n)
-func (q *Queue) Contains(es ...interface{}) bool {
-	if q.IsEmpty() {
-		return false
-	}
-
-	n := q.first
-	for {
-		for _, e := range es {
-			if *n.data == e {
-				return true
-			}
-		}
-		n = n.backward
-		if n == nil {
-			return false
-		}
-	}
-}
-
-//BigO(1)
-func (q *Queue) Peek() interface{} {
+//Returns the object at the beginning of the Queue without removing it.
+//O(1)
+func (q *Queue) Peek() T {
 	if q.IsEmpty() {
 		return nil
 	}
 	return *q.first.data
 }
 
-//BigO(n)
-func (q *Queue) ToArray() []interface{} {
+//Copies the Queue to a new array.
+//O(n)
+func (q *Queue) ToArray() []T {
 	if q.IsEmpty() {
 		return nil
 	}
-	arr := make([]interface{}, q.Count)
+	arr := make([]T, q.Count)
 
-	n := q.first
+	node := q.first
 	for i := 0; i < q.Count; i++ {
-		arr[i] = *n.data
-		n = n.backward
+		arr[i] = *node.data
+		node = node.backward
 	}
 	return arr
 }
