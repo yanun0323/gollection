@@ -1,41 +1,43 @@
 package gollection
 
+type T interface{}
+
 type IQueue interface {
 	Clear()
 	Clone() IQueue
-	Contains(interface{}) bool
-	ContainsAny(...interface{}) bool
-	Dequeue() interface{}
-	Enqueue(interface{})
+	Contains(T) bool
+	ContainsAny(...T) bool
+	Dequeue() T
+	Enqueue(T)
 	IsEmpty() bool
-	Peek() interface{}
-	ToArray() []interface{}
+	Peek() T
+	ToArray() []T
 }
 
 type IStack interface {
 	Clear()
 	Clone() IStack
-	Contains(interface{}) bool
-	ContainsAny(...interface{}) bool
+	Contains(T) bool
+	ContainsAny(...T) bool
 	IsEmpty() bool
-	Peek() interface{}
-	Pop() interface{}
-	Push(interface{})
-	ToArray() []interface{}
+	Peek() T
+	Pop() T
+	Push(T)
+	ToArray() []T
 }
 
 type IList interface {
-	ADD(...interface{})
-	At(int) interface{}
+	ADD(...T)
+	At(int) T
 	Clear()
 	Clone() IList
-	Contains(interface{}) bool
-	ContainsAny(...interface{}) bool
-	Insert(int, ...interface{}) bool
+	Contains(T) bool
+	ContainsAny(...T) bool
+	Insert(int, ...T) bool
 	IsEmpty() bool
-	Remove(interface{}) bool
-	RemoveAll(interface{}) bool
+	Remove(T) bool
+	RemoveAll(T) bool
 	RemoveAt(int) bool
-	Set(int, interface{}) bool
-	ToArray() []interface{}
+	Set(int, T) bool
+	ToArray() []T
 }

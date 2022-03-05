@@ -1,14 +1,14 @@
 package gollection
 
 type node struct {
-	data     *interface{}
+	data     *T
 	forward  *node
 	backward *node
 }
 
-func newNode(data interface{}, forward *node, backward *node) *node {
+func newNode(data *T, forward *node, backward *node) *node {
 	if data == nil {
 		return nil
 	}
-	return &node{data: &data, forward: forward, backward: backward}
+	return &node{data: data, forward: forward, backward: backward}
 }

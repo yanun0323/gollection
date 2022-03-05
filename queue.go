@@ -35,7 +35,7 @@ func (q *Queue) Clone() IQueue {
 
 //Determines whether an element is in the Queue.
 //O(n)
-func (q *Queue) Contains(object interface{}) bool {
+func (q *Queue) Contains(object T) bool {
 	if q.IsEmpty() {
 		return false
 	}
@@ -54,7 +54,7 @@ func (q *Queue) Contains(object interface{}) bool {
 
 //Determines whether any element is in the Queue.
 //O(n)
-func (q *Queue) ContainsAny(objects ...interface{}) bool {
+func (q *Queue) ContainsAny(objects ...T) bool {
 	if q.IsEmpty() {
 		return false
 	}
@@ -76,7 +76,7 @@ func (q *Queue) ContainsAny(objects ...interface{}) bool {
 //Removes and returns the object at the beginning of the Queue.
 //Return nil when the Queue is empty.
 //O(1)
-func (q *Queue) Dequeue() interface{} {
+func (q *Queue) Dequeue() T {
 	if q.IsEmpty() {
 		return nil
 	}
@@ -90,7 +90,7 @@ func (q *Queue) Dequeue() interface{} {
 
 //Adds an object to the end of the Queue.
 //O(1)
-func (q *Queue) Enqueue(e interface{}) {
+func (q *Queue) Enqueue(e T) {
 	node := newNode(&e, nil, nil)
 
 	if q.IsEmpty() {
@@ -114,7 +114,7 @@ func (q *Queue) IsEmpty() bool {
 
 //Returns the object at the beginning of the Queue without removing it.
 //O(1)
-func (q *Queue) Peek() interface{} {
+func (q *Queue) Peek() T {
 	if q.IsEmpty() {
 		return nil
 	}
@@ -123,11 +123,11 @@ func (q *Queue) Peek() interface{} {
 
 //Copies the Queue to a new array.
 //O(n)
-func (q *Queue) ToArray() []interface{} {
+func (q *Queue) ToArray() []T {
 	if q.IsEmpty() {
 		return nil
 	}
-	arr := make([]interface{}, q.Count)
+	arr := make([]T, q.Count)
 
 	node := q.first
 	for i := 0; i < q.Count; i++ {

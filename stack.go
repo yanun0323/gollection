@@ -30,7 +30,7 @@ func (s *Stack) Clone() IStack {
 
 //Determines whether an element is in the Stack.
 //O(n)
-func (s *Stack) Contains(object interface{}) bool {
+func (s *Stack) Contains(object T) bool {
 	if s.IsEmpty() {
 		return false
 	}
@@ -49,7 +49,7 @@ func (s *Stack) Contains(object interface{}) bool {
 
 //Determines whether any element is in the Stack.
 //O(n)
-func (s *Stack) ContainsAny(objects ...interface{}) bool {
+func (s *Stack) ContainsAny(objects ...T) bool {
 	if s.IsEmpty() {
 		return false
 	}
@@ -76,7 +76,7 @@ func (s *Stack) IsEmpty() bool {
 
 //Returns the object at the beginning of the Stack without removing it.
 //O(1)
-func (s *Stack) Peek() interface{} {
+func (s *Stack) Peek() T {
 	if s.IsEmpty() {
 		return nil
 	}
@@ -86,7 +86,7 @@ func (s *Stack) Peek() interface{} {
 //Removes and returns the object at the top of the Stack.
 //Return nil when the Stack is empty.
 //O(1)
-func (s *Stack) Pop() interface{} {
+func (s *Stack) Pop() T {
 	if s.IsEmpty() {
 		return nil
 	}
@@ -100,7 +100,7 @@ func (s *Stack) Pop() interface{} {
 
 //Inserts an object at the top of the Stack.
 //O(1)
-func (s *Stack) Push(object interface{}) {
+func (s *Stack) Push(object T) {
 	node := newNode(&object, nil, s.last)
 	s.last = node
 	s.Count++
@@ -108,11 +108,11 @@ func (s *Stack) Push(object interface{}) {
 
 //Copies the Stack to a new array.
 //O(n)
-func (s *Stack) ToArray() []interface{} {
+func (s *Stack) ToArray() []T {
 	if s.IsEmpty() {
 		return nil
 	}
-	arr := make([]interface{}, s.Count)
+	arr := make([]T, s.Count)
 
 	node := s.last
 	for i := 0; i < s.Count; i++ {
