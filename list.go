@@ -1,52 +1,71 @@
 package gollection
 
-//max stored element quantity = 2,147,483,647
+//Represents a strongly typed list of objects that can be accessed by index. Provides methods to search, sort, and manipulate lists.
+//Max stored element quantity = 2,147,483,647
 type List struct {
+	//Gets the number of elements contained in the List.
+	//O(1)
 	Count int
-	hash  map[int]*interface{}
+	hash  map[int]*T
 }
 
-//BigO(1)
-func NewList() List {
-	return List{Count: 0, hash: map[int]*interface{}{}}
+//Initializes a new instance of the List class that is empty and has the default initial capacity.
+//O(1)
+func NewList() IList {
+	return &List{Count: 0, hash: map[int]*T{}}
 }
 
-//Return nil if find nothing, BigO(1)
-func (l *List) At(index int) interface{} {
-	if index < 0 || l.IsEmpty() {
-		return nil
-	}
-
-	e, exist := l.hash[index]
-	if !exist {
-		return nil
-	}
-
-	return *e
-}
-
-//BigO(1)
-func (l *List) ADD(es ...interface{}) {
-	for i := 0; i < len(es); i++ {
-		e := es[i]
-		l.hash[l.Count] = &e
+//Adds an object to the end of the List.
+//O(1)
+func (l *List) ADD(objects ...T) {
+	for i := 0; i < len(objects); i++ {
+		obj := objects[i]
+		l.hash[l.Count] = &obj
 		l.Count++
 	}
 }
 
-//BigO(1)
-func (l *List) Clear() {
-	l.Count = 0
-	l.hash = map[int]*interface{}{}
+//Gets the element at the specified index.
+//Return nil when the index of List is empty.
+//O(1)
+func (l *List) At(index int) T {
+	if index < 0 || l.IsEmpty() {
+		return nil
+	}
+
+	obj, exist := l.hash[index]
+	if !exist {
+		return nil
+	}
+
+	return *obj
 }
 
-//BigO(n)
-func (l *List) Contains(e interface{}) bool {
+//Removes all elements from the List.
+//O(1)
+func (l *List) Clear() {
+	l.Count = 0
+	l.hash = map[int]*T{}
+}
+
+////Clone the List without clone the objects inside the List.
+//O(n)
+func (l *List) Clone() IList {
+	m := map[int]*T{}
+	for k, v := range l.hash {
+		m[k] = v
+	}
+	return &List{Count: l.Count, hash: m}
+}
+
+//Determines whether an element is in the List.
+//O(n)
+func (l *List) Contains(object T) bool {
 	if l.IsEmpty() {
 		return false
 	}
 	for i := 0; i < l.Count; i++ {
-		if *l.hash[i] == e {
+		if *l.hash[i] == object {
 			return true
 		}
 	}
@@ -54,23 +73,42 @@ func (l *List) Contains(e interface{}) bool {
 	return false
 }
 
-//BigO(n)
-func (l *List) Insert(index int, es ...interface{}) bool {
+//Determines whether any element is in the List.
+//O(n)
+func (l *List) ContainsAny(objects ...T) bool {
+	if l.IsEmpty() {
+		return false
+	}
+	for i := 0; i < l.Count; i++ {
+
+		for _, obj := range objects {
+			if *l.hash[i] == obj {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+//Inserts any element into the List at the specified index.
+//O(n)
+func (l *List) Insert(index int, objects ...T) bool {
 	if index < 0 || index > l.Count {
 		return false
 	}
 	if index == l.Count {
-		l.ADD(es...)
+		l.ADD(objects...)
 		return true
 	}
 
-	quantity := len(es)
+	quantity := len(objects)
 	for i := index; i < l.Count; i++ {
 		l.hash[i+quantity] = l.hash[i]
 	}
 
 	for i := 0; i < quantity; i++ {
-		e := es[i]
+		e := objects[i]
 		l.hash[i+index] = &e
 	}
 
@@ -78,34 +116,15 @@ func (l *List) Insert(index int, es ...interface{}) bool {
 	return true
 }
 
-//BigO(n)
-func (l *List) ToArray() []interface{} {
-	if l.IsEmpty() {
-		return nil
-	}
-
-	arr := make([]interface{}, l.Count)
-	for i := 0; i < l.Count; i++ {
-		arr[i] = *l.hash[i]
-	}
-	return arr
+//Return true when the List is empty.
+//O(1)
+func (l *List) IsEmpty() bool {
+	return l.Count == 0
 }
 
-//BigO(n)
-func (l *List) RemoveAt(index int) bool {
-	if index < 0 || index >= l.Count {
-		return false
-	}
-	for i := index + 1; i < l.Count; i++ {
-		l.hash[i-1] = l.hash[i]
-	}
-	l.Count--
-	delete(l.hash, l.Count)
-	return true
-}
-
-//BigO(n)
-func (l *List) Remove(e interface{}) bool {
+//Removes the first occurrence of a specific object from the List.
+//O(n)
+func (l *List) Remove(object T) bool {
 	if l.IsEmpty() {
 		return true
 	}
@@ -115,7 +134,7 @@ func (l *List) Remove(e interface{}) bool {
 			l.hash[i-1] = l.hash[i]
 			continue
 		}
-		if *l.hash[i] == e {
+		if *l.hash[i] == object {
 			found = true
 			continue
 		}
@@ -125,14 +144,15 @@ func (l *List) Remove(e interface{}) bool {
 	return found
 }
 
-//BigO(n)
-func (l *List) RemoveAll(e interface{}) bool {
+//Removes all the elements that match the conditions defined by the specified predicate.
+//O(n)
+func (l *List) RemoveAll(object T) bool {
 	if l.IsEmpty() {
 		return true
 	}
 	found := 0
 	for i := 0; i < l.Count; i++ {
-		if *l.hash[i] == e {
+		if *l.hash[i] == object {
 			found++
 			continue
 		}
@@ -148,16 +168,42 @@ func (l *List) RemoveAll(e interface{}) bool {
 	return found != 0
 }
 
-//BigO(1)
-func (l *List) IsEmpty() bool {
-	return l.Count == 0
+//Removes the element at the specified index of the List.
+//O(n)
+func (l *List) RemoveAt(index int) bool {
+	if index < 0 || index >= l.Count {
+		return false
+	}
+	for i := index + 1; i < l.Count; i++ {
+		l.hash[i-1] = l.hash[i]
+	}
+	l.Count--
+	delete(l.hash, l.Count)
+	return true
 }
 
-//Clone a list but not the elements, BigO(n)
-func (l *List) Clone() List {
-	m := map[int]*interface{}{}
-	for k, v := range l.hash {
-		m[k] = v
+//Sets the element at the specified index.
+//Return nil when the index of List is empty.
+//O(1)
+func (l *List) Set(index int, object T) bool {
+	if index < 0 || index > l.Count || l.IsEmpty() {
+		return false
 	}
-	return List{Count: l.Count, hash: m}
+
+	l.hash[index] = &object
+	return true
+}
+
+//Copies the elements of the List to a new array.
+//O(n)
+func (l *List) ToArray() []T {
+	if l.IsEmpty() {
+		return nil
+	}
+
+	arr := make([]T, l.Count)
+	for i := 0; i < l.Count; i++ {
+		arr[i] = *l.hash[i]
+	}
+	return arr
 }
