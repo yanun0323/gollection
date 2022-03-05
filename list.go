@@ -6,18 +6,18 @@ type List struct {
 	//Gets the number of elements contained in the List.
 	//O(1)
 	Count int
-	hash  map[int]*T
+	hash  map[int]*interface{}
 }
 
 //Initializes a new instance of the List class that is empty and has the default initial capacity.
 //O(1)
 func NewList() IList {
-	return &List{Count: 0, hash: map[int]*T{}}
+	return &List{Count: 0, hash: map[int]*interface{}{}}
 }
 
 //Adds an object to the end of the List.
 //O(1)
-func (l *List) ADD(objects ...T) {
+func (l *List) ADD(objects ...interface{}) {
 	for i := 0; i < len(objects); i++ {
 		obj := objects[i]
 		l.hash[l.Count] = &obj
@@ -28,7 +28,7 @@ func (l *List) ADD(objects ...T) {
 //Gets the element at the specified index.
 //Return nil when the index of List is empty.
 //O(1)
-func (l *List) At(index int) T {
+func (l *List) At(index int) interface{} {
 	if index < 0 || l.IsEmpty() {
 		return nil
 	}
@@ -45,13 +45,13 @@ func (l *List) At(index int) T {
 //O(1)
 func (l *List) Clear() {
 	l.Count = 0
-	l.hash = map[int]*T{}
+	l.hash = map[int]*interface{}{}
 }
 
 ////Clone the List without clone the objects inside the List.
 //O(n)
 func (l *List) Clone() IList {
-	m := map[int]*T{}
+	m := map[int]*interface{}{}
 	for k, v := range l.hash {
 		m[k] = v
 	}
@@ -60,7 +60,7 @@ func (l *List) Clone() IList {
 
 //Determines whether an element is in the List.
 //O(n)
-func (l *List) Contains(object T) bool {
+func (l *List) Contains(object interface{}) bool {
 	if l.IsEmpty() {
 		return false
 	}
@@ -75,7 +75,7 @@ func (l *List) Contains(object T) bool {
 
 //Determines whether any element is in the List.
 //O(n)
-func (l *List) ContainsAny(objects ...T) bool {
+func (l *List) ContainsAny(objects ...interface{}) bool {
 	if l.IsEmpty() {
 		return false
 	}
@@ -93,7 +93,7 @@ func (l *List) ContainsAny(objects ...T) bool {
 
 //Inserts any element into the List at the specified index.
 //O(n)
-func (l *List) Insert(index int, objects ...T) bool {
+func (l *List) Insert(index int, objects ...interface{}) bool {
 	if index < 0 || index > l.Count {
 		return false
 	}
@@ -124,7 +124,7 @@ func (l *List) IsEmpty() bool {
 
 //Removes the first occurrence of a specific object from the List.
 //O(n)
-func (l *List) Remove(object T) bool {
+func (l *List) Remove(object interface{}) bool {
 	if l.IsEmpty() {
 		return true
 	}
@@ -146,7 +146,7 @@ func (l *List) Remove(object T) bool {
 
 //Removes all the elements that match the conditions defined by the specified predicate.
 //O(n)
-func (l *List) RemoveAll(object T) bool {
+func (l *List) RemoveAll(object interface{}) bool {
 	if l.IsEmpty() {
 		return true
 	}
@@ -185,7 +185,7 @@ func (l *List) RemoveAt(index int) bool {
 //Sets the element at the specified index.
 //Return nil when the index of List is empty.
 //O(1)
-func (l *List) Set(index int, object T) bool {
+func (l *List) Set(index int, object interface{}) bool {
 	if index < 0 || index > l.Count || l.IsEmpty() {
 		return false
 	}
@@ -196,12 +196,12 @@ func (l *List) Set(index int, object T) bool {
 
 //Copies the elements of the List to a new array.
 //O(n)
-func (l *List) ToArray() []T {
+func (l *List) ToArray() []interface{} {
 	if l.IsEmpty() {
 		return nil
 	}
 
-	arr := make([]T, l.Count)
+	arr := make([]interface{}, l.Count)
 	for i := 0; i < l.Count; i++ {
 		arr[i] = *l.hash[i]
 	}
