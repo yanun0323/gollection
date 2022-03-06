@@ -4,12 +4,13 @@ A package implement Queue, Stack and List like C# in go.
 
 
 
-## Requirements
-Go 1.11.0 or higher
+## Supported go versions
+1.17.0
 
 
 
 ## Install
+To install Gollection, use go get:
 ```
 $go get github.com/yanun0323/gollection
 ```
