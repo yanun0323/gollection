@@ -9,8 +9,8 @@ type Stack struct {
 
 //Initializes a new instance of the Stack class that is empty and has the default initial capacity.
 //O(1)
-func NewStack() IStack {
-	return &Stack{count: 0, last: nil}
+func NewStack() Stack {
+	return Stack{count: 0, last: nil}
 }
 
 //Removes all objects from the Stack.
@@ -22,8 +22,8 @@ func (s *Stack) Clear() {
 
 //Clone the Stack without clone the objects inside the Stack.
 //O(1)
-func (s *Stack) Clone() IStack {
-	return &Stack{count: s.count, last: s.last}
+func (s *Stack) Clone() Stack {
+	return Stack{count: s.count, last: s.last}
 }
 
 //Determines whether an element is in the Stack.
@@ -94,12 +94,12 @@ func (s *Stack) Pop() T {
 	if s.IsEmpty() {
 		return nil
 	}
-	result := s.last
-	s.last = result.forward
+	node := s.last
+	s.last = node.forward
 	if s.count > 0 {
 		s.count--
 	}
-	return *result.data
+	return *node.data
 }
 
 //Inserts an object at the top of the Stack.

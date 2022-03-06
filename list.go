@@ -9,8 +9,8 @@ type List struct {
 
 //Initializes a new instance of the List class that is empty and has the default initial capacity.
 //O(1)
-func NewList() IList {
-	return &List{count: 0, hash: map[int]*T{}}
+func NewList() List {
+	return List{count: 0, hash: map[int]*T{}}
 }
 
 //Adds an object to the end of the List.
@@ -48,12 +48,12 @@ func (l *List) Clear() {
 
 ////Clone the List without clone the objects inside the List.
 //O(n)
-func (l *List) Clone() IList {
-	m := map[int]*T{}
-	for k, v := range l.hash {
-		m[k] = v
+func (l *List) Clone() List {
+	hash := map[int]*T{}
+	for key, value := range l.hash {
+		hash[key] = value
 	}
-	return &List{count: l.count, hash: m}
+	return List{count: l.count, hash: hash}
 }
 
 //Determines whether an element is in the List.
@@ -78,7 +78,6 @@ func (l *List) ContainsAny(objects ...T) bool {
 		return false
 	}
 	for i := 0; i < l.count; i++ {
-
 		for _, obj := range objects {
 			if *l.hash[i] == obj {
 				return true
@@ -112,8 +111,8 @@ func (l *List) Insert(index int, objects ...T) bool {
 	}
 
 	for i := 0; i < quantity; i++ {
-		e := objects[i]
-		l.hash[i+index] = &e
+		obj := objects[i]
+		l.hash[i+index] = &obj
 	}
 
 	l.count += quantity

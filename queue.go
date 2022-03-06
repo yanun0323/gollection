@@ -10,8 +10,8 @@ type Queue struct {
 
 //Initializes a new instance of the Queue class that is empty and has the default initial capacity.
 //O(1)
-func NewQueue() IQueue {
-	return &Queue{count: 0, first: nil, last: nil}
+func NewQueue() Queue {
+	return Queue{count: 0, first: nil, last: nil}
 }
 
 //Removes all objects from the Queue.
@@ -24,8 +24,8 @@ func (q *Queue) Clear() {
 
 //Clone the Queue without clone the objects inside the Queue.
 //O(1)
-func (q *Queue) Clone() IQueue {
-	return &Queue{
+func (q *Queue) Clone() Queue {
+	return Queue{
 		count: q.count,
 		first: q.first,
 		last:  q.last}
@@ -84,18 +84,18 @@ func (q *Queue) Dequeue() T {
 	if q.IsEmpty() {
 		return nil
 	}
-	result := q.first
-	q.first = result.backward
+	node := q.first
+	q.first = node.backward
 	if q.count > 0 {
 		q.count--
 	}
-	return *result.data
+	return *node.data
 }
 
 //Adds an object to the end of the Queue.
 //O(1)
-func (q *Queue) Enqueue(e T) {
-	node := newNode(&e, nil, nil)
+func (q *Queue) Enqueue(object T) {
+	node := newNode(&object, nil, nil)
 
 	if q.IsEmpty() {
 		q.first = node
