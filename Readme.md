@@ -20,12 +20,11 @@ $go get github.com/yanun0323/gollection
 ### Queue: 
      NewQueue()
 
-     Count
-
      Clear()
      Clone() IQueue
      Contains(T) bool
      ContainsAny(...T) bool
+     Count() int
      Dequeue() T
      Enqueue(T)
      IsEmpty() bool
@@ -35,12 +34,11 @@ $go get github.com/yanun0323/gollection
 ### Stack: 
     NewStack()
 
-    Count
-
 	Clear()
 	Clone() IStack
 	Contains(T) bool
 	ContainsAny(...T) bool
+    Count() int
 	IsEmpty() bool
 	Peek() T
 	Pop() T
@@ -49,8 +47,6 @@ $go get github.com/yanun0323/gollection
 
 ### List: 
      NewSList()
-
-     Count
      
 	 ADD(...T)
 	 At(int) T
@@ -58,6 +54,7 @@ $go get github.com/yanun0323/gollection
 	 Clone() IList
 	 Contains(T) bool
 	 ContainsAny(...T) bool
+     Count() int
 	 Insert(int, ...T) bool
 	 IsEmpty() bool
 	 Remove(T) bool

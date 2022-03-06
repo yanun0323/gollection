@@ -3,16 +3,14 @@ package gollection
 //Represents a strongly typed list of objects that can be accessed by index. Provides methods to search, sort, and manipulate lists.
 //Max stored element quantity = 2,147,483,647
 type List struct {
-	//Gets the number of elements contained in the List.
-	//O(1)
-	Count int
+	count int
 	hash  map[int]*T
 }
 
 //Initializes a new instance of the List class that is empty and has the default initial capacity.
 //O(1)
 func NewList() IList {
-	return &List{Count: 0, hash: map[int]*T{}}
+	return &List{count: 0, hash: map[int]*T{}}
 }
 
 //Adds an object to the end of the List.
@@ -20,8 +18,8 @@ func NewList() IList {
 func (l *List) ADD(objects ...T) {
 	for i := 0; i < len(objects); i++ {
 		obj := objects[i]
-		l.hash[l.Count] = &obj
-		l.Count++
+		l.hash[l.count] = &obj
+		l.count++
 	}
 }
 
@@ -44,7 +42,7 @@ func (l *List) At(index int) T {
 //Removes all elements from the List.
 //O(1)
 func (l *List) Clear() {
-	l.Count = 0
+	l.count = 0
 	l.hash = map[int]*T{}
 }
 
@@ -55,7 +53,7 @@ func (l *List) Clone() IList {
 	for k, v := range l.hash {
 		m[k] = v
 	}
-	return &List{Count: l.Count, hash: m}
+	return &List{count: l.count, hash: m}
 }
 
 //Determines whether an element is in the List.
@@ -64,7 +62,7 @@ func (l *List) Contains(object T) bool {
 	if l.IsEmpty() {
 		return false
 	}
-	for i := 0; i < l.Count; i++ {
+	for i := 0; i < l.count; i++ {
 		if *l.hash[i] == object {
 			return true
 		}
@@ -79,7 +77,7 @@ func (l *List) ContainsAny(objects ...T) bool {
 	if l.IsEmpty() {
 		return false
 	}
-	for i := 0; i < l.Count; i++ {
+	for i := 0; i < l.count; i++ {
 
 		for _, obj := range objects {
 			if *l.hash[i] == obj {
@@ -91,19 +89,25 @@ func (l *List) ContainsAny(objects ...T) bool {
 	return false
 }
 
+//Gets the number of elements contained in the List.
+//O(1)
+func (l *List) Count() int {
+	return l.count
+}
+
 //Inserts any element into the List at the specified index.
 //O(n)
 func (l *List) Insert(index int, objects ...T) bool {
-	if index < 0 || index > l.Count {
+	if index < 0 || index > l.count {
 		return false
 	}
-	if index == l.Count {
+	if index == l.count {
 		l.ADD(objects...)
 		return true
 	}
 
 	quantity := len(objects)
-	for i := index; i < l.Count; i++ {
+	for i := index; i < l.count; i++ {
 		l.hash[i+quantity] = l.hash[i]
 	}
 
@@ -112,14 +116,14 @@ func (l *List) Insert(index int, objects ...T) bool {
 		l.hash[i+index] = &e
 	}
 
-	l.Count += quantity
+	l.count += quantity
 	return true
 }
 
 //Return true when the List is empty.
 //O(1)
 func (l *List) IsEmpty() bool {
-	return l.Count == 0
+	return l.count == 0
 }
 
 //Removes the first occurrence of a specific object from the List.
@@ -129,7 +133,7 @@ func (l *List) Remove(object T) bool {
 		return true
 	}
 	found := false
-	for i := 0; i < l.Count; i++ {
+	for i := 0; i < l.count; i++ {
 		if found {
 			l.hash[i-1] = l.hash[i]
 			continue
@@ -139,8 +143,8 @@ func (l *List) Remove(object T) bool {
 			continue
 		}
 	}
-	l.Count--
-	delete(l.hash, l.Count)
+	l.count--
+	delete(l.hash, l.count)
 	return found
 }
 
@@ -151,7 +155,7 @@ func (l *List) RemoveAll(object T) bool {
 		return true
 	}
 	found := 0
-	for i := 0; i < l.Count; i++ {
+	for i := 0; i < l.count; i++ {
 		if *l.hash[i] == object {
 			found++
 			continue
@@ -161,9 +165,9 @@ func (l *List) RemoveAll(object T) bool {
 			continue
 		}
 	}
-	l.Count -= found
+	l.count -= found
 	for i := 0; i < found; i++ {
-		delete(l.hash, l.Count+i)
+		delete(l.hash, l.count+i)
 	}
 	return found != 0
 }
@@ -171,14 +175,14 @@ func (l *List) RemoveAll(object T) bool {
 //Removes the element at the specified index of the List.
 //O(n)
 func (l *List) RemoveAt(index int) bool {
-	if index < 0 || index >= l.Count {
+	if index < 0 || index >= l.count {
 		return false
 	}
-	for i := index + 1; i < l.Count; i++ {
+	for i := index + 1; i < l.count; i++ {
 		l.hash[i-1] = l.hash[i]
 	}
-	l.Count--
-	delete(l.hash, l.Count)
+	l.count--
+	delete(l.hash, l.count)
 	return true
 }
 
@@ -186,7 +190,7 @@ func (l *List) RemoveAt(index int) bool {
 //Return nil when the index of List is empty.
 //O(1)
 func (l *List) Set(index int, object T) bool {
-	if index < 0 || index > l.Count || l.IsEmpty() {
+	if index < 0 || index > l.count || l.IsEmpty() {
 		return false
 	}
 
@@ -201,8 +205,8 @@ func (l *List) ToArray() []T {
 		return nil
 	}
 
-	arr := make([]T, l.Count)
-	for i := 0; i < l.Count; i++ {
+	arr := make([]T, l.count)
+	for i := 0; i < l.count; i++ {
 		arr[i] = *l.hash[i]
 	}
 	return arr

@@ -3,29 +3,27 @@ package gollection
 //Represents a variable size last-in-first-out (LIFO) collection of instances of the same specified type.
 //Max stored object quantity = 2,147,483,647.
 type Stack struct {
-	//Gets the number of elements contained in the Stack.
-	//O(1)
-	Count int
+	count int
 	last  *node
 }
 
 //Initializes a new instance of the Stack class that is empty and has the default initial capacity.
 //O(1)
 func NewStack() IStack {
-	return &Stack{Count: 0, last: nil}
+	return &Stack{count: 0, last: nil}
 }
 
 //Removes all objects from the Stack.
 //O(1)
 func (s *Stack) Clear() {
-	s.Count = 0
+	s.count = 0
 	s.last = nil
 }
 
 //Clone the Stack without clone the objects inside the Stack.
 //O(1)
 func (s *Stack) Clone() IStack {
-	return &Stack{Count: s.Count, last: s.last}
+	return &Stack{count: s.count, last: s.last}
 }
 
 //Determines whether an element is in the Stack.
@@ -68,6 +66,12 @@ func (s *Stack) ContainsAny(objects ...T) bool {
 	}
 }
 
+//Gets the number of elements contained in the Stack.
+//O(1)
+func (s *Stack) Count() int {
+	return s.count
+}
+
 //Return true when the Stack is empty.
 //O(1)
 func (s *Stack) IsEmpty() bool {
@@ -92,8 +96,8 @@ func (s *Stack) Pop() T {
 	}
 	result := s.last
 	s.last = result.forward
-	if s.Count > 0 {
-		s.Count--
+	if s.count > 0 {
+		s.count--
 	}
 	return *result.data
 }
@@ -103,7 +107,7 @@ func (s *Stack) Pop() T {
 func (s *Stack) Push(object T) {
 	node := newNode(&object, nil, s.last)
 	s.last = node
-	s.Count++
+	s.count++
 }
 
 //Copies the Stack to a new array.
@@ -112,10 +116,10 @@ func (s *Stack) ToArray() []T {
 	if s.IsEmpty() {
 		return nil
 	}
-	arr := make([]T, s.Count)
+	arr := make([]T, s.count)
 
 	node := s.last
-	for i := 0; i < s.Count; i++ {
+	for i := 0; i < s.count; i++ {
 		arr[i] = *node.data
 		node = node.forward
 	}

@@ -3,9 +3,7 @@ package gollection
 //Represents a first-in, first-out collection of objects.
 //max stored element quantity = 2,147,483,647
 type Queue struct {
-	//Gets the number of elements contained in the Queue.
-	//O(1)
-	Count int
+	count int
 	first *node
 	last  *node
 }
@@ -13,13 +11,13 @@ type Queue struct {
 //Initializes a new instance of the Queue class that is empty and has the default initial capacity.
 //O(1)
 func NewQueue() IQueue {
-	return &Queue{Count: 0, first: nil, last: nil}
+	return &Queue{count: 0, first: nil, last: nil}
 }
 
 //Removes all objects from the Queue.
 //O(1)
 func (q *Queue) Clear() {
-	q.Count = 0
+	q.count = 0
 	q.last = nil
 	q.first = nil
 }
@@ -28,7 +26,7 @@ func (q *Queue) Clear() {
 //O(1)
 func (q *Queue) Clone() IQueue {
 	return &Queue{
-		Count: q.Count,
+		count: q.count,
 		first: q.first,
 		last:  q.last}
 }
@@ -73,6 +71,12 @@ func (q *Queue) ContainsAny(objects ...T) bool {
 	}
 }
 
+//Gets the number of elements contained in the Queue.
+//O(1)
+func (q *Queue) Count() int {
+	return q.count
+}
+
 //Removes and returns the object at the beginning of the Queue.
 //Return nil when the Queue is empty.
 //O(1)
@@ -82,8 +86,8 @@ func (q *Queue) Dequeue() T {
 	}
 	result := q.first
 	q.first = result.backward
-	if q.Count > 0 {
-		q.Count--
+	if q.count > 0 {
+		q.count--
 	}
 	return *result.data
 }
@@ -97,13 +101,13 @@ func (q *Queue) Enqueue(e T) {
 		q.first = node
 		q.first.backward = node
 		q.last = node
-		q.Count++
+		q.count++
 		return
 	}
 
 	q.last.backward = node
 	q.last = node
-	q.Count++
+	q.count++
 }
 
 //Return true when the Queue is empty.
@@ -127,10 +131,10 @@ func (q *Queue) ToArray() []T {
 	if q.IsEmpty() {
 		return nil
 	}
-	arr := make([]T, q.Count)
+	arr := make([]T, q.count)
 
 	node := q.first
-	for i := 0; i < q.Count; i++ {
+	for i := 0; i < q.count; i++ {
 		arr[i] = *node.data
 		node = node.backward
 	}

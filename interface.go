@@ -7,6 +7,7 @@ type IQueue interface {
 	Clone() IQueue
 	Contains(T) bool
 	ContainsAny(...T) bool
+	Count() int
 	Dequeue() T
 	Enqueue(T)
 	IsEmpty() bool
@@ -19,6 +20,7 @@ type IStack interface {
 	Clone() IStack
 	Contains(T) bool
 	ContainsAny(...T) bool
+	Count() int
 	IsEmpty() bool
 	Peek() T
 	Pop() T
@@ -32,6 +34,7 @@ type IList interface {
 	Clear()
 	Clone() IList
 	Contains(T) bool
+	Count() int
 	ContainsAny(...T) bool
 	Insert(int, ...T) bool
 	IsEmpty() bool
