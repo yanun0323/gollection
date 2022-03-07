@@ -21,6 +21,10 @@ go get -u github.com/yanun0323/gollection
 - [Queue](#Queue) 
 - [Stack](#Stack) 
 - [List](#List) 
+
+
+
+## Example
 ### Queue: 
 ```go
 NewQueue()
@@ -74,8 +78,7 @@ ToArray() []T, bool
 
 
 
-License
----
+### License
 
 © Yanun, 2022 ~ now
 
