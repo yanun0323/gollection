@@ -71,7 +71,7 @@ func (s *Stack) Peek() (interface{}, bool) {
 }
 
 //Removes and returns the object at the top of the Stack.
-//Return nil when the Stack is empty.
+//Return false when the Stack is empty.
 //O(1)
 func (s *Stack) Pop() (interface{}, bool) {
 	if s.IsEmpty() {
@@ -95,6 +95,7 @@ func (s *Stack) Push(object interface{}) bool {
 }
 
 //Copies the Stack to a new slice.
+//Return false when the Stack is empty.
 //O(n)
 func (s *Stack) ToArray() ([]interface{}, bool) {
 	if s.IsEmpty() {

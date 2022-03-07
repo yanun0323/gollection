@@ -25,7 +25,7 @@ func (l *List) ADD(objects ...interface{}) bool {
 }
 
 //Gets the element at the specified index.
-//Return nil when the index of List is empty.
+//Return false when the index of the List is empty.
 //O(1)
 func (l *List) At(index int) (interface{}, bool) {
 	if index < 0 || l.IsEmpty() {
@@ -82,6 +82,7 @@ func (l *List) Count() int {
 }
 
 //Inserts any element into the List at the specified index.
+
 //O(n)
 func (l *List) Insert(index int, objects ...interface{}) bool {
 	if index < 0 || index > l.count {
@@ -112,7 +113,8 @@ func (l *List) IsEmpty() bool {
 	return l.count == 0
 }
 
-//Removes the first occurrence of a specific object from the List.
+//Gets the first occurrence of a specific object from the List and removes it.
+
 //O(n)
 func (l *List) Remove(object interface{}) bool {
 	if l.IsEmpty() {
@@ -140,6 +142,7 @@ func (l *List) Remove(object interface{}) bool {
 }
 
 //Removes all the elements that match the conditions defined by the specified predicate.
+
 //O(n)
 func (l *List) RemoveAll(object interface{}) bool {
 	if l.IsEmpty() {
@@ -169,6 +172,7 @@ func (l *List) RemoveAll(object interface{}) bool {
 }
 
 //Removes the element at the specified index of the List.
+
 //O(n)
 func (l *List) RemoveAt(index int) (interface{}, bool) {
 	if index < 0 || index >= l.count {
@@ -184,7 +188,7 @@ func (l *List) RemoveAt(index int) (interface{}, bool) {
 }
 
 //Sets the element at the specified index.
-//Return nil when the index of List is empty.
+//Return false when the index of List is empty.
 //O(1)
 func (l *List) Set(index int, object interface{}) bool {
 	if index < 0 || index > l.count || l.IsEmpty() {
@@ -196,6 +200,7 @@ func (l *List) Set(index int, object interface{}) bool {
 }
 
 //Copies the elements of the List to a new slice.
+//Return false when the List is empty.
 //O(n)
 func (l *List) ToArray() ([]interface{}, bool) {
 	if l.IsEmpty() {

@@ -61,7 +61,7 @@ func (q *Queue) Count() int {
 }
 
 //Removes and returns the object at the beginning of the Queue.
-//Return nil when the Queue is empty.
+//Return false when the Queue is empty.
 //O(1)
 func (q *Queue) Dequeue() (interface{}, bool) {
 	if q.IsEmpty() {
@@ -110,6 +110,7 @@ func (q *Queue) Peek() (interface{}, bool) {
 }
 
 //Copies the Queue to a new slice.
+//Return false when the Queue is empty.
 //O(n)
 func (q *Queue) ToArray() ([]interface{}, bool) {
 	if q.IsEmpty() {
