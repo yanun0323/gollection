@@ -56,24 +56,9 @@ func (l *List) Clone() List {
 	return List{count: l.count, hash: hash}
 }
 
-//Determines whether an element is in the List.
-//O(n)
-func (l *List) Contains(object T) bool {
-	if l.IsEmpty() {
-		return false
-	}
-	for i := 0; i < l.count; i++ {
-		if *l.hash[i] == object {
-			return true
-		}
-	}
-
-	return false
-}
-
 //Determines whether any element is in the List.
 //O(n)
-func (l *List) ContainsAny(objects ...T) bool {
+func (l *List) Contains(objects ...T) bool {
 	if l.IsEmpty() {
 		return false
 	}
