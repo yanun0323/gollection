@@ -5,7 +5,7 @@ A package implement Queue, Stack and List like C# in go.
 
 
 ## Supported go versions
-1.17.0
+1.17.0 or higher
 
 
 
