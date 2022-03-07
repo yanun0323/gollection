@@ -189,7 +189,7 @@ func (l *List) ToArray() []interface{} {
 		return nil
 	}
 
-	arr := make([]interface{}, 0, l.count)
+	arr := make([]interface{}, l.count)
 	for i := 0; i < l.count; i++ {
 		arr[i] = *l.hash[i]
 	}

@@ -113,7 +113,7 @@ func (q *Queue) ToArray() []interface{} {
 	if q.IsEmpty() {
 		return nil
 	}
-	arr := make([]interface{}, 0, q.count)
+	arr := make([]interface{}, q.count)
 
 	node := q.first
 	for i := 0; i < q.count; i++ {

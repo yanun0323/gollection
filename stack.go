@@ -98,7 +98,7 @@ func (s *Stack) ToArray() []interface{} {
 	if s.IsEmpty() {
 		return nil
 	}
-	arr := make([]interface{}, 0, s.count)
+	arr := make([]interface{}, s.count)
 
 	node := s.last
 	for i := 0; i < s.count; i++ {
