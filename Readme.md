@@ -25,40 +25,40 @@ go get -u github.com/yanun0323/gollection
 ```go
 NewQueue()
 
-Clear()
+Clear() bool
 Clone() IQueue
 Contains(T) bool
 ContainsAny(...T) bool
 Count() int
-Dequeue() T
-Enqueue(T)
+Dequeue() T.bool
+Enqueue(T) bool
 IsEmpty() bool
-Peek() T
-ToArray() []T
+Peek() T, bool
+ToArray() []T, bool
 ```
 
 ### Stack: 
 ```go
 NewStack()
 
-Clear()
+Clear() bool
 Clone() IStack
 Contains(T) bool
 ContainsAny(...T) bool
 Count() int
 IsEmpty() bool
-Peek() T
-Pop() T
-Push(T)
-ToArray() []T
+Peek() T, bool
+Pop() T, bool
+Push(T) bool
+ToArray() []T, bool
 ```
 ### List: 
 ```go
 NewSList()
 
 ADD(...T)
-At(int) T
-Clear()
+At(int) T, bool
+Clear() bool
 Clone() IList
 Contains(T) bool
 ContainsAny(...T) bool
@@ -67,9 +67,9 @@ Insert(int, ...T) bool
 IsEmpty() bool
 Remove(T) bool
 RemoveAll(T) bool
-RemoveAt(int) bool
+RemoveAt(int) T, bool
 Set(int, T) bool
-ToArray() []T
+ToArray() []T, bool
 ```
 
 
