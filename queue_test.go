@@ -6,16 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	data1 interface{} = 10
-	data2 interface{} = 20
-	data3 interface{} = 30
-	data4 interface{} = 40
-
-	node1 *node = newNode(&data1, nil, nil)
-	node2 *node = newNode(&data2, nil, nil)
-)
-
 func TestNewQueue(t *testing.T) {
 	q := NewQueue()
 
@@ -134,11 +124,11 @@ func Test_Queue_ToSlice(t *testing.T) {
 	q.Enqueue(data1)
 	q.Enqueue(data2)
 	q.Enqueue(data3)
-	slice := q.ToArray()
+	arr := q.ToArray()
 
 	if assert.Equal(t, q.count, len(expect)) {
 		for i := 0; i < q.count; i++ {
-			assert.Equal(t, expect[i], slice[i])
+			assert.Equal(t, expect[i], arr[i])
 		}
 	}
 }

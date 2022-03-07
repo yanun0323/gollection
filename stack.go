@@ -87,7 +87,7 @@ func (s *Stack) Pop() interface{} {
 //Inserts an object at the top of the Stack.
 //O(1)
 func (s *Stack) Push(object interface{}) {
-	node := newNode(&object, nil, s.last)
+	node := newNode(&object, s.last, nil)
 	s.last = node
 	s.count++
 }
