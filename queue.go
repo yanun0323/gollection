@@ -10,22 +10,23 @@ type Queue struct {
 
 //Initializes a new instance of the Queue class that is empty and has the default initial capacity.
 //O(1)
-func NewQueue() Queue {
-	return Queue{count: 0, first: nil, last: nil}
+func NewQueue() IQueue {
+	return &Queue{count: 0, first: nil, last: nil}
 }
 
 //Removes all objects from the Queue.
 //O(1)
-func (q *Queue) Clear() {
+func (q *Queue) Clear() bool {
 	q.count = 0
 	q.first = nil
 	q.last = nil
+	return true
 }
 
 //Clone the Queue without clone the objects inside the Queue.
 //O(1)
-func (q *Queue) Clone() Queue {
-	return Queue{
+func (q *Queue) Clone() IQueue {
+	return &Queue{
 		count: q.count,
 		first: q.first,
 		last:  q.last}
@@ -62,21 +63,21 @@ func (q *Queue) Count() int {
 //Removes and returns the object at the beginning of the Queue.
 //Return nil when the Queue is empty.
 //O(1)
-func (q *Queue) Dequeue() interface{} {
+func (q *Queue) Dequeue() (interface{}, bool) {
 	if q.IsEmpty() {
-		return nil
+		return nil, false
 	}
 	node := q.first
 	q.first = node.backward
 	if q.count > 0 {
 		q.count--
 	}
-	return *node.data
+	return *node.data, true
 }
 
 //Adds an object to the end of the Queue.
 //O(1)
-func (q *Queue) Enqueue(object interface{}) {
+func (q *Queue) Enqueue(object interface{}) bool {
 	node := newNode(&object, nil, nil)
 
 	if q.IsEmpty() {
@@ -84,34 +85,35 @@ func (q *Queue) Enqueue(object interface{}) {
 		q.first.backward = node
 		q.last = node
 		q.count++
-		return
+		return true
 	}
 
 	q.last.backward = node
 	q.last = node
 	q.count++
+	return true
 }
 
 //Return true when the Queue is empty.
 //O(1)
 func (q *Queue) IsEmpty() bool {
-	return q.first == nil
+	return q.count == 0
 }
 
 //Returns the object at the beginning of the Queue without removing it.
 //O(1)
-func (q *Queue) Peek() interface{} {
+func (q *Queue) Peek() (interface{}, bool) {
 	if q.IsEmpty() {
-		return nil
+		return nil, false
 	}
-	return *q.first.data
+	return *q.first.data, true
 }
 
 //Copies the Queue to a new slice.
 //O(n)
-func (q *Queue) ToArray() []interface{} {
+func (q *Queue) ToArray() ([]interface{}, bool) {
 	if q.IsEmpty() {
-		return nil
+		return nil, false
 	}
 	arr := make([]interface{}, q.count)
 
@@ -120,5 +122,5 @@ func (q *Queue) ToArray() []interface{} {
 		arr[i] = *node.data
 		node = node.backward
 	}
-	return arr
+	return arr, true
 }

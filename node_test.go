@@ -11,9 +11,7 @@ var (
 	data2 interface{} = 20
 	data3 interface{} = 30
 	data4 interface{} = 40
-
-	node1 *node = newNode(&data1, nil, nil)
-	node2 *node = newNode(&data2, nil, nil)
+	data5 interface{} = 50
 )
 
 func Test_Node_NewNode(t *testing.T) {

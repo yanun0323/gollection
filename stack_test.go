@@ -10,18 +10,17 @@ func TestNewStack(t *testing.T) {
 	s := NewStack()
 
 	assert.NotNil(t, s)
-	assert.Equal(t, 0, s.count)
-	assert.Nil(t, s.last)
+	assert.Equal(t, 0, s.Count())
+	assert.True(t, s.IsEmpty())
 }
 func Test_Stack_Clear(t *testing.T) {
 	s := NewStack()
-	s.count = 2
-	s.last = node2
+	s.Push(data1)
+	s.Push(data2)
 	s.Clear()
 
 	assert.NotEqual(t, nil, s)
-	assert.Equal(t, 0, s.count)
-	assert.Nil(t, s.last)
+	assert.Equal(t, 0, s.Count())
 }
 
 func Test_Stack_Clone(t *testing.T) {
@@ -29,14 +28,15 @@ func Test_Stack_Clone(t *testing.T) {
 
 	s.Push(data1)
 	s.Push(data2)
+	s.Push(data3)
 	clone := s.Clone()
-
+	es, _ := s.Pop()
+	ec, _ := clone.Pop()
 	assert.Equal(t, s.Count(), clone.Count())
-	assert.Equal(t, s.last, clone.last)
+	assert.Equal(t, es, ec)
 
 	clone.Pop()
-
-	assert.NotEqual(t, s.count, clone.count)
+	assert.NotEqual(t, s.Count(), clone.Count())
 }
 
 func Test_Stack_Contains(t *testing.T) {
@@ -57,39 +57,56 @@ func Test_Stack_Contains(t *testing.T) {
 
 func Test_Stack_Count(t *testing.T) {
 	s := NewStack()
-	assert.Equal(t, s.count, s.Count())
+	assert.Equal(t, 0, s.Count())
 
 	s.Push(data1)
-	assert.Equal(t, s.count, s.Count())
+	assert.Equal(t, 1, s.Count())
+
+	s.Pop()
+	assert.Equal(t, 0, s.Count())
 }
 
 func Test_Stack_Pop(t *testing.T) {
 	s := NewStack()
-	assert.Nil(t, s.Pop())
+	_, ok := s.Pop()
+	assert.False(t, ok)
 
 	s.Push(data1)
 	s.Push(data2)
 	s.Push(data3)
+	s.Push(nil)
 
-	assert.Equal(t, data3, s.Pop())
-	assert.Equal(t, data2, s.Pop())
-	assert.Equal(t, data1, s.Pop())
-	assert.Nil(t, s.Pop())
+	d, ok := s.Pop()
+	assert.True(t, ok)
+	assert.Nil(t, d)
+
+	d, ok = s.Pop()
+	assert.True(t, ok)
+	assert.Equal(t, data3, d)
+
+	d, ok = s.Pop()
+	assert.True(t, ok)
+	assert.Equal(t, data2, d)
+
+	d, ok = s.Pop()
+	assert.True(t, ok)
+	assert.Equal(t, data1, d)
+
+	_, ok = s.Pop()
+	assert.False(t, ok)
 }
 
 func Test_Stack_Push(t *testing.T) {
 	s := NewStack()
-	s.Push(data1)
-	assert.Equal(t, 1, s.count)
-	assert.Equal(t, data1, *s.last.data)
 
-	s.Push(data2)
-	assert.Equal(t, 2, s.count)
-	assert.Equal(t, data2, *s.last.data)
+	assert.True(t, s.Push(data1))
+	assert.Equal(t, 1, s.Count())
 
-	s.Push(data3)
-	assert.Equal(t, 3, s.count)
-	assert.Equal(t, data3, *s.last.data)
+	assert.True(t, s.Push(data2))
+	assert.Equal(t, 2, s.Count())
+
+	assert.True(t, s.Push(data3))
+	assert.Equal(t, 3, s.Count())
 }
 
 func Test_Stack_IsEmpty(t *testing.T) {
@@ -103,24 +120,31 @@ func Test_Stack_IsEmpty(t *testing.T) {
 
 func Test_Stack_Peek(t *testing.T) {
 	s := NewStack()
-
-	assert.Nil(t, s.Peek())
+	_, ok := s.Peek()
+	assert.False(t, ok)
 
 	s.Push(data1)
-	assert.NotNil(t, s.Peek())
+	d, ok := s.Peek()
+	assert.True(t, ok)
+	assert.Equal(t, data1, d)
+	assert.Equal(t, 1, s.Count())
 }
 
-func Test_Stack_ToSlice(t *testing.T) {
+func Test_Stack_ToArray(t *testing.T) {
 	s := NewStack()
 	expect := []interface{}{data3, data2, data1}
+
+	_, ok := s.ToArray()
+	assert.False(t, ok)
 
 	s.Push(data1)
 	s.Push(data2)
 	s.Push(data3)
-	arr := s.ToArray()
+	arr, ok := s.ToArray()
 
-	if assert.Equal(t, s.count, len(expect)) {
-		for i := 0; i < s.count; i++ {
+	assert.True(t, ok)
+	if assert.Equal(t, s.Count(), len(expect)) {
+		for i := 0; i < s.Count(); i++ {
 			assert.Equal(t, expect[i], arr[i])
 		}
 	}

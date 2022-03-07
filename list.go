@@ -9,51 +9,53 @@ type List struct {
 
 //Initializes a new instance of the List class that is empty and has the default initial capacity.
 //O(1)
-func NewList() List {
-	return List{count: 0, hash: map[int]*interface{}{}}
+func NewList() IList {
+	return &List{count: 0, hash: map[int]*interface{}{}}
 }
 
 //Adds an object to the end of the List.
 //O(1)
-func (l *List) ADD(objects ...interface{}) {
+func (l *List) ADD(objects ...interface{}) bool {
 	for i := 0; i < len(objects); i++ {
 		obj := objects[i]
 		l.hash[l.count] = &obj
 		l.count++
 	}
+	return true
 }
 
 //Gets the element at the specified index.
 //Return nil when the index of List is empty.
 //O(1)
-func (l *List) At(index int) interface{} {
+func (l *List) At(index int) (interface{}, bool) {
 	if index < 0 || l.IsEmpty() {
-		return nil
+		return nil, false
 	}
 
-	obj, exist := l.hash[index]
-	if !exist {
-		return nil
+	obj, ok := l.hash[index]
+	if !ok {
+		return nil, false
 	}
 
-	return *obj
+	return *obj, true
 }
 
 //Removes all elements from the List.
 //O(1)
-func (l *List) Clear() {
+func (l *List) Clear() bool {
 	l.count = 0
 	l.hash = map[int]*interface{}{}
+	return true
 }
 
 ////Clone the List without clone the objects inside the List.
 //O(n)
-func (l *List) Clone() List {
+func (l *List) Clone() IList {
 	hash := map[int]*interface{}{}
 	for key, value := range l.hash {
 		hash[key] = value
 	}
-	return List{count: l.count, hash: hash}
+	return &List{count: l.count, hash: hash}
 }
 
 //Determines whether any element is in the List.
@@ -114,7 +116,7 @@ func (l *List) IsEmpty() bool {
 //O(n)
 func (l *List) Remove(object interface{}) bool {
 	if l.IsEmpty() {
-		return true
+		return false
 	}
 	found := false
 	for i := 0; i < l.count; i++ {
@@ -127,6 +129,11 @@ func (l *List) Remove(object interface{}) bool {
 			continue
 		}
 	}
+
+	if !found {
+		return false
+	}
+
 	l.count--
 	delete(l.hash, l.count)
 	return found
@@ -136,7 +143,7 @@ func (l *List) Remove(object interface{}) bool {
 //O(n)
 func (l *List) RemoveAll(object interface{}) bool {
 	if l.IsEmpty() {
-		return true
+		return false
 	}
 	found := 0
 	for i := 0; i < l.count; i++ {
@@ -149,25 +156,31 @@ func (l *List) RemoveAll(object interface{}) bool {
 			continue
 		}
 	}
+
+	if found == 0 {
+		return false
+	}
+
 	l.count -= found
 	for i := 0; i < found; i++ {
 		delete(l.hash, l.count+i)
 	}
-	return found != 0
+	return true
 }
 
 //Removes the element at the specified index of the List.
 //O(n)
-func (l *List) RemoveAt(index int) bool {
+func (l *List) RemoveAt(index int) (interface{}, bool) {
 	if index < 0 || index >= l.count {
-		return false
+		return nil, false
 	}
+	d := *l.hash[index]
 	for i := index + 1; i < l.count; i++ {
 		l.hash[i-1] = l.hash[i]
 	}
 	l.count--
 	delete(l.hash, l.count)
-	return true
+	return d, true
 }
 
 //Sets the element at the specified index.
@@ -184,14 +197,14 @@ func (l *List) Set(index int, object interface{}) bool {
 
 //Copies the elements of the List to a new slice.
 //O(n)
-func (l *List) ToArray() []interface{} {
+func (l *List) ToArray() ([]interface{}, bool) {
 	if l.IsEmpty() {
-		return nil
+		return nil, false
 	}
 
 	arr := make([]interface{}, l.count)
 	for i := 0; i < l.count; i++ {
 		arr[i] = *l.hash[i]
 	}
-	return arr
+	return arr, true
 }

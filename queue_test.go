@@ -10,21 +10,18 @@ func TestNewQueue(t *testing.T) {
 	q := NewQueue()
 
 	assert.NotNil(t, q)
-	assert.Equal(t, 0, q.count)
-	assert.Nil(t, q.first)
-	assert.Nil(t, q.last)
+	assert.Equal(t, 0, q.Count())
+	assert.True(t, q.IsEmpty())
 }
 func Test_Queue_Clear(t *testing.T) {
 	q := NewQueue()
-	q.count = 2
-	q.first = node1
-	q.last = node2
-	q.Clear()
+	q.Enqueue(data1)
+	q.Enqueue(data2)
+
+	assert.True(t, q.Clear())
 
 	assert.NotEqual(t, nil, q)
-	assert.Equal(t, 0, q.count)
-	assert.Nil(t, q.first)
-	assert.Nil(t, q.last)
+	assert.Equal(t, 0, q.Count())
 }
 
 func Test_Queue_Clone(t *testing.T) {
@@ -32,15 +29,15 @@ func Test_Queue_Clone(t *testing.T) {
 
 	q.Enqueue(data1)
 	q.Enqueue(data2)
+	q.Enqueue(data3)
 	clone := q.Clone()
-
+	eq, _ := q.Dequeue()
+	ec, _ := clone.Dequeue()
 	assert.Equal(t, q.Count(), clone.Count())
-	assert.Equal(t, q.first, clone.first)
-	assert.Equal(t, q.last, clone.last)
+	assert.Equal(t, eq, ec)
 
 	clone.Dequeue()
-
-	assert.NotEqual(t, q.count, clone.count)
+	assert.NotEqual(t, q.Count(), clone.Count())
 }
 
 func Test_Queue_Contains(t *testing.T) {
@@ -57,46 +54,64 @@ func Test_Queue_Contains(t *testing.T) {
 	assert.True(t, q.Contains(data1, data2, data3))
 	assert.True(t, q.Contains(data2))
 	assert.False(t, q.Contains(data3, data4))
+
+	assert.False(t, q.Contains(nil))
+	q.Enqueue(nil)
+	assert.True(t, q.Contains(nil))
 }
 
 func Test_Queue_Count(t *testing.T) {
 	q := NewQueue()
-	assert.Equal(t, q.count, q.Count())
+	assert.Equal(t, 0, q.Count())
 
 	q.Enqueue(data1)
-	assert.Equal(t, q.count, q.Count())
+	assert.Equal(t, 1, q.Count())
+
+	q.Dequeue()
+	assert.Equal(t, 0, q.Count())
 }
 
 func Test_Queue_Dequeue(t *testing.T) {
 	q := NewQueue()
-	assert.Nil(t, q.Dequeue())
+	_, ok := q.Dequeue()
+	assert.False(t, ok)
 
 	q.Enqueue(data1)
 	q.Enqueue(data2)
 	q.Enqueue(data3)
+	q.Enqueue(nil)
 
-	assert.Equal(t, data1, q.Dequeue())
-	assert.Equal(t, data2, q.Dequeue())
-	assert.Equal(t, data3, q.Dequeue())
-	assert.Nil(t, q.Dequeue())
+	d, ok := q.Dequeue()
+	assert.True(t, ok)
+	assert.Equal(t, data1, d)
+
+	d, ok = q.Dequeue()
+	assert.True(t, ok)
+	assert.Equal(t, data2, d)
+
+	d, ok = q.Dequeue()
+	assert.True(t, ok)
+	assert.Equal(t, data3, d)
+
+	d, ok = q.Dequeue()
+	assert.True(t, ok)
+	assert.Nil(t, d)
+
+	_, ok = q.Dequeue()
+	assert.False(t, ok)
 }
 
 func Test_Queue_Enqueue(t *testing.T) {
 	q := NewQueue()
-	q.Enqueue(data1)
-	assert.Equal(t, 1, q.count)
-	assert.Equal(t, data1, *q.first.data)
-	assert.Equal(t, data1, *q.last.data)
 
-	q.Enqueue(data2)
-	assert.Equal(t, 2, q.count)
-	assert.Equal(t, data1, *q.first.data)
-	assert.Equal(t, data2, *q.last.data)
+	assert.True(t, q.Enqueue(data1))
+	assert.Equal(t, 1, q.Count())
 
-	q.Enqueue(data3)
-	assert.Equal(t, 3, q.count)
-	assert.Equal(t, data1, *q.first.data)
-	assert.Equal(t, data3, *q.last.data)
+	assert.True(t, q.Enqueue(data2))
+	assert.Equal(t, 2, q.Count())
+
+	assert.True(t, q.Enqueue(data3))
+	assert.Equal(t, 3, q.Count())
 }
 
 func Test_Queue_IsEmpty(t *testing.T) {
@@ -110,24 +125,31 @@ func Test_Queue_IsEmpty(t *testing.T) {
 
 func Test_Queue_Peek(t *testing.T) {
 	q := NewQueue()
-
-	assert.Nil(t, q.Peek())
+	_, ok := q.Peek()
+	assert.False(t, ok)
 
 	q.Enqueue(data1)
-	assert.NotNil(t, q.Peek())
+	d, ok := q.Peek()
+	assert.True(t, ok)
+	assert.Equal(t, data1, d)
+	assert.Equal(t, 1, q.Count())
 }
 
-func Test_Queue_ToSlice(t *testing.T) {
+func Test_Queue_ToArray(t *testing.T) {
 	q := NewQueue()
 	expect := []interface{}{data1, data2, data3}
+
+	_, ok := q.ToArray()
+	assert.False(t, ok)
 
 	q.Enqueue(data1)
 	q.Enqueue(data2)
 	q.Enqueue(data3)
-	arr := q.ToArray()
+	arr, ok := q.ToArray()
 
-	if assert.Equal(t, q.count, len(expect)) {
-		for i := 0; i < q.count; i++ {
+	assert.True(t, ok)
+	if assert.Equal(t, q.Count(), len(expect)) {
+		for i := 0; i < q.Count(); i++ {
 			assert.Equal(t, expect[i], arr[i])
 		}
 	}
