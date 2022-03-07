@@ -4,9 +4,8 @@ type T interface{}
 
 type IQueue interface {
 	Clear()
-	Clone() IQueue
-	Contains(T) bool
-	ContainsAny(...T) bool
+	/* Clone() IQueue */
+	Contains(...T) bool
 	Count() int
 	Dequeue() T
 	Enqueue(T)
@@ -17,9 +16,8 @@ type IQueue interface {
 
 type IStack interface {
 	Clear()
-	Clone() IStack
-	Contains(T) bool
-	ContainsAny(...T) bool
+	/* Clone() IStack */
+	Contains(...T) bool
 	Count() int
 	IsEmpty() bool
 	Peek() T
@@ -32,10 +30,9 @@ type IList interface {
 	ADD(...T)
 	At(int) T
 	Clear()
-	Clone() IList
-	Contains(T) bool
+	/* Clone() IList */
+	Contains(...T) bool
 	Count() int
-	ContainsAny(...T) bool
 	Insert(int, ...T) bool
 	IsEmpty() bool
 	Remove(T) bool
