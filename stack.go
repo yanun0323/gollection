@@ -26,34 +26,15 @@ func (s *Stack) Clone() Stack {
 	return Stack{count: s.count, last: s.last}
 }
 
-//Determines whether an element is in the Stack.
-//O(n)
-func (s *Stack) Contains(object T) bool {
-	if s.IsEmpty() {
-		return false
-	}
-
-	node := s.last
-	for {
-		if *node.data == object {
-			return true
-		}
-		node = node.forward
-		if node == nil {
-			return false
-		}
-	}
-}
-
 //Determines whether any element is in the Stack.
 //O(n)
-func (s *Stack) ContainsAny(objects ...T) bool {
+func (s *Stack) Contains(objects ...T) bool {
 	if s.IsEmpty() {
 		return false
 	}
 
 	node := s.last
-	for {
+	for i := 0; i < s.count; i++ {
 		for _, obj := range objects {
 			if *node.data == obj {
 				return true
@@ -64,6 +45,7 @@ func (s *Stack) ContainsAny(objects ...T) bool {
 			return false
 		}
 	}
+	return false
 }
 
 //Gets the number of elements contained in the Stack.
