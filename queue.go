@@ -18,8 +18,8 @@ func NewQueue() Queue {
 //O(1)
 func (q *Queue) Clear() {
 	q.count = 0
-	q.last = nil
 	q.first = nil
+	q.last = nil
 }
 
 //Clone the Queue without clone the objects inside the Queue.
@@ -31,34 +31,15 @@ func (q *Queue) Clone() Queue {
 		last:  q.last}
 }
 
-//Determines whether an element is in the Queue.
-//O(n)
-func (q *Queue) Contains(object T) bool {
-	if q.IsEmpty() {
-		return false
-	}
-
-	node := q.first
-	for {
-		if *node.data == object {
-			return true
-		}
-		node = node.backward
-		if node == nil {
-			return false
-		}
-	}
-}
-
 //Determines whether any element is in the Queue.
 //O(n)
-func (q *Queue) ContainsAny(objects ...T) bool {
+func (q *Queue) Contains(objects ...T) bool {
 	if q.IsEmpty() {
 		return false
 	}
 
 	node := q.first
-	for {
+	for i := 0; i < q.count; i++ {
 		for _, obj := range objects {
 			if *node.data == obj {
 				return true
@@ -69,6 +50,7 @@ func (q *Queue) ContainsAny(objects ...T) bool {
 			return false
 		}
 	}
+	return false
 }
 
 //Gets the number of elements contained in the Queue.
