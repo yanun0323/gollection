@@ -33,7 +33,7 @@ func (q *Queue) Clone() Queue {
 
 //Determines whether any element is in the Queue.
 //O(n)
-func (q *Queue) Contains(objects ...T) bool {
+func (q *Queue) Contains(objects ...interface{}) bool {
 	if q.IsEmpty() {
 		return false
 	}
@@ -62,7 +62,7 @@ func (q *Queue) Count() int {
 //Removes and returns the object at the beginning of the Queue.
 //Return nil when the Queue is empty.
 //O(1)
-func (q *Queue) Dequeue() T {
+func (q *Queue) Dequeue() interface{} {
 	if q.IsEmpty() {
 		return nil
 	}
@@ -76,7 +76,7 @@ func (q *Queue) Dequeue() T {
 
 //Adds an object to the end of the Queue.
 //O(1)
-func (q *Queue) Enqueue(object T) {
+func (q *Queue) Enqueue(object interface{}) {
 	node := newNode(&object, nil, nil)
 
 	if q.IsEmpty() {
@@ -100,20 +100,20 @@ func (q *Queue) IsEmpty() bool {
 
 //Returns the object at the beginning of the Queue without removing it.
 //O(1)
-func (q *Queue) Peek() T {
+func (q *Queue) Peek() interface{} {
 	if q.IsEmpty() {
 		return nil
 	}
 	return *q.first.data
 }
 
-//Copies the Queue to a new array.
+//Copies the Queue to a new slice.
 //O(n)
-func (q *Queue) ToArray() []T {
+func (q *Queue) ToArray() []interface{} {
 	if q.IsEmpty() {
 		return nil
 	}
-	arr := make([]T, q.count)
+	arr := make([]interface{}, 0, q.count)
 
 	node := q.first
 	for i := 0; i < q.count; i++ {

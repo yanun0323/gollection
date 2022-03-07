@@ -7,7 +7,7 @@ import (
 )
 
 func Test_Node_NewNode(t *testing.T) {
-	var data T = 20
+	var data interface{} = 20
 	node_data := newNode(&data, nil, nil)
 	node_nil := newNode(nil, nil, nil)
 
