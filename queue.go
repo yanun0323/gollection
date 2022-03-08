@@ -9,12 +9,14 @@ type Queue struct {
 }
 
 //Initializes a new instance of the Queue class that is empty and has the default initial capacity.
+//
 //O(1)
 func NewQueue() IQueue {
 	return &Queue{count: 0, first: nil, last: nil}
 }
 
 //Removes all objects from the Queue.
+//
 //O(1)
 func (q *Queue) Clear() bool {
 	q.count = 0
@@ -24,6 +26,7 @@ func (q *Queue) Clear() bool {
 }
 
 //Clone the Queue without clone the objects inside the Queue.
+//
 //O(1)
 func (q *Queue) Clone() IQueue {
 	return &Queue{
@@ -33,6 +36,7 @@ func (q *Queue) Clone() IQueue {
 }
 
 //Determines whether any element is in the Queue.
+//
 //O(n)
 func (q *Queue) Contains(objects ...interface{}) bool {
 	if q.IsEmpty() {
@@ -55,6 +59,7 @@ func (q *Queue) Contains(objects ...interface{}) bool {
 }
 
 //Gets the number of elements contained in the Queue.
+//
 //O(1)
 func (q *Queue) Count() int {
 	return q.count
@@ -62,6 +67,7 @@ func (q *Queue) Count() int {
 
 //Removes and returns the object at the beginning of the Queue.
 //Return false when the Queue is empty.
+//
 //O(1)
 func (q *Queue) Dequeue() (interface{}, bool) {
 	if q.IsEmpty() {
@@ -76,6 +82,7 @@ func (q *Queue) Dequeue() (interface{}, bool) {
 }
 
 //Adds an object to the end of the Queue.
+//
 //O(1)
 func (q *Queue) Enqueue(object interface{}) bool {
 	node := newNode(&object, nil, nil)
@@ -95,12 +102,14 @@ func (q *Queue) Enqueue(object interface{}) bool {
 }
 
 //Return true when the Queue is empty.
+//
 //O(1)
 func (q *Queue) IsEmpty() bool {
 	return q.count == 0
 }
 
 //Returns the object at the beginning of the Queue without removing it.
+//
 //O(1)
 func (q *Queue) Peek() (interface{}, bool) {
 	if q.IsEmpty() {
@@ -111,6 +120,7 @@ func (q *Queue) Peek() (interface{}, bool) {
 
 //Copies the Queue to a new slice.
 //Return false when the Queue is empty.
+//
 //O(n)
 func (q *Queue) ToArray() ([]interface{}, bool) {
 	if q.IsEmpty() {

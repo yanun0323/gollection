@@ -8,12 +8,14 @@ type List struct {
 }
 
 //Initializes a new instance of the List class that is empty and has the default initial capacity.
+//
 //O(1)
 func NewList() IList {
 	return &List{count: 0, hash: map[int]*interface{}{}}
 }
 
 //Adds an object to the end of the List.
+//
 //O(1)
 func (l *List) ADD(objects ...interface{}) bool {
 	for i := 0; i < len(objects); i++ {
@@ -26,6 +28,7 @@ func (l *List) ADD(objects ...interface{}) bool {
 
 //Gets the element at the specified index.
 //Return false when the index of the List is empty.
+//
 //O(1)
 func (l *List) At(index int) (interface{}, bool) {
 	if index < 0 || l.IsEmpty() {
@@ -41,6 +44,7 @@ func (l *List) At(index int) (interface{}, bool) {
 }
 
 //Removes all elements from the List.
+//
 //O(1)
 func (l *List) Clear() bool {
 	l.count = 0
@@ -49,6 +53,7 @@ func (l *List) Clear() bool {
 }
 
 ////Clone the List without clone the objects inside the List.
+//
 //O(n)
 func (l *List) Clone() IList {
 	hash := map[int]*interface{}{}
@@ -59,6 +64,7 @@ func (l *List) Clone() IList {
 }
 
 //Determines whether any element is in the List.
+//
 //O(n)
 func (l *List) Contains(objects ...interface{}) bool {
 	if l.IsEmpty() {
@@ -76,13 +82,14 @@ func (l *List) Contains(objects ...interface{}) bool {
 }
 
 //Gets the number of elements contained in the List.
+//
 //O(1)
 func (l *List) Count() int {
 	return l.count
 }
 
 //Inserts any element into the List at the specified index.
-
+//
 //O(n)
 func (l *List) Insert(index int, objects ...interface{}) bool {
 	if index < 0 || index > l.count {
@@ -108,13 +115,14 @@ func (l *List) Insert(index int, objects ...interface{}) bool {
 }
 
 //Return true when the List is empty.
+//
 //O(1)
 func (l *List) IsEmpty() bool {
 	return l.count == 0
 }
 
 //Gets the first occurrence of a specific object from the List and removes it.
-
+//
 //O(n)
 func (l *List) Remove(object interface{}) bool {
 	if l.IsEmpty() {
@@ -142,7 +150,7 @@ func (l *List) Remove(object interface{}) bool {
 }
 
 //Removes all the elements that match the conditions defined by the specified predicate.
-
+//
 //O(n)
 func (l *List) RemoveAll(object interface{}) bool {
 	if l.IsEmpty() {
@@ -172,7 +180,7 @@ func (l *List) RemoveAll(object interface{}) bool {
 }
 
 //Removes the element at the specified index of the List.
-
+//
 //O(n)
 func (l *List) RemoveAt(index int) (interface{}, bool) {
 	if index < 0 || index >= l.count {
@@ -189,6 +197,7 @@ func (l *List) RemoveAt(index int) (interface{}, bool) {
 
 //Sets the element at the specified index.
 //Return false when the index of List is empty.
+//
 //O(1)
 func (l *List) Set(index int, object interface{}) bool {
 	if index < 0 || index > l.count || l.IsEmpty() {
@@ -201,6 +210,7 @@ func (l *List) Set(index int, object interface{}) bool {
 
 //Copies the elements of the List to a new slice.
 //Return false when the List is empty.
+//
 //O(n)
 func (l *List) ToArray() ([]interface{}, bool) {
 	if l.IsEmpty() {
