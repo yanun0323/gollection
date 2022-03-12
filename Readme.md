@@ -20,7 +20,7 @@ go get -u github.com/yanun0323/gollection
 ## Overview
 - [Queue](#Queue)
     - [Constructor](#Queue)
-    - [Enqueue](#queue_Enqueue)
+    - [Enqueue](#queue.Enqueue)
     - [Dequeue](#queueDequeue)
     - [Clear](#queueClear)
     - [Clone](#queueClone)
@@ -51,7 +51,7 @@ go get -u github.com/yanun0323/gollection
     /* Create an Queue has objects */
     q := NewQueue("Hello", "World", "!")
 ```
-### *queue* Enqueue
+### *queue*.Enqueue
 ```go
     q := NewQueue()
     /* Use `ok` to check whether the Enqueue succeed */
