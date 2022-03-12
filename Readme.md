@@ -20,7 +20,7 @@ go get -u github.com/yanun0323/gollection
 ## Overview
 - [Queue](#Queue)
     - [Constructor](#Queue)
-    - [Enqueue](#queue/Enqueue)
+    - [Enqueue](#queueEnqueue)
     - [Dequeue](#queueDequeue)
     - [Clear](#queueClear)
     - [Clone](#queueClone)
@@ -65,7 +65,7 @@ go get -u github.com/yanun0323/gollection
     q.Enqueue(nil)          //support nil object
     q.Enqueue(&Person{})    //support custom stuct
 ```
-### *queue* Dequeue
+### *queue*.Dequeue
 ```go
     /* Use `ok` to check whether the Dequeue succeed */
     q := NewQueue("Hello World")
@@ -78,11 +78,11 @@ go get -u github.com/yanun0323/gollection
     obj.(string)    // Transform interface{} to string
     obj.(int)       // Error because obj isn't an int
 ```
-### *queue* Clear
+### *queue*.Clear
 ```go
     q.Clear()
 ```
-### *queue* Clone
+### *queue*.Clone
 ```go
     q := NewQueue(10, 20)
     clone := q.Clone()
@@ -92,7 +92,7 @@ go get -u github.com/yanun0323/gollection
 
     fmt.Println(num1 == num2)    //True
 ```
-### *queue* Contain
+### *queue*.Contain
 ```go
     q := NewQueue(10, 20)
 
@@ -101,24 +101,24 @@ go get -u github.com/yanun0323/gollection
     answer = q.Contains(10, 30)  //True
     answer = q.Contains(30, 40)  //True
 ```
-### *queue* Count
+### *queue*.Count
 ```go
     q := NewQueue(10, 20)
     count := q.Count()      //2
 ```
-### *queue* IsEmpty
+### *queue*.IsEmpty
 ```go
     q := NewQueue(10, 20)
     q.IsEmpty()             //False
 ```
-### *queue* Peek
+### *queue*.Peek
 ```go
     q := NewQueue(10, 20)
     num1 := q.Peek()        //num1 == 10
     num2 := q.Dequeue()     //num1 == 10
 
 ```
-### *queue* ToArray
+### *queue*.ToArray
 ```go
     q := NewQueue(10, 20)
     arr := q.ToArray()
@@ -134,7 +134,7 @@ go get -u github.com/yanun0323/gollection
     /* Create an Stack has objects */
     s := NewStack("Hello", "World", "!")
 ```
-### *stack* Push
+### *stack*.Push
 ```go
     s := NewStack()
     /* Use `ok` to check whether the Push succeed */
@@ -148,7 +148,7 @@ go get -u github.com/yanun0323/gollection
     s.Push(nil)          //support nil object
     s.Push(&Person{})    //support custom stuct
 ```
-### *stack* Pop
+### *stack*.Pop
 ```go
     /* Use `ok` to check whether the Pop succeed */
     s := NewStack("Hello World")
@@ -161,11 +161,11 @@ go get -u github.com/yanun0323/gollection
     obj.(string)    // Transform interface{} to string
     obj.(int)       // Error because obj isn't an int
 ```
-### *stack* Clear
+### *stack*.Clear
 ```go
    s.Clear()
 ```
-### *stack* Clone
+### *stack*.Clone
 ```go
     s := NewStack(20, 10)
     clone := s.Clone()
@@ -175,7 +175,7 @@ go get -u github.com/yanun0323/gollection
 
     fmt.Println(num1 == num2)    //True
 ```
-### *stack* Contain
+### *stack*.Contain
 ```go
     s := NewStack(20, 10)
 
@@ -184,24 +184,24 @@ go get -u github.com/yanun0323/gollection
     answer = s.Contains(10, 30)  //True
     answer = s.Contains(30, 40)  //True
 ```
-### *stack* Count
+### *stack*.Count
 ```go
     s := NewStack(20, 10)
     count := s.Count()      //2
 ```
-### *stack* IsEmpty
+### *stack*.IsEmpty
 ```go
     s := NewStack(20, 10)
     s.IsEmpty()             //False
 ```
-### *stack* Peek
+### *stack*.Peek
 ```go
     s := NewStack(20, 10)
     num1 := s.Peek()        //num1 == 10
     num2 := s.Pop()         //num1 == 10
 
 ```
-### *stack* ToArray
+### *stack*.ToArray
 ```go
     s := NewStack(20, 10)
     arr := s.ToArray()
