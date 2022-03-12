@@ -11,8 +11,16 @@ type Queue struct {
 //Initializes a new instance of the Queue class that is empty and has the default initial capacity.
 //
 //O(1)
-func NewQueue() IQueue {
-	return &Queue{count: 0, first: nil, last: nil}
+func NewQueue(objects ...interface{}) IQueue {
+	q := &Queue{count: 0, first: nil, last: nil}
+	if len(objects) == 0 {
+		return q
+	}
+
+	for _, obj := range objects {
+		q.Enqueue(obj)
+	}
+	return q
 }
 
 //Removes all objects from the Queue.

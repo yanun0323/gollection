@@ -10,8 +10,13 @@ type List struct {
 //Initializes a new instance of the List class that is empty and has the default initial capacity.
 //
 //O(1)
-func NewList() IList {
-	return &List{count: 0, hash: map[int]*interface{}{}}
+func NewList(objects ...interface{}) IList {
+	l := &List{count: 0, hash: map[int]*interface{}{}}
+	if len(objects) == 0 {
+		return l
+	}
+	l.ADD(objects)
+	return l
 }
 
 //Adds an object to the end of the List.

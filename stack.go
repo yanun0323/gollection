@@ -10,8 +10,16 @@ type Stack struct {
 //Initializes a new instance of the Stack class that is empty and has the default initial capacity.
 //
 //O(1)
-func NewStack() IStack {
-	return &Stack{count: 0, last: nil}
+func NewStack(objects ...interface{}) IStack {
+	s := &Stack{count: 0, last: nil}
+	if len(objects) == 0 {
+		return s
+	}
+
+	for _, obj := range objects {
+		s.Push(obj)
+	}
+	return s
 }
 
 //Removes all objects from the Stack.
