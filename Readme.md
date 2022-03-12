@@ -20,7 +20,7 @@ go get -u github.com/yanun0323/gollection
 ## Overview
 - [Queue](#Queue)
     - [Constructor](#Queue)
-    - [Enqueue](#queueEnqueue)
+    - [Enqueue](#queue_Enqueue)
     - [Dequeue](#queueDequeue)
     - [Clear](#queueClear)
     - [Clone](#queueClone)
