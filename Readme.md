@@ -19,27 +19,27 @@ go get -u github.com/yanun0323/gollection
 
 ## Overview
 - [Queue](#Queue) 
-        - [Constructor](#Constructor) 
-        - [Enqueue](#Enqueue) 
-        - [Dequeue](#Dequeue) 
-        - [Clear](#Clear) 
-        - [Clone](#Clone) 
-        - [Contain](#Contain) 
-        - [Count](#Count) 
-        - [IsEmpty](#IsEmpty) 
-        - [Peek](#Peek) 
-        - [ToArray](#ToArray) 
+    - [Constructor](#Constructor) 
+    - [Enqueue](#Enqueue) 
+    - [Dequeue](#Dequeue) 
+    - [Clear](#Clear) 
+    - [Clone](#Clone) 
+    - [Contain](#Contain) 
+    - [Count](#Count) 
+    - [IsEmpty](#IsEmpty) 
+    - [Peek](#Peek) 
+    - [ToArray](#ToArray) 
 - [Stack](#Stack) 
-        - [Constructor]([1])
-        - [Push](#Push) 
-        - [Pop](#Pop) 
-        - [Clear](#Clear) 
-        - [Clone](#Clone) 
-        - [Contain](#Contain) 
-        - [Count](#Count) 
-        - [IsEmpty](#IsEmpty) 
-        - [Peek](#Peek) 
-        - [ToArray](#ToArray) 
+    - [Constructor][1]
+    - [Push](#Push) 
+    - [Pop](#Pop) 
+    - [Clear](#Clear) 
+    - [Clone](#Clone) 
+    - [Contain](#Contain) 
+    - [Count](#Count) 
+    - [IsEmpty](#IsEmpty) 
+    - [Peek](#Peek) 
+    - [ToArray](#ToArray) 
 - [List](#List) 
 
 ## Queue
@@ -127,8 +127,8 @@ go get -u github.com/yanun0323/gollection
 ```
 
 ## Stack
-[1]: C
-### Constructor 
+[1]: Constructor
+### *stack* Constructor 
 ```go
     /* Create an empty Stack */
     s := NewStack()
