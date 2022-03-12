@@ -19,7 +19,7 @@ go get -u github.com/yanun0323/gollection
 
 ## Overview
 - [Queue](#Queue) 
-    - [Constructor](#Constructor)
+    - [Constructor](#Constructor-1)
     - [Enqueue](#Enqueue)
 - [Stack](#Stack) 
 - [List](#List) 
@@ -46,7 +46,7 @@ go get -u github.com/yanun0323/gollection
 ```
 * #### Dequeue
 ```go
-    /* Use `ok` to check whether the Dequeue function succeed */
+    /* Use `ok` to check whether the Dequeue succeed */
     obj, ok := q.Dequeue()
     if !ok {
         panic()
@@ -63,10 +63,15 @@ go get -u github.com/yanun0323/gollection
 * #### Clone
 ```go
     clone := q.Clone()
+
+    obj = q.Dequeue().(int)
+    obj2 = clone.Dequeue().(int)
+
+    fmt.Println(&obj == &obj2)   //true
 ```
 * #### Contain
 ```go
-    Contains(T) bool
+    Contains()
 ```
 * #### ContainAny
 ```go
@@ -90,6 +95,12 @@ go get -u github.com/yanun0323/gollection
 ```
 
 ### Stack: 
+* #### Constructor 
+```go
+    /* Queue is an implement of IQueue */
+    /* Create an empty Queue */
+    q := NewQueue()
+```
 ```go
 NewStack()
 
@@ -106,7 +117,7 @@ ToArray() []T
 ```
 ### List: 
 ```go
-NewSList()
+NewList()
 
 ADD(...T)
 At(int) T
