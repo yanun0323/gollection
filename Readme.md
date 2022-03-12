@@ -22,10 +22,19 @@ go get -u github.com/yanun0323/gollection
 - [Stack](#Stack) 
 - [List](#List) 
 
-## Example
-
 ## Queue
-###  Constructor 
+ [Constructor](#Queue:Constructor) 
+ [Enqueue](#Enqueue) 
+ [Dequeue](#Dequeue) 
+ [Clear](#Clear) 
+ [Clone](#Clone) 
+ [Contain](#Contain) 
+ [Count](#Count) 
+ [IsEmpty](#IsEmpty) 
+ [Peek](#Peek) 
+ [ToArray](#ToArray) 
+
+### Queue : Constructor 
 ```go
     /* Create an empty Queue */
     q := NewQueue()
