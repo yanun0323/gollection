@@ -1,6 +1,6 @@
 # Gollection
 
-A package implement Queue, Stack and List like C# in go.
+Gollection implements Queue, Stack and List like C# in go.
 
 
 
@@ -35,11 +35,11 @@ go get -u github.com/yanun0323/gollection
     - [Pop](#stackPop)
     - [Clear](#stackClear)
     - [Clone](#stackClone)
-    - [Contain](#Contain)
-    - [Count](#Count)
-    - [IsEmpty](#IsEmpty)
-    - [Peek](#Peek)
-    - [ToArray](#ToArray)
+    - [Contain](#stackContain)
+    - [Count](#stackCount)
+    - [IsEmpty](#stackIsEmpty)
+    - [Peek](#stackPeek)
+    - [ToArray](#stackToArray)
 - [List](#List)
     - [Constructor](#List)
     - [Add](#listAdd)
