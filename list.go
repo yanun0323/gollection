@@ -14,8 +14,8 @@ type List struct {
 //Initializes a new instance of the List class that is empty and has the default initial capacity.
 //
 //O(1)
-func NewList(objects ...interface{}) IList {
-	l := &List{count: 0, hash: map[int]*interface{}{}}
+func NewList(objects ...interface{}) List {
+	l := List{count: 0, hash: map[int]*interface{}{}}
 	if len(objects) == 0 {
 		return l
 	}
@@ -65,12 +65,12 @@ func (l *List) Clear() {
 //Clone the List without clone the objects inside the List.
 //
 //O(n)
-func (l *List) Clone() IList {
+func (l *List) Clone() List {
 	hash := map[int]*interface{}{}
 	for key, value := range l.hash {
 		hash[key] = value
 	}
-	return &List{count: l.count, hash: hash}
+	return List{count: l.count, hash: hash}
 }
 
 //Determines whether any element is in the List.

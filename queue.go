@@ -13,8 +13,8 @@ type Queue struct {
 //Initializes a new instance of the Queue class that is empty and has the default initial capacity.
 //
 //O(1)
-func NewQueue(objects ...interface{}) IQueue {
-	q := &Queue{count: 0, first: nil, last: nil}
+func NewQueue(objects ...interface{}) Queue {
+	q := Queue{count: 0, first: nil, last: nil}
 	if len(objects) == 0 {
 		return q
 	}
@@ -37,8 +37,8 @@ func (q *Queue) Clear() {
 //Clone the Queue without clone the objects inside the Queue.
 //
 //O(1)
-func (q *Queue) Clone() IQueue {
-	return &Queue{
+func (q *Queue) Clone() Queue {
+	return Queue{
 		count: q.count,
 		first: q.first,
 		last:  q.last}

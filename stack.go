@@ -14,8 +14,8 @@ type Stack struct {
 //Initializes a new instance of the Stack class that is empty and has the default initial capacity.
 //
 //O(1)
-func NewStack(objects ...interface{}) IStack {
-	s := &Stack{count: 0, last: nil}
+func NewStack(objects ...interface{}) Stack {
+	s := Stack{count: 0, last: nil}
 	if len(objects) == 0 {
 		return s
 	}
@@ -37,8 +37,8 @@ func (s *Stack) Clear() {
 //Clone the Stack without clone the objects inside the Stack.
 //
 //O(1)
-func (s *Stack) Clone() IStack {
-	return &Stack{count: s.count, last: s.last}
+func (s *Stack) Clone() Stack {
+	return Stack{count: s.count, last: s.last}
 }
 
 //Determines whether any element is in the Stack.
