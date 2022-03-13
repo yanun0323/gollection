@@ -3,7 +3,7 @@ package gollection
 import "github.com/yanun0323/gollection/errors"
 
 //Represents a first-in, first-out collection of objects.
-//max stored element quantity = 2,147,483,647
+//Max stored element quantity is 2,147,483,647
 type Queue struct {
 	count int
 	first *node
@@ -28,11 +28,10 @@ func NewQueue(objects ...interface{}) IQueue {
 //Removes all objects from the Queue.
 //
 //O(1)
-func (q *Queue) Clear() bool {
+func (q *Queue) Clear() {
 	q.count = 0
 	q.first = nil
 	q.last = nil
-	return true
 }
 
 //Clone the Queue without clone the objects inside the Queue.
@@ -50,6 +49,9 @@ func (q *Queue) Clone() IQueue {
 //O(n)
 func (q *Queue) Contains(objects ...interface{}) bool {
 	if q.IsEmpty() {
+		return false
+	}
+	if len(objects) == 0 {
 		return false
 	}
 
@@ -94,7 +96,7 @@ func (q *Queue) Dequeue() interface{} {
 //Adds an object to the end of the Queue.
 //
 //O(1)
-func (q *Queue) Enqueue(object interface{}) bool {
+func (q *Queue) Enqueue(object interface{}) {
 	node := newNode(&object, nil, nil)
 
 	if q.IsEmpty() {
@@ -102,13 +104,12 @@ func (q *Queue) Enqueue(object interface{}) bool {
 		q.first.backward = node
 		q.last = node
 		q.count++
-		return true
+		return
 	}
 
 	q.last.backward = node
 	q.last = node
 	q.count++
-	return true
 }
 
 //Return true when the Queue is empty.

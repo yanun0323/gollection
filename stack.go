@@ -1,9 +1,11 @@
 package gollection
 
-import "github.com/yanun0323/gollection/errors"
+import (
+	"github.com/yanun0323/gollection/errors"
+)
 
 //Represents a variable size last-in-first-out (LIFO) collection of instances of the same specified type.
-//Max stored object quantity = 2,147,483,647.
+//Max stored object quantity is 2,147,483,647.
 type Stack struct {
 	count int
 	last  *node
@@ -27,10 +29,9 @@ func NewStack(objects ...interface{}) IStack {
 //Removes all objects from the Stack.
 //
 //O(1)
-func (s *Stack) Clear() bool {
+func (s *Stack) Clear() {
 	s.count = 0
 	s.last = nil
-	return true
 }
 
 //Clone the Stack without clone the objects inside the Stack.
@@ -45,6 +46,9 @@ func (s *Stack) Clone() IStack {
 //O(n)
 func (s *Stack) Contains(objects ...interface{}) bool {
 	if s.IsEmpty() {
+		return false
+	}
+	if len(objects) == 0 {
 		return false
 	}
 
@@ -77,7 +81,7 @@ func (s *Stack) IsEmpty() bool {
 	return s.count == 0
 }
 
-//Returns the object at the beginning of the Stack without removing it.
+//Returns the object at the top of the Stack without removing it.
 //
 //O(1)
 func (s *Stack) Peek() interface{} {
@@ -88,7 +92,7 @@ func (s *Stack) Peek() interface{} {
 }
 
 //Removes and returns the object at the top of the Stack.
-//Return false when the Stack is empty.
+//Panic when the Stack is empty.
 //
 //O(1)
 func (s *Stack) Pop() interface{} {
@@ -106,15 +110,14 @@ func (s *Stack) Pop() interface{} {
 //Inserts an object at the top of the Stack.
 //
 //O(1)
-func (s *Stack) Push(object interface{}) bool {
+func (s *Stack) Push(object interface{}) {
 	node := newNode(&object, s.last, nil)
 	s.last = node
 	s.count++
-	return true
 }
 
 //Copies the Stack to a new slice.
-//Return false when the Stack is empty.
+//Return nil when the Stack is empty.
 //
 //O(n)
 func (s *Stack) ToArray() []interface{} {

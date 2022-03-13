@@ -95,13 +95,13 @@ func Test_List_Insert(t *testing.T) {
 	l := NewList()
 	l.ADD(data2, data4)
 
-	assert.True(t, l.Insert(0, data1))
+	l.Insert(0, data1)
 	assert.Equal(t, data1, l.At(0))
 
-	assert.True(t, l.Insert(2, data3))
+	l.Insert(2, data3)
 	assert.Equal(t, data3, l.At(2))
 
-	assert.True(t, l.Insert(4, data5))
+	l.Insert(4, data5)
 	assert.Equal(t, data5, l.At(4))
 
 	assert.Panics(t, func() { l.Insert(-1, data5) })
@@ -118,30 +118,27 @@ func Test_List_IsEmpty(t *testing.T) {
 }
 
 func Test_List_Remove(t *testing.T) {
-	l := NewList()
-	l.ADD(data1, data2, data1, data3, data1)
+	l := NewList(data1, data2, data1, data3, data1)
 
-	assert.False(t, l.Remove(data4))
-	assert.True(t, l.Remove(data1))
+	l.Remove(data4)
+	l.Remove(data1)
 
 	assert.Equal(t, data2, l.At(0))
 	assert.Equal(t, 4, l.Count())
 }
 
 func Test_List_RemoveAll(t *testing.T) {
-	l := NewList()
-	l.ADD(data1, data2, data1, data3, data1)
+	l := NewList(data1, data2, data1, data3, data1)
 
-	assert.False(t, l.RemoveAll(data4))
-	assert.True(t, l.RemoveAll(data1))
+	l.RemoveAll(data4)
+	l.RemoveAll(data1)
 
 	assert.Equal(t, data2, l.At(0))
 	assert.Equal(t, 2, l.Count())
 }
 
 func Test_List_RemoveAt(t *testing.T) {
-	l := NewList()
-	l.ADD(data1, data2, data1, data3, data1)
+	l := NewList(data1, data2, data1, data3, data1)
 
 	assert.Equal(t, data1, l.RemoveAt(4))
 	assert.Equal(t, 4, l.Count())
@@ -152,6 +149,16 @@ func Test_List_RemoveAt(t *testing.T) {
 	assert.Panics(t, func() { l.RemoveAt(-1) })
 	assert.Panics(t, func() { l.RemoveAt(6) })
 
+}
+
+func Test_List_Set(t *testing.T) {
+	l := NewList(data1, data2, data1, data3, data1)
+
+	l.Set(0, data2)
+	assert.Equal(t, data2, l.At(0))
+
+	assert.Panics(t, func() { l.Set(-1, data5) })
+	assert.Panics(t, func() { l.Set(6, data5) })
 }
 
 func Test_List_ToArray(t *testing.T) {

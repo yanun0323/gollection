@@ -91,13 +91,13 @@ func Test_Stack_Pop(t *testing.T) {
 func Test_Stack_Push(t *testing.T) {
 	s := NewStack()
 
-	assert.True(t, s.Push(data1))
+	s.Push(data1)
 	assert.Equal(t, 1, s.Count())
 
-	assert.True(t, s.Push(data2))
+	s.Push(data2)
 	assert.Equal(t, 2, s.Count())
 
-	assert.True(t, s.Push(data3))
+	s.Push(data3)
 	assert.Equal(t, 3, s.Count())
 }
 

@@ -24,7 +24,7 @@ func Test_Queue_Clear(t *testing.T) {
 	q.Enqueue(data1)
 	q.Enqueue(data2)
 
-	assert.True(t, q.Clear())
+	q.Clear()
 
 	assert.NotEqual(t, nil, q)
 	assert.Equal(t, 0, q.Count())
@@ -97,13 +97,13 @@ func Test_Queue_Dequeue(t *testing.T) {
 func Test_Queue_Enqueue(t *testing.T) {
 	q := NewQueue()
 
-	assert.True(t, q.Enqueue(data1))
+	q.Enqueue(data1)
 	assert.Equal(t, 1, q.Count())
 
-	assert.True(t, q.Enqueue(data2))
+	q.Enqueue(data2)
 	assert.Equal(t, 2, q.Count())
 
-	assert.True(t, q.Enqueue(data3))
+	q.Enqueue(data3)
 	assert.Equal(t, 3, q.Count())
 }
 
