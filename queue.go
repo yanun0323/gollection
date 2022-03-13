@@ -1,5 +1,7 @@
 package gollection
 
+import "github.com/yanun0323/gollection/errors"
+
 //Represents a first-in, first-out collection of objects.
 //max stored element quantity = 2,147,483,647
 type Queue struct {
@@ -74,19 +76,19 @@ func (q *Queue) Count() int {
 }
 
 //Removes and returns the object at the beginning of the Queue.
-//Return false when the Queue is empty.
+//Panic when the Queue is empty.
 //
 //O(1)
-func (q *Queue) Dequeue() (interface{}, bool) {
+func (q *Queue) Dequeue() interface{} {
 	if q.IsEmpty() {
-		return nil, false
+		panic(errors.EmptyQueue)
 	}
 	node := q.first
 	q.first = node.backward
 	if q.count > 0 {
 		q.count--
 	}
-	return *node.data, true
+	return *node.data
 }
 
 //Adds an object to the end of the Queue.
@@ -117,22 +119,23 @@ func (q *Queue) IsEmpty() bool {
 }
 
 //Returns the object at the beginning of the Queue without removing it.
+//Panic when the Queue is empty.
 //
 //O(1)
-func (q *Queue) Peek() (interface{}, bool) {
+func (q *Queue) Peek() interface{} {
 	if q.IsEmpty() {
-		return nil, false
+		panic(errors.EmptyQueue)
 	}
-	return *q.first.data, true
+	return *q.first.data
 }
 
 //Copies the Queue to a new slice.
-//Return false when the Queue is empty.
+//Return nil when the Queue is empty.
 //
 //O(n)
-func (q *Queue) ToArray() ([]interface{}, bool) {
+func (q *Queue) ToArray() []interface{} {
 	if q.IsEmpty() {
-		return nil, false
+		return nil
 	}
 	arr := make([]interface{}, q.count)
 
@@ -141,5 +144,5 @@ func (q *Queue) ToArray() ([]interface{}, bool) {
 		arr[i] = *node.data
 		node = node.backward
 	}
-	return arr, true
+	return arr
 }

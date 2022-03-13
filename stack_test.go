@@ -12,6 +12,11 @@ func TestNewStack(t *testing.T) {
 	assert.NotNil(t, s)
 	assert.Equal(t, 0, s.Count())
 	assert.True(t, s.IsEmpty())
+
+	s2 := NewStack(data1, data2)
+	assert.NotNil(t, s2)
+	assert.Equal(t, 2, s2.Count())
+	assert.False(t, s2.IsEmpty())
 }
 func Test_Stack_Clear(t *testing.T) {
 	s := NewStack()
@@ -30,8 +35,8 @@ func Test_Stack_Clone(t *testing.T) {
 	s.Push(data2)
 	s.Push(data3)
 	clone := s.Clone()
-	es, _ := s.Pop()
-	ec, _ := clone.Pop()
+	es := s.Pop()
+	ec := clone.Pop()
 	assert.Equal(t, s.Count(), clone.Count())
 	assert.Equal(t, es, ec)
 
@@ -68,32 +73,19 @@ func Test_Stack_Count(t *testing.T) {
 
 func Test_Stack_Pop(t *testing.T) {
 	s := NewStack()
-	_, ok := s.Pop()
-	assert.False(t, ok)
+	assert.Panics(t, func() { s.Pop() })
 
 	s.Push(data1)
 	s.Push(data2)
 	s.Push(data3)
 	s.Push(nil)
 
-	d, ok := s.Pop()
-	assert.True(t, ok)
-	assert.Nil(t, d)
+	assert.Nil(t, s.Pop())
+	assert.Equal(t, data3, s.Pop())
+	assert.Equal(t, data2, s.Pop())
+	assert.Equal(t, data1, s.Pop())
 
-	d, ok = s.Pop()
-	assert.True(t, ok)
-	assert.Equal(t, data3, d)
-
-	d, ok = s.Pop()
-	assert.True(t, ok)
-	assert.Equal(t, data2, d)
-
-	d, ok = s.Pop()
-	assert.True(t, ok)
-	assert.Equal(t, data1, d)
-
-	_, ok = s.Pop()
-	assert.False(t, ok)
+	assert.Panics(t, func() { s.Pop() })
 }
 
 func Test_Stack_Push(t *testing.T) {
@@ -120,13 +112,10 @@ func Test_Stack_IsEmpty(t *testing.T) {
 
 func Test_Stack_Peek(t *testing.T) {
 	s := NewStack()
-	_, ok := s.Peek()
-	assert.False(t, ok)
+	assert.Panics(t, func() { s.Peek() })
 
 	s.Push(data1)
-	d, ok := s.Peek()
-	assert.True(t, ok)
-	assert.Equal(t, data1, d)
+	assert.Equal(t, data1, s.Peek())
 	assert.Equal(t, 1, s.Count())
 }
 
@@ -134,15 +123,13 @@ func Test_Stack_ToArray(t *testing.T) {
 	s := NewStack()
 	expect := []interface{}{data3, data2, data1}
 
-	_, ok := s.ToArray()
-	assert.False(t, ok)
+	assert.Nil(t, s.ToArray())
 
 	s.Push(data1)
 	s.Push(data2)
 	s.Push(data3)
-	arr, ok := s.ToArray()
+	arr := s.ToArray()
 
-	assert.True(t, ok)
 	if assert.Equal(t, s.Count(), len(expect)) {
 		for i := 0; i < s.Count(); i++ {
 			assert.Equal(t, expect[i], arr[i])

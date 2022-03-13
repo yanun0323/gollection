@@ -1,5 +1,9 @@
 package gollection
 
+import (
+	"github.com/yanun0323/gollection/errors"
+)
+
 //Represents a strongly typed list of objects that can be accessed by index. Provides methods to search, sort, and manipulate lists.
 //Max stored element quantity = 2,147,483,647
 type List struct {
@@ -15,7 +19,7 @@ func NewList(objects ...interface{}) IList {
 	if len(objects) == 0 {
 		return l
 	}
-	l.ADD(objects)
+	l.ADD(objects...)
 	return l
 }
 
@@ -35,17 +39,17 @@ func (l *List) ADD(objects ...interface{}) bool {
 //Return false when the index of the List is empty.
 //
 //O(1)
-func (l *List) At(index int) (interface{}, bool) {
+func (l *List) At(index int) interface{} {
 	if index < 0 || l.IsEmpty() {
-		return nil, false
+		panic(errors.OutOfListBounds)
 	}
 
 	obj, ok := l.hash[index]
 	if !ok {
-		return nil, false
+		panic(errors.EmptyListIndex(index))
 	}
 
-	return *obj, true
+	return *obj
 }
 
 //Removes all elements from the List.
@@ -98,7 +102,7 @@ func (l *List) Count() int {
 //O(n)
 func (l *List) Insert(index int, objects ...interface{}) bool {
 	if index < 0 || index > l.count {
-		return false
+		panic(errors.OutOfListBounds)
 	}
 	if index == l.count {
 		l.ADD(objects...)
@@ -187,9 +191,9 @@ func (l *List) RemoveAll(object interface{}) bool {
 //Removes the element at the specified index of the List.
 //
 //O(n)
-func (l *List) RemoveAt(index int) (interface{}, bool) {
+func (l *List) RemoveAt(index int) interface{} {
 	if index < 0 || index >= l.count {
-		return nil, false
+		panic(errors.OutOfListBounds)
 	}
 	d := *l.hash[index]
 	for i := index + 1; i < l.count; i++ {
@@ -197,7 +201,7 @@ func (l *List) RemoveAt(index int) (interface{}, bool) {
 	}
 	l.count--
 	delete(l.hash, l.count)
-	return d, true
+	return d
 }
 
 //Sets the element at the specified index.
@@ -217,14 +221,14 @@ func (l *List) Set(index int, object interface{}) bool {
 //Return false when the List is empty.
 //
 //O(n)
-func (l *List) ToArray() ([]interface{}, bool) {
+func (l *List) ToArray() []interface{} {
 	if l.IsEmpty() {
-		return nil, false
+		return nil
 	}
 
 	arr := make([]interface{}, l.count)
 	for i := 0; i < l.count; i++ {
 		arr[i] = *l.hash[i]
 	}
-	return arr, true
+	return arr
 }

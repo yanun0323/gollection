@@ -1,5 +1,7 @@
 package gollection
 
+import "github.com/yanun0323/gollection/errors"
+
 //Represents a variable size last-in-first-out (LIFO) collection of instances of the same specified type.
 //Max stored object quantity = 2,147,483,647.
 type Stack struct {
@@ -78,27 +80,27 @@ func (s *Stack) IsEmpty() bool {
 //Returns the object at the beginning of the Stack without removing it.
 //
 //O(1)
-func (s *Stack) Peek() (interface{}, bool) {
+func (s *Stack) Peek() interface{} {
 	if s.IsEmpty() {
-		return nil, false
+		panic(errors.EmptyStack)
 	}
-	return *s.last.data, true
+	return *s.last.data
 }
 
 //Removes and returns the object at the top of the Stack.
 //Return false when the Stack is empty.
 //
 //O(1)
-func (s *Stack) Pop() (interface{}, bool) {
+func (s *Stack) Pop() interface{} {
 	if s.IsEmpty() {
-		return nil, false
+		panic(errors.EmptyStack)
 	}
 	node := s.last
 	s.last = node.forward
 	if s.count > 0 {
 		s.count--
 	}
-	return *node.data, true
+	return *node.data
 }
 
 //Inserts an object at the top of the Stack.
@@ -115,9 +117,9 @@ func (s *Stack) Push(object interface{}) bool {
 //Return false when the Stack is empty.
 //
 //O(n)
-func (s *Stack) ToArray() ([]interface{}, bool) {
+func (s *Stack) ToArray() []interface{} {
 	if s.IsEmpty() {
-		return nil, false
+		return nil
 	}
 	arr := make([]interface{}, s.count)
 
@@ -126,5 +128,5 @@ func (s *Stack) ToArray() ([]interface{}, bool) {
 		arr[i] = *node.data
 		node = node.forward
 	}
-	return arr, true
+	return arr
 }

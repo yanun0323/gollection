@@ -5,11 +5,11 @@ type IQueue interface {
 	Clone() IQueue
 	Contains(...interface{}) bool
 	Count() int
-	Dequeue() (interface{}, bool)
+	Dequeue() interface{}
 	Enqueue(interface{}) bool
 	IsEmpty() bool
-	Peek() (interface{}, bool)
-	ToArray() ([]interface{}, bool)
+	Peek() interface{}
+	ToArray() []interface{}
 }
 
 type IStack interface {
@@ -18,15 +18,15 @@ type IStack interface {
 	Contains(...interface{}) bool
 	Count() int
 	IsEmpty() bool
-	Peek() (interface{}, bool)
-	Pop() (interface{}, bool)
+	Peek() interface{}
+	Pop() interface{}
 	Push(interface{}) bool
-	ToArray() ([]interface{}, bool)
+	ToArray() []interface{}
 }
 
 type IList interface {
 	ADD(...interface{}) bool
-	At(int) (interface{}, bool)
+	At(int) interface{}
 	Clear() bool
 	Clone() IList
 	Contains(...interface{}) bool
@@ -35,7 +35,7 @@ type IList interface {
 	IsEmpty() bool
 	Remove(interface{}) bool
 	RemoveAll(interface{}) bool
-	RemoveAt(int) (interface{}, bool)
+	RemoveAt(int) interface{}
 	Set(int, interface{}) bool
-	ToArray() ([]interface{}, bool)
+	ToArray() []interface{}
 }
