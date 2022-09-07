@@ -3,136 +3,79 @@ package gollection
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestNewStack(t *testing.T) {
-	s := NewStack()
-
-	assert.NotNil(t, s)
-	assert.Equal(t, 0, s.Count())
-	assert.True(t, s.IsEmpty())
-
-	s2 := NewStack(data1, data2)
-	assert.NotNil(t, s2)
-	assert.Equal(t, 2, s2.Count())
-	assert.False(t, s2.IsEmpty())
-}
-func Test_Stack_Clear(t *testing.T) {
-	s := NewStack()
-	s.Push(data1)
-	s.Push(data2)
-	s.Clear()
-
-	assert.NotEqual(t, nil, s)
-	assert.Equal(t, 0, s.Count())
+func TestStack(t *testing.T) {
+	suite.Run(t, new(StackSuite))
 }
 
-func Test_Stack_Clone(t *testing.T) {
-	s := NewStack()
-
-	s.Push(data1)
-	s.Push(data2)
-	s.Push(data3)
-	clone := s.Clone()
-	es := s.Pop()
-	ec := clone.Pop()
-	assert.Equal(t, s.Count(), clone.Count())
-	assert.Equal(t, es, ec)
-
-	clone.Pop()
-	assert.NotEqual(t, s.Count(), clone.Count())
+type StackSuite struct {
+	suite.Suite
+	mockStack func() stack
 }
 
-func Test_Stack_Contains(t *testing.T) {
-	s := NewStack()
-
-	s.Push(data1)
-	assert.True(t, s.Contains(data1))
-	assert.True(t, s.Contains(data1, data3))
-	assert.False(t, s.Contains(data2))
-	assert.False(t, s.Contains(data3, data4))
-
-	s.Push(data2)
-	assert.True(t, s.Contains(data1))
-	assert.True(t, s.Contains(data1, data2, data3))
-	assert.True(t, s.Contains(data2))
-	assert.False(t, s.Contains(data3, data4))
-}
-
-func Test_Stack_Count(t *testing.T) {
-	s := NewStack()
-	assert.Equal(t, 0, s.Count())
-
-	s.Push(data1)
-	assert.Equal(t, 1, s.Count())
-
-	s.Pop()
-	assert.Equal(t, 0, s.Count())
-}
-
-func Test_Stack_Pop(t *testing.T) {
-	s := NewStack()
-	assert.Panics(t, func() { s.Pop() })
-
-	s.Push(data1)
-	s.Push(data2)
-	s.Push(data3)
-	s.Push(nil)
-
-	assert.Nil(t, s.Pop())
-	assert.Equal(t, data3, s.Pop())
-	assert.Equal(t, data2, s.Pop())
-	assert.Equal(t, data1, s.Pop())
-
-	assert.Panics(t, func() { s.Pop() })
-}
-
-func Test_Stack_Push(t *testing.T) {
-	s := NewStack()
-
-	s.Push(data1)
-	assert.Equal(t, 1, s.Count())
-
-	s.Push(data2)
-	assert.Equal(t, 2, s.Count())
-
-	s.Push(data3)
-	assert.Equal(t, 3, s.Count())
-}
-
-func Test_Stack_IsEmpty(t *testing.T) {
-	s := NewStack()
-
-	assert.True(t, s.IsEmpty())
-
-	s.Push(data1)
-	assert.False(t, s.IsEmpty())
-}
-
-func Test_Stack_Peek(t *testing.T) {
-	s := NewStack()
-	assert.Panics(t, func() { s.Peek() })
-
-	s.Push(data1)
-	assert.Equal(t, data1, s.Peek())
-	assert.Equal(t, 1, s.Count())
-}
-
-func Test_Stack_ToArray(t *testing.T) {
-	s := NewStack()
-	expect := []interface{}{data3, data2, data1}
-
-	assert.Nil(t, s.ToArray())
-
-	s.Push(data1)
-	s.Push(data2)
-	s.Push(data3)
-	arr := s.ToArray()
-
-	if assert.Equal(t, s.Count(), len(expect)) {
-		for i := 0; i < s.Count(); i++ {
-			assert.Equal(t, expect[i], arr[i])
+func (su *StackSuite) SetupTest() {
+	su.mockStack = func() stack {
+		return stack{
+			data: []any{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
 		}
 	}
+}
+
+func (su *StackSuite) Test_NewStack_Good() {
+	s := NewStack()
+	su.Equal(0, len(s.data))
+}
+
+func (su *StackSuite) Test_Push_Good() {
+	s := su.mockStack()
+	s.Push(10)
+	su.Equal(10, s.data[10])
+	s.Push(11, 12, 13)
+	su.Equal(11, s.data[11])
+	su.Equal(12, s.data[12])
+	su.Equal(13, s.data[13])
+}
+
+func (su *StackSuite) Test_Pop_Good() {
+	s := su.mockStack()
+	su.Equal(9, s.Pop())
+	su.Equal(8, s.data[len(s.data)-1])
+	su.Equal(9, len(s.data))
+
+	e := stack{}
+	su.Nil(e.Pop())
+}
+
+func (su *StackSuite) Test_Peek_Good() {
+	s := su.mockStack()
+	su.Equal(9, s.Peek())
+	su.Equal(9, s.data[len(s.data)-1])
+	su.Equal(10, len(s.data))
+
+	e := stack{}
+	su.Nil(e.Peek())
+}
+
+func (su *StackSuite) Test_Count_Good() {
+	s := su.mockStack()
+	su.Equal(len(s.data), s.Count())
+
+	e := stack{}
+	su.Equal(0, e.Count())
+}
+
+func (su *StackSuite) Test_ToSlice_Good() {
+	s := su.mockStack()
+	sli := s.ToSlice()
+	su.Require().Equal(len(s.data), len(sli))
+	for i := range sli {
+		su.Equal(s.data[len(s.data)-1-i], sli[i])
+	}
+
+	sli[0] = 123
+	su.Equal(0, s.data[0])
+	su.Equal(9, s.data[9])
+	su.Equal(123, sli[0])
 }

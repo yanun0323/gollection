@@ -1,3 +1,8 @@
+# Mac system files
 *.DS_Store
-Makefile
-_*
+*.DS_STORE
+
+# VSCode settings
+*.vscode
+
+# Others
