@@ -131,7 +131,7 @@ Returns `nil` when the Stack is empty.
     obj.(int)       // Error because obj isn't an int in this case
 
     s := NewStack()
-    obj:= s.Pop()   // Panic!!! because the queue is empty
+    obj:= s.Pop()   // nil
 ```
 ### *stack*.Count
 Gets the number of elements in the Stack.
