@@ -6,7 +6,7 @@ type stack struct {
 
 func NewStack() stack {
 	return stack{
-		data: make([]any, 0, 10),
+		data: []any{},
 	}
 }
 

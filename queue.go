@@ -6,7 +6,7 @@ type queue struct {
 
 func NewQueue() queue {
 	return queue{
-		data: make([]any, 0, 10),
+		data: []any{},
 	}
 }
 
