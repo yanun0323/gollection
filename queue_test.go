@@ -50,10 +50,10 @@ func (su *QueueSuite) Test_Dequeue_Good() {
 
 func (su *QueueSuite) Test_Count_Good() {
 	q := su.mockQueue()
-	su.Equal(len(q.data), q.Count())
+	su.Equal(len(q.data), q.Len())
 
 	e := queue{}
-	su.Equal(0, e.Count())
+	su.Equal(0, e.Len())
 }
 
 func (su *QueueSuite) Test_Peek_Good() {

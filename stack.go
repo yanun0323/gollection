@@ -30,7 +30,7 @@ func (s *stack) Peek() any {
 	return s.data[len(s.data)-1]
 }
 
-func (s *stack) Count() int {
+func (s *stack) Len() int {
 	return len(s.data)
 }
 

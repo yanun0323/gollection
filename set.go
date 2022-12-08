@@ -26,6 +26,6 @@ func (s *set) Contain(a any) bool {
 	return s.hash[a]
 }
 
-func (s *set) Count() int {
+func (s *set) Len() int {
 	return len(s.hash)
 }

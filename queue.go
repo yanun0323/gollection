@@ -23,7 +23,7 @@ func (q *queue) Dequeue() any {
 	return elem
 }
 
-func (q *queue) Count() int {
+func (q *queue) Len() int {
 	return len(q.data)
 }
 

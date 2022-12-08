@@ -22,14 +22,14 @@ go get -u github.com/yanun0323/gollection
     - [Constructor](#Queue)
     - [Enqueue](#queueEnqueue)
     - [Dequeue](#queueDequeue)
-    - [Count](#queueCount)
+    - [Len](#queueLen)
     - [Peek](#queuePeek)
     - [ToSlice](#queueToSlice)
 - [Stack](#Stack)
     - [Constructor](#Stack)
     - [Push](#stackPush)
     - [Pop](#stackPop)
-    - [Count](#stackCount)
+    - [Len](#stackLen)
     - [Peek](#stackPeek)
     - [ToSlice](#stackToSlice)
 
@@ -69,12 +69,12 @@ Returns `nil` when the Queue is empty.
 
     q.Dequeue()     // nil
 ```
-### *queue*.Count
+### *queue*.Len
 Gets the number of elements in the Queue.
 ```go
     q := NewQueue()
     q.Enqueue(10, 20)
-    count := q.Count()              // 2
+    length := q.Len()              // 2
 ```
 ### *queue*.Peek
 Returns the object at the beginning of the Queue without removing it.<br/>
@@ -133,12 +133,12 @@ Returns `nil` when the Stack is empty.
     s := NewStack()
     obj:= s.Pop()   // nil
 ```
-### *stack*.Count
+### *stack*.Len
 Gets the number of elements in the Stack.
 ```go
     s := NewStack()
     s.Push(20, 10)
-    count := s.Count()              // 2
+    length := s.Len()              // 2
 ```
 ### *stack*.Peek
 Returns the object at the top of the Stack without removing it.<br/>

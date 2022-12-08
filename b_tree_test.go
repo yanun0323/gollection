@@ -16,8 +16,9 @@ type BTreeSuite struct {
 }
 
 /*
-       3
-   2       5
+	    3
+	2       5
+
 1        4   6
 */
 func (su *BTreeSuite) SetupTest() {
@@ -63,13 +64,13 @@ func (su *BTreeSuite) Test_NewBTree_Good() {
 func (su *BTreeSuite) Test_Count_Good() {
 	b := su.mockTree()
 	b.Insert(6)
-	su.Equal(7, b.Count())
+	su.Equal(7, b.Len())
 	b.Insert(6)
-	su.Equal(8, b.Count())
+	su.Equal(8, b.Len())
 	b.Insert(6)
-	su.Equal(9, b.Count())
+	su.Equal(9, b.Len())
 	b.Insert(6)
-	su.Equal(10, b.Count())
+	su.Equal(10, b.Len())
 }
 
 func (su *BTreeSuite) Test_Insert_Good() {

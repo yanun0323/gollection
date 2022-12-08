@@ -12,7 +12,7 @@ func NewBTree(greater func(any, any) bool) bTree {
 	}
 }
 
-func (b *bTree) Count() int {
+func (b *bTree) Len() int {
 	return b.count
 }
 
@@ -27,6 +27,7 @@ func (b *bTree) Insert(v any) {
 
 /*
 walk through the tree
+
 	t < 0  : Pre-Order Traversal
 	t == 0 : In-Order Traversal
 	t > 0  : Post-Order Traversal

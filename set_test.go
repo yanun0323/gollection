@@ -86,8 +86,8 @@ func (su *SetSuite) Test_Contain_Good() {
 
 func (su *SetSuite) Test_Count_Good() {
 	s := su.mockSet()
-	su.Equal(len(s.hash), s.Count())
+	su.Equal(len(s.hash), s.Len())
 
 	e := set{}
-	su.Equal(0, e.Count())
+	su.Equal(0, e.Len())
 }

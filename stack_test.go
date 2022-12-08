@@ -60,10 +60,10 @@ func (su *StackSuite) Test_Peek_Good() {
 
 func (su *StackSuite) Test_Count_Good() {
 	s := su.mockStack()
-	su.Equal(len(s.data), s.Count())
+	su.Equal(len(s.data), s.Len())
 
 	e := stack{}
-	su.Equal(0, e.Count())
+	su.Equal(0, e.Len())
 }
 
 func (su *StackSuite) Test_ToSlice_Good() {
