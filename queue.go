@@ -1,7 +1,7 @@
 package gollection
 
 type Queue[T any] interface {
-	Count() int
+	Len() int
 	Dequeue() T
 	Enqueue(...T)
 	Peek() T
@@ -32,7 +32,7 @@ func (q *queue[T]) Dequeue() T {
 	return elem
 }
 
-func (q *queue) Len() int {
+func (q *queue[T]) Len() int {
 	return len(q.data)
 }
 

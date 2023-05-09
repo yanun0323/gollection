@@ -80,7 +80,7 @@ func (su *SetSuite) Test_Contain_Good() {
 	su.True(s.Contain(9))
 	su.False(s.Contain(10))
 
-	e := set[int]{}
+	e := NewSet[int]()
 	su.False(e.Contain(0))
 }
 
@@ -88,6 +88,6 @@ func (su *SetSuite) Test_Count_Good() {
 	s := su.mockSet()
 	su.Equal(len(s.hash), s.Len())
 
-	e := set{}
+	e := NewSet[int]()
 	su.Equal(0, e.Len())
 }

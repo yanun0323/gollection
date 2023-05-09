@@ -44,7 +44,7 @@ func (su *QueueSuite) Test_Dequeue_Good() {
 	su.Equal(1, q.data[0])
 	su.Equal(9, len(q.data))
 
-	e := queue[int]{}
+	e := NewQueue[int]()
 	su.Zero(e.Dequeue())
 }
 
@@ -52,7 +52,7 @@ func (su *QueueSuite) Test_Count_Good() {
 	q := su.mockQueue()
 	su.Equal(len(q.data), q.Len())
 
-	e := queue{}
+	e := NewQueue[int]()
 	su.Equal(0, e.Len())
 }
 
@@ -61,7 +61,7 @@ func (su *QueueSuite) Test_Peek_Good() {
 	su.Equal(0, q.Peek())
 	su.Equal(0, q.data[0])
 
-	e := queue[int]{}
+	e := NewQueue[int]()
 	su.Zero(e.Peek())
 }
 

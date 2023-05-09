@@ -1,7 +1,7 @@
 package gollection
 
 type BTree[T any] interface {
-	Count() int
+	Len() int
 	Insert(v T)
 	/*
 		walk through the tree
@@ -25,7 +25,7 @@ func NewBTree[T any](greater func(T, T) bool, zero T) BTree[T] {
 	}
 }
 
-func (b *bTree) Len() int {
+func (b *bTree[T]) Len() int {
 	return b.count
 }
 

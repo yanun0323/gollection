@@ -2,7 +2,7 @@ package gollection
 
 type Set[T comparable] interface {
 	Contain(T) bool
-	Count() int
+	Len() int
 	Insert(...T)
 	Remove(...T)
 }
@@ -33,6 +33,6 @@ func (s *set[T]) Contain(a T) bool {
 	return s.hash[a]
 }
 
-func (s *set) Len() int {
+func (s *set[T]) Len() int {
 	return len(s.hash)
 }

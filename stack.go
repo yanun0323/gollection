@@ -1,7 +1,7 @@
 package gollection
 
 type Stack[T any] interface {
-	Count() int
+	Len() int
 	Peek() T
 	Pop() T
 	Push(...T)
@@ -39,7 +39,7 @@ func (s *stack[T]) Peek() T {
 	return s.data[len(s.data)-1]
 }
 
-func (s *stack) Len() int {
+func (s *stack[T]) Len() int {
 	return len(s.data)
 }
 

@@ -44,7 +44,7 @@ func (su *StackSuite) Test_Pop_Good() {
 	su.Equal(8, s.data[len(s.data)-1])
 	su.Equal(9, len(s.data))
 
-	e := stack[int]{}
+	e := NewStack[int]()
 	su.Zero(e.Pop())
 }
 
@@ -54,7 +54,7 @@ func (su *StackSuite) Test_Peek_Good() {
 	su.Equal(9, s.data[len(s.data)-1])
 	su.Equal(10, len(s.data))
 
-	e := stack[int]{}
+	e := NewStack[int]()
 	su.Zero(e.Peek())
 }
 
@@ -62,7 +62,7 @@ func (su *StackSuite) Test_Count_Good() {
 	s := su.mockStack()
 	su.Equal(len(s.data), s.Len())
 
-	e := stack{}
+	e := NewStack[int]()
 	su.Equal(0, e.Len())
 }
 
