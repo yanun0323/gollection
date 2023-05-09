@@ -9,14 +9,14 @@ import (
 )
 
 func TestMap(t *testing.T) {
-	suite.Run(t, new(MapSuite))
+	suite.Run(t, new(SyncMapSuite))
 }
 
-type MapSuite struct {
+type SyncMapSuite struct {
 	suite.Suite
 }
 
-func (su *MapSuite) Test_SyncMap() {
+func (su *SyncMapSuite) Test_SyncMap() {
 	m := sync.Map{}
 	m.Store(1, 1)
 	m.Store(2, 2)

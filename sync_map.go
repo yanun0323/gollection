@@ -4,7 +4,7 @@ import (
 	"sync"
 )
 
-type Map[K comparable, V any] interface {
+type SyncMap[K comparable, V any] interface {
 
 	// CompareAndDelete deletes the entry for key if its value is equal to old.
 	// The old value must be of a comparable type.
@@ -56,30 +56,30 @@ type Map[K comparable, V any] interface {
 	Swap(key K, value V) (previous V, loaded bool)
 }
 
-type mmap[K comparable, V any] struct {
+type syncMap[K comparable, V any] struct {
 	zero V
 	m    sync.Map
 }
 
-func NewMap[K comparable, V any]() Map[K, V] {
-	return &mmap[K, V]{
+func NewMap[K comparable, V any]() SyncMap[K, V] {
+	return &syncMap[K, V]{
 		m: sync.Map{},
 	}
 }
 
-func (m *mmap[K, V]) CompareAndDelete(key K, old V) (deleted bool) {
+func (m *syncMap[K, V]) CompareAndDelete(key K, old V) (deleted bool) {
 	return m.m.CompareAndDelete(key, old)
 }
 
-func (m *mmap[K, V]) CompareAndSwap(key K, old V, new V) bool {
+func (m *syncMap[K, V]) CompareAndSwap(key K, old V, new V) bool {
 	return m.m.CompareAndSwap(key, old, new)
 }
 
-func (m *mmap[K, V]) Delete(key K) {
+func (m *syncMap[K, V]) Delete(key K) {
 	m.m.Delete(key)
 }
 
-func (m *mmap[K, V]) Load(key K) (value V, ok bool) {
+func (m *syncMap[K, V]) Load(key K) (value V, ok bool) {
 	v, ok := m.m.Load(key)
 	if ok {
 		return v.(V), true
@@ -87,7 +87,7 @@ func (m *mmap[K, V]) Load(key K) (value V, ok bool) {
 	return m.zero, false
 }
 
-func (m *mmap[K, V]) LoadAndDelete(key K) (value V, loaded bool) {
+func (m *syncMap[K, V]) LoadAndDelete(key K) (value V, loaded bool) {
 	v, ok := m.m.LoadAndDelete(key)
 	if ok {
 		return v.(V), true
@@ -95,22 +95,22 @@ func (m *mmap[K, V]) LoadAndDelete(key K) (value V, loaded bool) {
 	return m.zero, false
 }
 
-func (m *mmap[K, V]) LoadOrStore(key K, value V) (actual V, loaded bool) {
+func (m *syncMap[K, V]) LoadOrStore(key K, value V) (actual V, loaded bool) {
 	v, loaded := m.m.LoadOrStore(key, value)
 	return v.(V), loaded
 }
 
-func (m *mmap[K, V]) Range(f func(key K, value V) bool) {
+func (m *syncMap[K, V]) Range(f func(key K, value V) bool) {
 	m.m.Range(func(key, value interface{}) bool {
 		return f(key.(K), value.(V))
 	})
 }
 
-func (m *mmap[K, V]) Store(key K, value V) {
+func (m *syncMap[K, V]) Store(key K, value V) {
 	m.m.Store(key, value)
 }
 
-func (m *mmap[K, V]) Swap(key K, value V) (previous V, loaded bool) {
+func (m *syncMap[K, V]) Swap(key K, value V) (previous V, loaded bool) {
 	v, loaded := m.m.Swap(key, value)
 	if loaded {
 		return v.(V), true
