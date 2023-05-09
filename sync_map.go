@@ -64,7 +64,7 @@ type syncMap[K comparable, V any] struct {
 	m    sync.Map
 }
 
-func NewMap[K comparable, V any]() SyncMap[K, V] {
+func NewSyncMap[K comparable, V any]() SyncMap[K, V] {
 	return &syncMap[K, V]{
 		m: sync.Map{},
 	}
