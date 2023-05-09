@@ -32,11 +32,7 @@ func (s *syncSet[T]) Contain(a T) bool {
 func (s *syncSet[T]) Len() int {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	count := 0
-	for range s.m {
-		count++
-	}
-	return count
+	return len(s.m)
 }
 func (s *syncSet[T]) Insert(as ...T) {
 	s.mu.Lock()
