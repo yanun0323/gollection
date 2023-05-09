@@ -72,7 +72,7 @@ func (su *SyncSetSuite) Test_Remove_Good() {
 
 	e := set[int]{}
 	e.Remove(0)
-	su.Equal(0, len(e.hash))
+	su.Equal(0, len(e.m))
 }
 
 func (su *SyncSetSuite) Test_Contain_Good() {

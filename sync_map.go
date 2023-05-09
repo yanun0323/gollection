@@ -48,6 +48,9 @@ type SyncMap[K comparable, V any] interface {
 	// false after a constant number of calls.
 	Range(func(key K, value V) bool)
 
+	// Iter return a copy of the map.
+	Iter() map[K]V
+
 	// Store sets the value for a key.
 	Store(key K, value V)
 
@@ -104,6 +107,15 @@ func (m *syncMap[K, V]) Range(f func(key K, value V) bool) {
 	m.m.Range(func(key, value interface{}) bool {
 		return f(key.(K), value.(V))
 	})
+}
+
+func (m *syncMap[K, V]) Iter() map[K]V {
+	mm := make(map[K]V, 0)
+	m.m.Range(func(key, value interface{}) bool {
+		mm[key.(K)] = value.(V)
+		return true
+	})
+	return mm
 }
 
 func (m *syncMap[K, V]) Store(key K, value V) {

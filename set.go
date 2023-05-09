@@ -5,34 +5,44 @@ type Set[T comparable] interface {
 	Len() int
 	Insert(...T)
 	Remove(...T)
+	Iter() []T
 }
 
 type set[T comparable] struct {
-	hash map[T]bool
+	m map[T]struct{}
 }
 
 func NewSet[T comparable]() Set[T] {
 	return &set[T]{
-		hash: make(map[T]bool, 0),
+		m: make(map[T]struct{}, 0),
 	}
 }
 
 func (s *set[T]) Insert(a ...T) {
 	for i := range a {
-		s.hash[a[i]] = true
+		s.m[a[i]] = struct{}{}
 	}
 }
 
 func (s *set[T]) Remove(a ...T) {
 	for i := range a {
-		delete(s.hash, a[i])
+		delete(s.m, a[i])
 	}
 }
 
 func (s *set[T]) Contain(a T) bool {
-	return s.hash[a]
+	_, ok := s.m[a]
+	return ok
 }
 
 func (s *set[T]) Len() int {
-	return len(s.hash)
+	return len(s.m)
+}
+
+func (s *set[T]) Iter() []T {
+	result := make([]T, 0, len(s.m))
+	for k := range s.m {
+		result = append(result, k)
+	}
+	return result
 }

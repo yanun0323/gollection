@@ -7,6 +7,8 @@ type SyncSet[T comparable] interface {
 	Len() int
 	Insert(...T)
 	Remove(...T)
+	// Iter return a copy of the set.
+	Iter() []T
 }
 
 type syncSet[T comparable] struct {
@@ -17,22 +19,6 @@ type syncSet[T comparable] struct {
 func NewSyncSet[T comparable]() SyncSet[T] {
 	return &syncSet[T]{
 		m: map[T]struct{}{},
-	}
-}
-
-func (s *syncSet[T]) Insert(as ...T) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	for _, a := range as {
-		s.m[a] = struct{}{}
-	}
-}
-
-func (s *syncSet[T]) Remove(as ...T) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	for _, a := range as {
-		delete(s.m, a)
 	}
 }
 
@@ -51,4 +37,29 @@ func (s *syncSet[T]) Len() int {
 		count++
 	}
 	return count
+}
+func (s *syncSet[T]) Insert(as ...T) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for _, a := range as {
+		s.m[a] = struct{}{}
+	}
+}
+
+func (s *syncSet[T]) Remove(as ...T) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for _, a := range as {
+		delete(s.m, a)
+	}
+}
+
+func (s *syncSet[T]) Iter() []T {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	mm := []T{}
+	for k := range s.m {
+		mm = append(mm, k)
+	}
+	return mm
 }
