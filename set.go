@@ -1,28 +1,35 @@
 package gollection
 
-type set struct {
-	hash map[any]bool
+type Set[T comparable] interface {
+	Contain(T) bool
+	Count() int
+	Insert(...T)
+	Remove(...T)
 }
 
-func NewSet() set {
-	return set{
-		hash: make(map[any]bool, 0),
+type set[T comparable] struct {
+	hash map[T]bool
+}
+
+func NewSet[T comparable]() Set[T] {
+	return &set[T]{
+		hash: make(map[T]bool, 0),
 	}
 }
 
-func (s *set) Insert(a ...any) {
+func (s *set[T]) Insert(a ...T) {
 	for i := range a {
 		s.hash[a[i]] = true
 	}
 }
 
-func (s *set) Remove(a ...any) {
+func (s *set[T]) Remove(a ...T) {
 	for i := range a {
 		delete(s.hash, a[i])
 	}
 }
 
-func (s *set) Contain(a any) bool {
+func (s *set[T]) Contain(a T) bool {
 	return s.hash[a]
 }
 

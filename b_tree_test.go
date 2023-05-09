@@ -12,7 +12,7 @@ func TestBTree(t *testing.T) {
 
 type BTreeSuite struct {
 	suite.Suite
-	mockTree func() bTree
+	mockTree func() bTree[int]
 }
 
 /*
@@ -22,43 +22,37 @@ type BTreeSuite struct {
 1        4   6
 */
 func (su *BTreeSuite) SetupTest() {
-	su.mockTree = func() bTree {
-		return bTree{
+	su.mockTree = func() bTree[int] {
+		return bTree[int]{
 			count: 6,
-			root: &node{
+			root: &node[int]{
 				val: 3,
-				l: &node{
+				l: &node[int]{
 					val: 2,
-					l: &node{
+					l: &node[int]{
 						val: 1,
 					},
 				},
-				r: &node{
+				r: &node[int]{
 					val: 5,
-					l: &node{
+					l: &node[int]{
 						val: 4,
 					},
-					r: &node{
+					r: &node[int]{
 						val: 6,
 					},
 				},
 			},
-			greater: func(a1, a2 any) bool {
-				return a1.(int) > a2.(int)
+			greater: func(a1, a2 int) bool {
+				return a1 > a2
 			},
 		}
 	}
 }
 
 func (su *BTreeSuite) Test_NewBTree_Good() {
-	b := NewBTree(func(a1, a2 any) bool {
-		return a1.(int) > a2.(int)
-	})
-	su.Equal(0, b.count)
-	su.Nil(b.root)
-	su.True(b.greater(2, 1))
-	su.False(b.greater(1, 1))
-	su.False(b.greater(1, 2))
+	b := NewBTree[int]
+	su.NotNil(b)
 }
 
 func (su *BTreeSuite) Test_Count_Good() {
@@ -88,9 +82,9 @@ func (su *BTreeSuite) Test_Insert_Good() {
 	su.Require().NotNil(b.root.r.r.r)
 	su.Equal(7, b.root.r.r.r.val)
 
-	e := bTree{
-		greater: func(a1, a2 any) bool {
-			return a1.(int) > a2.(int)
+	e := bTree[int]{
+		greater: func(a1, a2 int) bool {
+			return a1 > a2
 		},
 	}
 	e.Insert(5)

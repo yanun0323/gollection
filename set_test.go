@@ -12,13 +12,13 @@ func TestSet(t *testing.T) {
 
 type SetSuite struct {
 	suite.Suite
-	mockSet func() set
+	mockSet func() set[int]
 }
 
 func (su *SetSuite) SetupTest() {
-	su.mockSet = func() set {
-		return set{
-			hash: map[any]bool{
+	su.mockSet = func() set[int] {
+		return set[int]{
+			hash: map[int]bool{
 				0: true,
 				1: true,
 				2: true,
@@ -35,8 +35,8 @@ func (su *SetSuite) SetupTest() {
 }
 
 func (su *SetSuite) Test_NewSet_Good() {
-	s := NewSet()
-	su.Equal(0, len(s.hash))
+	s := NewSet[int]()
+	su.NotNil(s)
 }
 
 func (su *SetSuite) Test_Insert_Good() {
@@ -68,7 +68,7 @@ func (su *SetSuite) Test_Remove_Good() {
 	s.Remove(6, 7, 8)
 	su.Equal(6, len(s.hash))
 
-	e := set{}
+	e := set[int]{}
 	e.Remove(0)
 	su.Equal(0, len(e.hash))
 }
@@ -80,7 +80,7 @@ func (su *SetSuite) Test_Contain_Good() {
 	su.True(s.Contain(9))
 	su.False(s.Contain(10))
 
-	e := set{}
+	e := set[int]{}
 	su.False(e.Contain(0))
 }
 

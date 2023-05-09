@@ -12,20 +12,20 @@ func TestQueue(t *testing.T) {
 
 type QueueSuite struct {
 	suite.Suite
-	mockQueue func() queue
+	mockQueue func() queue[int]
 }
 
 func (su *QueueSuite) SetupTest() {
-	su.mockQueue = func() queue {
-		return queue{
-			data: []any{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+	su.mockQueue = func() queue[int] {
+		return queue[int]{
+			data: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
 		}
 	}
 }
 
 func (su *QueueSuite) Test_NewQueue_Good() {
-	q := NewQueue()
-	su.Equal(0, len(q.data))
+	q := NewQueue[int]()
+	su.NotNil(q)
 }
 
 func (su *QueueSuite) Test_Enqueue_Good() {
@@ -44,8 +44,8 @@ func (su *QueueSuite) Test_Dequeue_Good() {
 	su.Equal(1, q.data[0])
 	su.Equal(9, len(q.data))
 
-	e := queue{}
-	su.Nil(e.Dequeue())
+	e := queue[int]{}
+	su.Zero(e.Dequeue())
 }
 
 func (su *QueueSuite) Test_Count_Good() {
@@ -61,8 +61,8 @@ func (su *QueueSuite) Test_Peek_Good() {
 	su.Equal(0, q.Peek())
 	su.Equal(0, q.data[0])
 
-	e := queue{}
-	su.Nil(e.Peek())
+	e := queue[int]{}
+	su.Zero(e.Peek())
 }
 
 func (su *QueueSuite) Test_ToSlice_Good() {

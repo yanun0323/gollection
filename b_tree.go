@@ -1,13 +1,26 @@
 package gollection
 
-type bTree struct {
-	count   int
-	root    *node
-	greater func(any, any) bool
+type BTree[T any] interface {
+	Count() int
+	Insert(v T)
+	/*
+		walk through the tree
+
+			t < 0  : Pre-Order Traversal
+			t == 0 : In-Order Traversal
+			t > 0  : Post-Order Traversal
+	*/
+	Walk(t int) []T
 }
 
-func NewBTree(greater func(any, any) bool) bTree {
-	return bTree{
+type bTree[T any] struct {
+	count   int
+	root    *node[T]
+	greater func(T, T) bool
+}
+
+func NewBTree[T any](greater func(T, T) bool, zero T) BTree[T] {
+	return &bTree[T]{
 		greater: greater,
 	}
 }
@@ -16,7 +29,7 @@ func (b *bTree) Len() int {
 	return b.count
 }
 
-func (b *bTree) Insert(v any) {
+func (b *bTree[T]) Insert(v T) {
 	b.count++
 	if b.root == nil {
 		b.root = newNode(v)
@@ -32,14 +45,14 @@ walk through the tree
 	t == 0 : In-Order Traversal
 	t > 0  : Post-Order Traversal
 */
-func (b *bTree) Walk(t int) []any {
-	result := make([]any, 0, b.count)
+func (b *bTree[T]) Walk(t int) []T {
+	result := make([]T, 0, b.count)
 	f := b.getOrder(t)
 	f(&result, b.root)
 	return result
 }
 
-func (b *bTree) getOrder(t int) func(*[]any, *node) {
+func (b *bTree[T]) getOrder(t int) func(*[]T, *node[T]) {
 	if t < 0 {
 		return b.preOrder
 	}
@@ -50,7 +63,7 @@ func (b *bTree) getOrder(t int) func(*[]any, *node) {
 }
 
 // Root -> L -> R
-func (b *bTree) preOrder(sli *[]any, n *node) {
+func (b *bTree[T]) preOrder(sli *[]T, n *node[T]) {
 	if n == nil {
 		return
 	}
@@ -60,7 +73,7 @@ func (b *bTree) preOrder(sli *[]any, n *node) {
 }
 
 // L -> Root -> R
-func (b *bTree) inOrder(sli *[]any, n *node) {
+func (b *bTree[T]) inOrder(sli *[]T, n *node[T]) {
 	if n == nil {
 		return
 	}
@@ -70,7 +83,7 @@ func (b *bTree) inOrder(sli *[]any, n *node) {
 }
 
 // L -> R -> Root
-func (b *bTree) postOrder(sli *[]any, n *node) {
+func (b *bTree[T]) postOrder(sli *[]T, n *node[T]) {
 	if n == nil {
 		return
 	}
@@ -79,19 +92,19 @@ func (b *bTree) postOrder(sli *[]any, n *node) {
 	*sli = append(*sli, n.val)
 }
 
-type node struct {
-	val any
-	l   *node
-	r   *node
+type node[T any] struct {
+	val T
+	l   *node[T]
+	r   *node[T]
 }
 
-func newNode(a any) *node {
-	return &node{
+func newNode[T any](a T) *node[T] {
+	return &node[T]{
 		val: a,
 	}
 }
 
-func (n *node) Insert(nn *node, greater func(any, any) bool) {
+func (n *node[T]) Insert(nn *node[T], greater func(T, T) bool) {
 	switch greater(nn.val, n.val) {
 	case true:
 		if n.r == nil {
