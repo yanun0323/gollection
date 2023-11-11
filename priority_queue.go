@@ -52,7 +52,7 @@ func (pq *priorityQueue[T]) ToSlice() []T {
 	copy(cp, pq.data)
 
 	sli := make([]T, 0, len(pq.data))
-	for _ = range pq.data {
+	for range pq.data {
 		sli = append(sli, pq.Dequeue())
 	}
 	pq.data = cp
