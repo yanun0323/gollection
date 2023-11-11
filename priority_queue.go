@@ -10,17 +10,17 @@ type PriorityQueue[T any] interface {
 	ToSlice() []T
 }
 
-func NewPriorityQueue[T any](greater func(T, T) bool) PriorityQueue[T] {
+func NewPriorityQueue[T any](score func(T, T) bool) PriorityQueue[T] {
 	return &priorityQueue[T]{
-		data:    []T{},
-		greater: greater,
+		data:  []T{},
+		score: score,
 	}
 }
 
 type priorityQueue[T any] struct {
-	zero    T
-	data    []T
-	greater func(T, T) bool
+	zero  T
+	data  []T
+	score func(T, T) bool
 }
 
 func (pq *priorityQueue[T]) Len() int {
@@ -48,11 +48,19 @@ func (pq *priorityQueue[T]) Peek() T {
 }
 
 func (pq *priorityQueue[T]) ToSlice() []T {
-	return append(make([]T, 0, len(pq.data)), pq.data...)
+	cp := make([]T, len(pq.data))
+	copy(cp, pq.data)
+
+	sli := make([]T, 0, len(pq.data))
+	for _ = range pq.data {
+		sli = append(sli, pq.Dequeue())
+	}
+	pq.data = cp
+	return sli
 }
 
 func (pq *priorityQueue[T]) Less(i, j int) bool {
-	return !pq.greater(pq.data[i], pq.data[j])
+	return pq.score(pq.data[i], pq.data[j])
 }
 
 func (pq *priorityQueue[T]) Swap(i, j int) {

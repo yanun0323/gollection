@@ -4,10 +4,10 @@ import "sync"
 
 type SyncPriorityQueue[T any] PriorityQueue[T]
 
-func NewSyncPriorityQueue[T any](greater func(T, T) bool) SyncPriorityQueue[T] {
+func NewSyncPriorityQueue[T any](score func(T, T) bool) SyncPriorityQueue[T] {
 	return &syncPriorityQueue[T]{
 		rwLock: &sync.RWMutex{},
-		pq:     NewPriorityQueue[T](greater),
+		pq:     NewPriorityQueue[T](score),
 	}
 }
 
