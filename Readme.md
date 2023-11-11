@@ -5,7 +5,7 @@ Gollection implements Queue, Stack and List like C# in go.
 
 
 ## Supported go versions
-1.19 or higher
+#### _GO 1.21 or higher_
 
 
 

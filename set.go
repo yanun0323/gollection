@@ -5,7 +5,7 @@ type Set[T comparable] interface {
 	Len() int
 	Insert(...T)
 	Remove(...T)
-	Iter() []T
+	ToSlice() []T
 }
 
 type set[T comparable] struct {
@@ -39,7 +39,7 @@ func (s *set[T]) Len() int {
 	return len(s.m)
 }
 
-func (s *set[T]) Iter() []T {
+func (s *set[T]) ToSlice() []T {
 	result := make([]T, 0, len(s.m))
 	for k := range s.m {
 		result = append(result, k)

@@ -10,19 +10,19 @@ type BTree[T any] interface {
 			t == 0 : In-Order Traversal
 			t > 0  : Post-Order Traversal
 	*/
-	Walk(t int) []T
-}
-
-type bTree[T any] struct {
-	count   int
-	root    *node[T]
-	greater func(T, T) bool
+	Walk(t int, limit ...int) []T
 }
 
 func NewBTree[T any](greater func(t1, t2 T) bool) BTree[T] {
 	return &bTree[T]{
 		greater: greater,
 	}
+}
+
+type bTree[T any] struct {
+	count   int
+	root    *node[T]
+	greater func(T, T) bool
 }
 
 func (b *bTree[T]) Len() int {
@@ -45,14 +45,18 @@ walk through the tree
 	t == 0 : In-Order Traversal
 	t > 0  : Post-Order Traversal
 */
-func (b *bTree[T]) Walk(t int) []T {
+func (b *bTree[T]) Walk(t int, limit ...int) []T {
+	l := b.count
+	if len(limit) != 0 && limit[0] >= 0 {
+		l = limit[0]
+	}
 	result := make([]T, 0, b.count)
 	f := b.getOrder(t)
-	f(&result, b.root)
+	f(&result, b.root, &l)
 	return result
 }
 
-func (b *bTree[T]) getOrder(t int) func(*[]T, *node[T]) {
+func (b *bTree[T]) getOrder(t int) func(*[]T, *node[T], *int) {
 	if t < 0 {
 		return b.preOrder
 	}
@@ -63,33 +67,42 @@ func (b *bTree[T]) getOrder(t int) func(*[]T, *node[T]) {
 }
 
 // Root -> L -> R
-func (b *bTree[T]) preOrder(sli *[]T, n *node[T]) {
-	if n == nil {
+func (b *bTree[T]) preOrder(sli *[]T, n *node[T], limit *int) {
+	if n == nil || *limit == 0 {
 		return
 	}
 	*sli = append(*sli, n.val)
-	b.preOrder(sli, n.l)
-	b.preOrder(sli, n.r)
+	*limit--
+	b.preOrder(sli, n.l, limit)
+	b.preOrder(sli, n.r, limit)
 }
 
 // L -> Root -> R
-func (b *bTree[T]) inOrder(sli *[]T, n *node[T]) {
-	if n == nil {
+func (b *bTree[T]) inOrder(sli *[]T, n *node[T], limit *int) {
+	if n == nil || *limit == 0 {
 		return
 	}
-	b.inOrder(sli, n.l)
+	b.inOrder(sli, n.l, limit)
+	if *limit == 0 {
+		return
+	}
 	*sli = append(*sli, n.val)
-	b.inOrder(sli, n.r)
+	*limit--
+	b.inOrder(sli, n.r, limit)
 }
 
 // L -> R -> Root
-func (b *bTree[T]) postOrder(sli *[]T, n *node[T]) {
-	if n == nil {
+func (b *bTree[T]) postOrder(sli *[]T, n *node[T], limit *int) {
+	if n == nil || *limit == 0 {
 		return
 	}
-	b.postOrder(sli, n.l)
-	b.postOrder(sli, n.r)
+	b.postOrder(sli, n.l, limit)
+	b.postOrder(sli, n.r, limit)
+	if *limit == 0 {
+		return
+	}
 	*sli = append(*sli, n.val)
+	*limit--
 }
 
 type node[T any] struct {
