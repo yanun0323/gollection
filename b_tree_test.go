@@ -51,8 +51,17 @@ func (su *BTreeSuite) SetupTest() {
 }
 
 func (su *BTreeSuite) Test_NewBTree_Good() {
-	b := NewBTree[int]
+	b := NewBTree[int](func(t1, t2 int) bool {
+		return t1 > t2
+	})
 	su.NotNil(b)
+
+	su.Require().NotPanics(func() {
+		b.Insert(1)
+		b.Insert(2)
+	})
+	su.Equal(2, b.Len())
+	su.NotEmpty(b.Walk(-1))
 }
 
 func (su *BTreeSuite) Test_Count_Good() {

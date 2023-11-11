@@ -19,7 +19,7 @@ type bTree[T any] struct {
 	greater func(T, T) bool
 }
 
-func NewBTree[T any](greater func(T, T) bool, zero T) BTree[T] {
+func NewBTree[T any](greater func(t1, t2 T) bool) BTree[T] {
 	return &bTree[T]{
 		greater: greater,
 	}
