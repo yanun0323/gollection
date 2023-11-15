@@ -103,7 +103,7 @@ func (b *bTree[K, V]) RemoveMax() (K, V, bool) {
 		return result.key, result.val, true
 	}
 
-	result, c := b.root.remove(_max)
+	c, result := b.root.r.findExtremeAndRemove(_max)
 	b.root.r = c
 	if result == nil {
 		return b.kZero, b.vZero, false
@@ -123,7 +123,7 @@ func (b *bTree[K, V]) RemoveMin() (K, V, bool) {
 		return result.key, result.val, true
 	}
 
-	result, c := b.root.remove(_min)
+	c, result := b.root.l.findExtremeAndRemove(_min)
 	b.root.l = c
 	if result == nil {
 		return b.kZero, b.vZero, false
@@ -196,7 +196,7 @@ func (n *node[K, V]) Find(key K) *node[K, V] {
 		return n
 	}
 
-	if n.key < n.key {
+	if key < n.key {
 		if n.l == nil {
 			return nil
 		}
@@ -218,7 +218,7 @@ func (n *node[K, V]) FindMax() *node[K, V] {
 
 func (n *node[K, V]) FindMin() *node[K, V] {
 	if n.l != nil {
-		return n.l.FindMax()
+		return n.l.FindMin()
 	}
 	return n
 }
@@ -265,17 +265,40 @@ func (n *node[K, V]) FindAndRemove(key K) (heir, removed *node[K, V]) {
 	return heir, n
 }
 
+func (n *node[K, V]) findExtremeAndRemove(target side) (heir, removed *node[K, V]) {
+	switch target {
+	case _max:
+		if n.r == nil {
+			return nil, n
+		}
+
+		heir, removed := n.r.findExtremeAndRemove(target)
+		n.r = heir
+		return n, removed
+	case _min:
+		if n.l == nil {
+			return nil, n
+		}
+
+		heir, removed := n.l.findExtremeAndRemove(target)
+		n.l = heir
+		return n, removed
+	default:
+		return n, nil
+	}
+}
+
 func (n *node[K, V]) removeChildren() (left, right *node[K, V]) {
 	l, r := n.l, n.r
 	n.l, n.r = nil, nil
 	return l, r
 }
 
-func (n *node[K, V]) remove(next side) (removed *node[K, V], child *node[K, V]) {
-	switch next {
+func (n *node[K, V]) remove(target side) (removed *node[K, V], child *node[K, V]) {
+	switch target {
 	case _max:
 		if n.r != nil {
-			nr, nc := n.r.remove(next)
+			nr, nc := n.r.remove(target)
 			n.r = nc
 			return nr, nil
 		}
@@ -283,7 +306,7 @@ func (n *node[K, V]) remove(next side) (removed *node[K, V], child *node[K, V]) 
 		return n, left
 	case _min:
 		if n.l != nil {
-			nr, nc := n.l.remove(next)
+			nr, nc := n.l.remove(target)
 			n.l = nc
 			return nr, nil
 		}

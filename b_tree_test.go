@@ -12,6 +12,7 @@ func TestBTree(t *testing.T) {
 
 type BTreeSuite struct {
 	suite.Suite
+	// default content: 1, 2, 3, 4, 5, 6
 	mockTree func() *bTree[int, int]
 }
 
@@ -53,6 +54,16 @@ func (su *BTreeSuite) SetupTest() {
 	}
 }
 
+func (su *BTreeSuite) check(b BTree[int, int], expected ...any) {
+	i := 0
+	su.Require().Equal(len(expected), b.Len())
+	b.Ascend(func(k, v int) bool {
+		su.Require().Equal(expected[i], k)
+		i++
+		return true
+	})
+}
+
 func (su *BTreeSuite) Test_NewBTree_Good() {
 	b := NewBTree[int, int]()
 	su.NotNil(b)
@@ -62,6 +73,13 @@ func (su *BTreeSuite) Test_NewBTree_Good() {
 		b.Insert(2, 2)
 	})
 	su.Equal(2, b.Len())
+}
+
+func (su *BTreeSuite) Test_Contain_Good() {
+	b := su.mockTree()
+	su.True(b.Contain(1))
+	su.True(b.Contain(5))
+	su.False(b.Contain(9))
 }
 
 func (su *BTreeSuite) Test_Len_Good() {
@@ -144,14 +162,147 @@ func (su *BTreeSuite) Test_Remove_Good() {
 	su.check(b, 1, 2, 6)
 }
 
-func (su *BTreeSuite) check(b BTree[int, int], expected ...any) {
-	i := 0
-	su.Require().Equal(len(expected), b.Len())
-	b.Ascend(func(k, v int) bool {
-		su.Require().Equal(expected[i], k)
-		i++
-		return true
-	})
+func (su *BTreeSuite) Test_Search_Good() {
+	b := su.mockTree()
+	testCases := []struct {
+		desc    string
+		key     int
+		success bool
+	}{
+		{
+			key:     9,
+			success: false,
+		},
+		{
+			key:     -1,
+			success: false,
+		},
+		{
+			key:     3,
+			success: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		su.T().Run(tc.desc, func(t *testing.T) {
+			t.Log(tc.desc)
+			v, ok := b.Search(tc.key)
+			if tc.success {
+				su.True(ok)
+				su.Equal(tc.key, v)
+			} else {
+				su.False(ok)
+				su.Zero(v)
+			}
+		})
+	}
+}
+
+func (su *BTreeSuite) Test_Max_Good() {
+	bt := NewBTree[int, int]()
+	k, v, ok := bt.Max()
+	su.False(ok)
+	su.Zero(k)
+	su.Zero(v)
+
+	b := su.mockTree()
+	k, v, ok = b.Max()
+	su.True(ok)
+	su.Equal(6, k)
+	su.Equal(6, v)
+
+	v, ok = b.Remove(6)
+	su.True(ok)
+	su.Equal(6, v)
+
+	k, v, ok = b.Max()
+	su.True(ok)
+	su.Equal(5, k)
+	su.Equal(5, v)
+}
+
+func (su *BTreeSuite) Test_Min_Good() {
+	bt := NewBTree[int, int]()
+	k, v, ok := bt.Min()
+	su.False(ok)
+	su.Zero(k)
+	su.Zero(v)
+
+	b := su.mockTree()
+	k, v, ok = b.Min()
+	su.True(ok)
+	su.Equal(1, k)
+	su.Equal(1, v)
+
+	v, ok = b.Remove(1)
+	su.True(ok)
+	su.Equal(1, v)
+
+	k, v, ok = b.Min()
+	su.True(ok)
+	su.Equal(2, k)
+	su.Equal(2, v)
+}
+
+func (su *BTreeSuite) Test_RemoveMax_Good() {
+	bt := NewBTree[int, int]()
+	su.Equal(0, bt.Len())
+
+	k, v, ok := bt.RemoveMax()
+	su.False(ok)
+	su.Zero(k)
+	su.Zero(v)
+	su.Equal(0, bt.Len())
+
+	b := su.mockTree()
+	su.Equal(6, b.Len())
+
+	k, v, ok = b.RemoveMax()
+	su.True(ok)
+	su.Equal(6, k)
+	su.Equal(6, v)
+	su.Equal(5, b.Len())
+
+	v, ok = b.Remove(6)
+	su.False(ok)
+	su.Zero(v)
+	su.Equal(5, b.Len())
+
+	k, v, ok = b.RemoveMax()
+	su.True(ok)
+	su.Equal(5, k)
+	su.Equal(5, v)
+	su.Equal(4, b.Len())
+}
+
+func (su *BTreeSuite) Test_RemoveMin_Good() {
+	bt := NewBTree[int, int]()
+	su.Equal(0, bt.Len())
+
+	k, v, ok := bt.RemoveMin()
+	su.False(ok)
+	su.Zero(k)
+	su.Zero(v)
+	su.Equal(0, bt.Len())
+
+	b := su.mockTree()
+	su.Equal(6, b.Len())
+
+	k, v, ok = b.RemoveMin()
+	su.True(ok)
+	su.Equal(1, k)
+	su.Equal(1, v)
+	su.Equal(5, b.Len())
+
+	v, ok = b.Remove(1)
+	su.False(ok)
+	su.Equal(0, v)
+
+	k, v, ok = b.RemoveMin()
+	su.True(ok)
+	su.Equal(2, k)
+	su.Equal(2, v)
+	su.Equal(4, b.Len())
 }
 
 func (su *BTreeSuite) Test_Ascend_Good() {
