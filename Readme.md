@@ -90,7 +90,7 @@ Returns empty slice when the Queue is empty.
 ```go
     q := NewQueue()
     q.Enqueue(10, 20)
-    arr := q.ToArray()              // {10 ,20}
+    arr := q.ToSlice()              // {10 ,20}
 
     empty := NewQueue()
     arr = empty.ToSlice()           // {} 
