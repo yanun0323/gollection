@@ -273,7 +273,7 @@ func (n *node[K, V]) findExtremeAndRemove(target side) (heir, removed *node[K, V
 	switch target {
 	case _max:
 		if n.r == nil {
-			return nil, n
+			return n.l, n
 		}
 
 		heir, removed := n.r.findExtremeAndRemove(target)
@@ -281,7 +281,7 @@ func (n *node[K, V]) findExtremeAndRemove(target side) (heir, removed *node[K, V
 		return n, removed
 	case _min:
 		if n.l == nil {
-			return nil, n
+			return n.r, n
 		}
 
 		heir, removed := n.l.findExtremeAndRemove(target)
