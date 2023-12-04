@@ -10,6 +10,7 @@ type SyncMap[K comparable, V any] interface {
 	Load(key K) (V, bool)
 	LoadAndSet(key K, fn func(value V) V)
 	Store(key K, value V)
+	Stores(fn func(store func(key K, value V)))
 	Delete(key K)
 }
 
@@ -38,6 +39,17 @@ func (m *syncMap[K, V]) Store(key K, value V) {
 	defer m.lock.Unlock()
 
 	m.data[key] = value
+}
+
+func (m *syncMap[K, V]) Stores(fn func(store func(key K, value V))) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
+	action := func(key K, value V) {
+		m.data[key] = value
+	}
+
+	fn(action)
 }
 
 func (m *syncMap[K, V]) LoadAndSet(key K, fn func(value V) V) {
