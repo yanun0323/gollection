@@ -30,10 +30,7 @@ type bTree[K orderable, V any] struct {
 }
 
 func (b *bTree[K, V]) Contain(key K) bool {
-	if b.root == nil {
-		return false
-	}
-	return b.root.Find(key) != nil
+	return b.root.search(key) != nil
 }
 
 func (b *bTree[K, V]) Len() int {
@@ -54,7 +51,7 @@ func (b *bTree[K, V]) Remove(key K) (V, bool) {
 	if b.root == nil {
 		return b.vZero, false
 	}
-	h, removed := b.root.FindAndRemove(key)
+	h, removed := b.root.findAndRemove(key)
 	if removed == nil {
 		return b.vZero, false
 	}
@@ -64,21 +61,17 @@ func (b *bTree[K, V]) Remove(key K) (V, bool) {
 }
 
 func (b *bTree[K, V]) Search(key K) (V, bool) {
-	if b.root == nil {
-		return b.vZero, false
+	if n := b.root.search(key); n != nil {
+		return n.val, true
 	}
-	n := b.root.Find(key)
-	if n == nil {
-		return b.vZero, false
-	}
-	return n.val, true
+	return b.vZero, false
 }
 
 func (b *bTree[K, V]) Max() (K, V, bool) {
 	if b.root == nil {
 		return b.kZero, b.vZero, false
 	}
-	n := b.root.FindMax()
+	n := b.root.findMax()
 	if n == nil {
 		return b.kZero, b.vZero, false
 	}
@@ -89,7 +82,7 @@ func (b *bTree[K, V]) Min() (K, V, bool) {
 	if b.root == nil {
 		return b.kZero, b.vZero, false
 	}
-	n := b.root.FindMin()
+	n := b.root.findMin()
 	if n == nil {
 		return b.kZero, b.vZero, false
 	}
@@ -180,6 +173,7 @@ func (n *node[K, V]) Insert(nn *node[K, V]) {
 	if nn == nil {
 		return
 	}
+
 	if nn.key <= n.key {
 		if n.l == nil {
 			n.l = nn
@@ -195,8 +189,8 @@ func (n *node[K, V]) Insert(nn *node[K, V]) {
 	}
 }
 
-func (n *node[K, V]) Find(key K) *node[K, V] {
-	if n.key == key {
+func (n *node[K, V]) search(key K) *node[K, V] {
+	if n == nil || n.key == key {
 		return n
 	}
 
@@ -204,25 +198,34 @@ func (n *node[K, V]) Find(key K) *node[K, V] {
 		if n.l == nil {
 			return nil
 		}
-		return n.l.Find(key)
+		return n.l.search(key)
 	} else {
 		if n.r == nil {
 			return nil
 		}
-		return n.r.Find(key)
+		return n.r.search(key)
 	}
 }
 
-func (n *node[K, V]) FindMax() *node[K, V] {
-	if n.r != nil {
-		return n.r.FindMax()
+func (n *node[K, V]) findMax() *node[K, V] {
+	if n == nil {
+		return nil
 	}
+
+	if r := n.r.findMax(); r != nil {
+		return r
+	}
+
 	return n
 }
 
-func (n *node[K, V]) FindMin() *node[K, V] {
-	if n.l != nil {
-		return n.l.FindMin()
+func (n *node[K, V]) findMin() *node[K, V] {
+	if n == nil {
+		return nil
+	}
+
+	if l := n.l.findMin(); l != nil {
+		return l
 	}
 	return n
 }
@@ -234,12 +237,12 @@ const (
 	_min side = true
 )
 
-func (n *node[K, V]) FindAndRemove(key K) (heir, removed *node[K, V]) {
+func (n *node[K, V]) findAndRemove(key K) (heir, removed *node[K, V]) {
 	if key > n.key { // find into right to remove
 		if n.r == nil {
 			return n, nil
 		}
-		c, removed := n.r.FindAndRemove(key)
+		c, removed := n.r.findAndRemove(key)
 		n.r = c
 		return n, removed
 	}
@@ -248,7 +251,7 @@ func (n *node[K, V]) FindAndRemove(key K) (heir, removed *node[K, V]) {
 		if n.l == nil {
 			return n, nil
 		}
-		c, removed := n.l.FindAndRemove(key)
+		c, removed := n.l.findAndRemove(key)
 		n.l = c
 		return n, removed
 	}
