@@ -18,7 +18,6 @@ func NewAVLTree[K orderable, V any]() AVLTree[K, V] {
 	return &avlTree[K, V]{}
 }
 
-// avlTree[K,V] structure. Public methods are Add, Remove, Update, Search, DisplayTreeInOrder.
 type avlTree[K orderable, V any] struct {
 	kZero K
 	vZero V
@@ -126,12 +125,9 @@ func (a *avlTree[K, V]) descend(n *avlNode[K, V], fn TreeIter[K, V]) {
 	a.descend(n.l, fn)
 }
 
-// avlNode structure
 type avlNode[K orderable, V any] struct {
-	key K
-	val V
-
-	// height counts nodes (not edges)
+	key    K
+	val    V
 	height int
 	l      *avlNode[K, V]
 	r      *avlNode[K, V]
@@ -155,7 +151,6 @@ func (n *avlNode[K, V]) add(key K, value V, new *bool) *avlNode[K, V] {
 	return n.rebalancedTree()
 }
 
-// Searches for a node
 func (n *avlNode[K, V]) search(key K) *avlNode[K, V] {
 	if n == nil {
 		return nil
@@ -195,7 +190,6 @@ func (n *avlNode[K, V]) findMin() *avlNode[K, V] {
 	return n
 }
 
-// Removes a node
 func (n *avlNode[K, V]) remove(key K, removed *avlNode[K, V], ok *bool) *avlNode[K, V] {
 	if n == nil {
 		return nil
@@ -285,7 +279,7 @@ func (n *avlNode[K, V]) recalculateHeight() {
 	n.height = 1 + max(n.l.getHeight(), n.r.getHeight())
 }
 
-// Checks if node is balanced and rebalanced
+// rebalancedTree checks if node is balanced and rebalanced
 func (n *avlNode[K, V]) rebalancedTree() *avlNode[K, V] {
 	if n == nil {
 		return n
@@ -310,7 +304,7 @@ func (n *avlNode[K, V]) rebalancedTree() *avlNode[K, V] {
 	return n
 }
 
-// Rotate nodes left to balance node
+// rotateLeft rotates nodes left to balance node
 func (n *avlNode[K, V]) rotateLeft() *avlNode[K, V] {
 	newRoot := n.r
 	n.r = newRoot.l
@@ -321,7 +315,7 @@ func (n *avlNode[K, V]) rotateLeft() *avlNode[K, V] {
 	return newRoot
 }
 
-// Rotate nodes right to balance node
+// rotateRight rotates nodes right to balance node
 func (n *avlNode[K, V]) rotateRight() *avlNode[K, V] {
 	newRoot := n.l
 	n.l = newRoot.r
