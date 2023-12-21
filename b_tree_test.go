@@ -35,10 +35,12 @@ func (su *BTreeSuite) SetupTest() {
 	}
 }
 
-func (su *BTreeSuite) check(b BTree[int, int], expected ...any) {
+func (su *BTreeSuite) check(b *bTree[int, int], expected ...any) {
 	i := 0
 	su.Require().Equal(len(expected), b.Len())
 	b.Ascend(func(k, v int) bool {
+		println("check")
+		b.debug()
 		su.Require().Equal(expected[i], k)
 		i++
 		return true
@@ -65,14 +67,14 @@ func (su *BTreeSuite) Test_Contain_Good() {
 
 func (su *BTreeSuite) Test_Len_Good() {
 	b := su.mockTree()
-	b.Insert(6, 6)
+	b.Insert(7, 6)
 	su.Equal(7, b.Len())
-	b.Insert(6, 6)
+	b.Insert(8, 6)
 	su.Equal(8, b.Len())
-	b.Insert(6, 6)
+	b.Insert(9, 6)
 	su.Equal(9, b.Len())
-	b.Insert(6, 6)
-	su.Equal(10, b.Len())
+	b.Insert(9, 6)
+	su.Equal(9, b.Len())
 }
 
 func (su *BTreeSuite) Test_Insert_Good() {
@@ -91,9 +93,9 @@ func (su *BTreeSuite) Test_Insert_Good() {
 	su.Equal(7, b.root.r.r.r.val)
 
 	e := bTree[int, int]{}
-	e.Insert(5, 5)
+	e.Insert(7, 7)
 	su.Require().NotNil(e.root)
-	su.Equal(5, e.root.val)
+	su.Equal(7, e.root.val)
 
 	e.Insert(4, 4)
 	su.Require().NotNil(e.root.l)
@@ -107,17 +109,17 @@ func (su *BTreeSuite) Test_Insert_Good() {
 	su.Require().NotNil(e.root.l.r)
 	su.Equal(5, e.root.l.r.val)
 
-	e.Insert(6, 6)
+	e.Insert(10, 10)
 	su.Require().NotNil(e.root.r)
-	su.Equal(6, e.root.r.val)
+	su.Equal(10, e.root.r.val)
 
-	e.Insert(6, 6)
+	e.Insert(8, 8)
 	su.Require().NotNil(e.root.r.l)
-	su.Equal(6, e.root.r.l.val)
+	su.Equal(8, e.root.r.l.val)
 
-	e.Insert(7, 7)
+	e.Insert(11, 11)
 	su.Require().NotNil(e.root.r.r)
-	su.Equal(7, e.root.r.r.val)
+	su.Equal(11, e.root.r.r.val)
 }
 
 func (su *BTreeSuite) Test_Remove_Good() {

@@ -2,6 +2,7 @@ package gollection
 
 import (
 	"strings"
+	"testing"
 )
 
 type BTree[K orderable, V any] interface {
@@ -38,26 +39,20 @@ func (b *bTree[K, V]) Len() int {
 }
 
 func (b *bTree[K, V]) Insert(key K, value V) {
-	n := newNode[K, V](key, value)
-	b.count++
-	if b.root == nil {
-		b.root = n
-		return
+	new := false
+	b.root = b.root.add(key, value, &new)
+	if new {
+		b.count++
 	}
-	b.root.Insert(n)
 }
 
 func (b *bTree[K, V]) Remove(key K) (V, bool) {
-	if b.root == nil {
-		return b.vZero, false
-	}
-	h, removed := b.root.findAndRemove(key)
-	if removed == nil {
-		return b.vZero, false
-	}
-	b.root = h
-	b.count--
-	return removed.val, true
+	var (
+		removed node[K, V]
+		ok      bool
+	)
+	b.root = b.root.remove(key, &removed, &ok)
+	return removed.val, ok
 }
 
 func (b *bTree[K, V]) Search(key K) (V, bool) {
@@ -90,26 +85,45 @@ func (b *bTree[K, V]) Min() (K, V, bool) {
 }
 
 func (b *bTree[K, V]) RemoveMax() (K, V, bool) {
-	if b.root == nil {
-		return b.kZero, b.vZero, false
-	}
-	if b.root.r == nil {
-		result := b.root
-		b.root = b.root.l
+	var (
+		removed node[K, V]
+		ok      bool
+	)
+	b.root = b.root.removeMax(&removed, &ok)
+	if ok {
 		b.count--
-		return result.key, result.val, true
 	}
+	return removed.key, removed.val, ok
+	// if b.root == nil {
+	// 	return b.kZero, b.vZero, false
+	// }
+	// if b.root.r == nil {
+	// 	result := b.root
+	// 	b.root = b.root.l
+	// 	b.count--
+	// 	return result.key, result.val, true
+	// }
 
-	c, result := b.root.r.findExtremeAndRemove(_max)
-	b.root.r = c
-	if result == nil {
-		return b.kZero, b.vZero, false
-	}
-	b.count--
-	return result.key, result.val, true
+	// c, result := b.root.r.findExtremeAndRemove(_max)
+	// b.root.r = c
+	// if result == nil {
+	// 	return b.kZero, b.vZero, false
+	// }
+	// b.count--
+	// return result.key, result.val, true
 }
 
 func (b *bTree[K, V]) RemoveMin() (K, V, bool) {
+	var (
+		removed node[K, V]
+		ok      bool
+	)
+	b.root = b.root.removeMin(&removed, &ok)
+	if ok {
+		b.count--
+	}
+	return removed.key, removed.val, ok
+
 	if b.root == nil {
 		return b.kZero, b.vZero, false
 	}
@@ -162,49 +176,44 @@ type node[K orderable, V any] struct {
 	r   *node[K, V]
 }
 
-func newNode[K orderable, V any](key K, value V) *node[K, V] {
+func newNode[K orderable, V any](key K, val V) *node[K, V] {
 	return &node[K, V]{
 		key: key,
-		val: value,
+		val: val,
 	}
 }
 
-func (n *node[K, V]) Insert(nn *node[K, V]) {
-	if nn == nil {
-		return
+// add adds or updates node value
+func (n *node[K, V]) add(key K, val V, new *bool) *node[K, V] {
+	if n == nil {
+		*new = true
+		return newNode(key, val)
 	}
 
-	if nn.key <= n.key {
-		if n.l == nil {
-			n.l = nn
-			return
-		}
-		n.l.Insert(nn)
+	if key < n.key {
+		n.l = n.l.add(key, val, new)
+	} else if key > n.key {
+		n.r = n.r.add(key, val, new)
 	} else {
-		if n.r == nil {
-			n.r = nn
-			return
-		}
-		n.r.Insert(nn)
+		n.val = val
 	}
+	return n
 }
 
 func (n *node[K, V]) search(key K) *node[K, V] {
-	if n == nil || n.key == key {
+	if n == nil {
 		return n
 	}
 
 	if key < n.key {
-		if n.l == nil {
-			return nil
-		}
 		return n.l.search(key)
-	} else {
-		if n.r == nil {
-			return nil
-		}
+	}
+
+	if key > n.key {
 		return n.r.search(key)
 	}
+
+	return n
 }
 
 func (n *node[K, V]) findMax() *node[K, V] {
@@ -237,22 +246,48 @@ const (
 	_min side = true
 )
 
-func (n *node[K, V]) findAndRemove(key K) (heir, removed *node[K, V]) {
-	if key > n.key { // find into right to remove
-		if n.r == nil {
-			return n, nil
+func (n *node[K, V]) remove(key K, removed *node[K, V], ok *bool) *node[K, V] {
+	if n == nil {
+		return nil
+	}
+
+	if key > n.key {
+		n.r = n.r.remove(key, removed, ok)
+	} else if key < n.key {
+		n.l = n.l.remove(key, removed, ok)
+	} else {
+		*removed = *n
+		*ok = true
+		defer func() { n = nil }()
+
+		if n.l == nil {
+			return n.r
 		}
-		c, removed := n.r.findAndRemove(key)
-		n.r = c
+
+		if n.r == nil {
+			return n.l
+		}
+		var (
+			rightMinNode *node[K, V]
+			deleted      bool
+		)
+		n.r = n.r.removeMin(rightMinNode, &deleted)
+	}
+	return n
+}
+
+func (n *node[K, V]) findAndRemove(key K) (heir, removed *node[K, V]) {
+	if n == nil {
+		return nil, nil
+	}
+
+	if key > n.key { // find into right to remove
+		n.r, removed = n.r.findAndRemove(key)
 		return n, removed
 	}
 
 	if key < n.key { // find into left to remove
-		if n.l == nil {
-			return n, nil
-		}
-		c, removed := n.l.findAndRemove(key)
-		n.l = c
+		n.l, removed = n.l.findAndRemove(key)
 		return n, removed
 	}
 
@@ -266,7 +301,7 @@ func (n *node[K, V]) findAndRemove(key K) (heir, removed *node[K, V]) {
 		return left, n
 	}
 
-	heir, c := left.remove(_max)
+	heir, c := left.removeExtreme(_max)
 	heir.r = right
 	heir.l = c
 	return heir, n
@@ -301,11 +336,43 @@ func (n *node[K, V]) removeChildren() (left, right *node[K, V]) {
 	return l, r
 }
 
-func (n *node[K, V]) remove(target side) (removed *node[K, V], child *node[K, V]) {
+func (n *node[K, V]) removeMax(removed *node[K, V], ok *bool) *node[K, V] {
+	if n == nil {
+		return nil
+	}
+
+	if n.r == nil {
+		defer func() { n = nil }()
+		*ok = true
+		*removed = *n
+		return n.l
+	}
+
+	n.r = n.r.removeMax(removed, ok)
+	return n
+}
+
+func (n *node[K, V]) removeMin(removed *node[K, V], ok *bool) *node[K, V] {
+	if n == nil {
+		return nil
+	}
+
+	if n.l == nil {
+		defer func() { n = nil }()
+		*ok = true
+		*removed = *n
+		return n.r
+	}
+
+	n.l = n.l.removeMin(removed, ok)
+	return n
+}
+
+func (n *node[K, V]) removeExtreme(target side) (removed *node[K, V], child *node[K, V]) {
 	switch target {
 	case _max:
 		if n.r != nil {
-			nr, nc := n.r.remove(target)
+			nr, nc := n.r.removeExtreme(target)
 			n.r = nc
 			return nr, nil
 		}
@@ -313,7 +380,7 @@ func (n *node[K, V]) remove(target side) (removed *node[K, V], child *node[K, V]
 		return n, left
 	case _min:
 		if n.l != nil {
-			nr, nc := n.l.remove(target)
+			nr, nc := n.l.removeExtreme(target)
 			n.l = nc
 			return nr, nil
 		}
@@ -325,24 +392,25 @@ func (n *node[K, V]) remove(target side) (removed *node[K, V], child *node[K, V]
 }
 
 // XXX: Remove me
-func (b *bTree[K, V]) debug() {
+func (b *bTree[K, V]) debug(ts ...*testing.T) {
 	q := []*node[K, V]{b.root}
 	height := b.height() - 1
 	descendOffset := descendOffset(height)
 	descendTab := descendTab(height)
 	println("")
 	for i := 0; i < height; i++ {
+		buf := strings.Builder{}
 		for j, l := 0, len(q); j < l; j++ {
 			if j == 0 {
-				print(strings.Repeat(" ", descendTab[i]))
+				buf.WriteString(strings.Repeat(" ", descendTab[i]))
 			} else {
-				print(strings.Repeat(" ", descendOffset[i]))
+				buf.WriteString(strings.Repeat(" ", descendOffset[i]))
 			}
 
 			n := q[0]
 			q = q[1:]
 			if n != nil {
-				print(n.val)
+
 				q = append(q, n.l, n.r)
 			} else {
 				print("x")
@@ -352,6 +420,15 @@ func (b *bTree[K, V]) debug() {
 		println("")
 	}
 	println("")
+}
+
+func printT(ts ...*testing.T) func(args ...any) {
+	if len(ts) != 0 && ts[0] != nil {
+		return ts[0].Log
+	}
+	return func(args ...any) {
+		println(args)
+	}
 }
 
 func (b *bTree[K, V]) height() int {
