@@ -1,6 +1,8 @@
 package gollection
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -122,39 +124,34 @@ func (su *BTreeSuite) Test_Insert_Good() {
 
 func (su *BTreeSuite) Test_Remove_Good() {
 	b := su.mockTree()
-	b.debug()
+	su.debug(b, "init")
 
-	println("remove 1")
 	r, ok := b.Remove(1)
-	b.debug()
+	su.debug(b, "remove 1")
 	su.Require().True(ok)
 	su.Require().Equal(1, r)
 	su.check(b, 2, 3, 4, 5, 6)
 
-	println("remove 3")
 	r, ok = b.Remove(3)
-	b.debug()
+	su.debug(b, "remove 3")
 	su.Require().True(ok)
 	su.Require().Equal(3, r)
 	su.check(b, 2, 4, 5, 6)
 
-	println("remove 5")
 	r, ok = b.Remove(5)
-	b.debug()
+	su.debug(b, "remove 5")
 	su.Require().True(ok)
 	su.Require().Equal(5, r)
 	su.check(b, 2, 4, 6)
 
-	println("remove 4")
 	r, ok = b.Remove(4)
-	b.debug()
+	su.debug(b, "remove 4")
 	su.Require().True(ok)
 	su.Require().Equal(4, r)
 	su.check(b, 2, 6)
 
-	println("remove 4")
 	r, ok = b.Remove(4)
-	b.debug()
+	su.debug(b, "remove 4")
 	su.Require().False(ok)
 	su.Require().Equal(0, r)
 	su.check(b, 2, 6)
@@ -284,30 +281,27 @@ func (su *BTreeSuite) Test_RemoveMin_Good() {
 	su.Equal(0, bt.Len())
 
 	b := su.mockTree()
+	su.debug(b, "init")
 	su.Equal(6, b.Len())
-	b.debug()
 
 	k, v, ok = b.RemoveMin()
+	su.debug(b, "remove min")
 	su.True(ok)
 	su.Equal(1, k)
 	su.Equal(1, v)
 	su.Equal(5, b.Len())
-	println("remove min")
-	b.debug()
 
 	v, ok = b.Remove(1)
+	su.debug(b, "remove 1")
 	su.False(ok)
 	su.Equal(0, v)
-	println("remove 1")
-	b.debug()
 
 	k, v, ok = b.RemoveMin()
+	su.debug(b, "remove min")
 	su.True(ok)
 	su.Equal(2, k)
 	su.Equal(2, v)
 	su.Equal(4, b.Len())
-	println("remove min")
-	b.debug()
 }
 
 func (su *BTreeSuite) Test_Ascend_Good() {
@@ -332,4 +326,82 @@ func (su *BTreeSuite) Test_Descend_Good() {
 		i++
 		return true
 	})
+}
+
+// XXX: Remove me
+func (su *BTreeSuite) debug(b *bTree[int, int], name string) {
+	su.T().Log(name)
+	q := []*node[int, int]{b.root}
+	height := height(b) - 1
+	descendOffset := descendOffset(height)
+	descendTab := descendTab(height)
+	buf := strings.Builder{}
+	buf.WriteByte('\n')
+	for i := 0; i < height; i++ {
+		for j, l := 0, len(q); j < l; j++ {
+			if j == 0 {
+				buf.WriteString(strings.Repeat(" ", descendTab[i]))
+			} else {
+				buf.WriteString(strings.Repeat(" ", descendOffset[i]))
+			}
+
+			n := q[0]
+			q = q[1:]
+			if n != nil {
+				buf.WriteString(fmt.Sprintf("%d", n.val))
+				q = append(q, n.l, n.r)
+			} else {
+				buf.WriteString("x")
+				q = append(q, nil, nil)
+			}
+		}
+		buf.WriteByte('\n')
+	}
+	su.T().Log(buf.String())
+}
+
+func height(b *bTree[int, int]) int {
+	var iter func(*node[int, int], int) int
+	iter = func(n *node[int, int], count int) int {
+		if n == nil {
+			return count
+		}
+		return max(iter(n.l, count+1), iter(n.r, count+1))
+	}
+	return iter(b.root, 1)
+}
+
+func descendOffset(height int) []int {
+	n := 0
+	sli := make([]int, 0, height)
+	for i := 0; i < height; i++ {
+		n = n*2 + 1
+		sli = append(sli, n)
+	}
+
+	result := make([]int, len(sli))
+	for i := range sli {
+		result[i] = sli[height-i-1]
+	}
+	return result
+}
+
+func descendTab(height int) []int {
+	sli := make([]int, 0, height)
+	for i := height - 1; i >= 0; i-- {
+		sli = append(sli, pow(2, i))
+	}
+	return sli
+}
+
+func pow(n, x int) int {
+	result := n
+	if x <= 0 {
+		return 1
+	}
+
+	for i := 1; i < x; i++ {
+		result *= n
+	}
+	return result
 }

@@ -1,10 +1,5 @@
 package gollection
 
-import (
-	"strings"
-	"testing"
-)
-
 type BTree[K orderable, V any] interface {
 	Contain(key K) bool
 	Len() int
@@ -245,7 +240,10 @@ func (n *node[K, V]) removeMax(removed *node[K, V], ok *bool) *node[K, V] {
 	}
 
 	if n.r == nil {
-		defer func() { n = nil }()
+		defer func() {
+			n.r, n.l = nil, nil
+			n = nil
+		}()
 		*ok = true
 		*removed = *n
 		return n.l
@@ -261,7 +259,10 @@ func (n *node[K, V]) removeMin(removed *node[K, V], ok *bool) *node[K, V] {
 	}
 
 	if n.l == nil {
-		defer func() { n = nil }()
+		defer func() {
+			n.r, n.l = nil, nil
+			n = nil
+		}()
 		*ok = true
 		*removed = *n
 		return n.r
@@ -269,80 +270,4 @@ func (n *node[K, V]) removeMin(removed *node[K, V], ok *bool) *node[K, V] {
 
 	n.l = n.l.removeMin(removed, ok)
 	return n
-}
-
-// XXX: Remove me
-func (b *bTree[K, V]) debug(ts ...*testing.T) {
-	q := []*node[K, V]{b.root}
-	height := b.height() - 1
-	descendOffset := descendOffset(height)
-	descendTab := descendTab(height)
-	println("")
-	for i := 0; i < height; i++ {
-		for j, l := 0, len(q); j < l; j++ {
-			if j == 0 {
-				print(strings.Repeat(" ", descendTab[i]))
-			} else {
-				print(strings.Repeat(" ", descendOffset[i]))
-			}
-
-			n := q[0]
-			q = q[1:]
-			if n != nil {
-				print(n.val)
-				q = append(q, n.l, n.r)
-			} else {
-				print("x")
-				q = append(q, nil, nil)
-			}
-		}
-		println("")
-	}
-	println("")
-}
-
-func (b *bTree[K, V]) height() int {
-	var iter func(*node[K, V], int) int
-	iter = func(n *node[K, V], count int) int {
-		if n == nil {
-			return count
-		}
-		return max(iter(n.l, count+1), iter(n.r, count+1))
-	}
-	return iter(b.root, 1)
-}
-
-func descendOffset(height int) []int {
-	n := 0
-	sli := make([]int, 0, height)
-	for i := 0; i < height; i++ {
-		n = n*2 + 1
-		sli = append(sli, n)
-	}
-
-	result := make([]int, len(sli))
-	for i := range sli {
-		result[i] = sli[height-i-1]
-	}
-	return result
-}
-
-func descendTab(height int) []int {
-	sli := make([]int, 0, height)
-	for i := height - 1; i >= 0; i-- {
-		sli = append(sli, pow(2, i))
-	}
-	return sli
-}
-
-func pow(n, x int) int {
-	result := n
-	if x <= 0 {
-		return 1
-	}
-
-	for i := 1; i < x; i++ {
-		result *= n
-	}
-	return result
 }
