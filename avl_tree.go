@@ -1,17 +1,17 @@
 package gollection
 
-import (
-	"fmt"
-)
-
 type AVLTree[K orderable, V any] interface {
 	Contain(key K) bool
 	Len() int
-	Add(key K, value V)
-	DisplayInOrder()
-	Remove(key K)
+	Insert(key K, value V)
+	Remove(key K) (V, bool)
 	Search(key K) (V, bool)
-	// Update(oldKey K, newKey K, newValue V)
+	Max() (K, V, bool)
+	Min() (K, V, bool)
+	RemoveMax() (K, V, bool)
+	RemoveMin() (K, V, bool)
+	Ascend(fn TreeIter[K, V])
+	Descend(fn TreeIter[K, V])
 }
 
 func NewAVLTree[K orderable, V any]() AVLTree[K, V] {
@@ -26,96 +26,133 @@ type avlTree[K orderable, V any] struct {
 	root  *avlNode[K, V]
 }
 
-func (t *avlTree[K, V]) Contain(key K) bool {
-	return t.root.search(key) != nil
+func (a *avlTree[K, V]) Contain(key K) bool {
+	return a.root.search(key) != nil
 }
 
-func (t *avlTree[K, V]) Len() int {
-	return t.count
+func (a *avlTree[K, V]) Len() int {
+	return a.count
 }
 
-func (t *avlTree[K, V]) Add(key K, value V) {
-	t.count++
-	t.root = t.root.add(key, value)
-}
-
-func (t *avlTree[K, V]) Remove(key K) {
-	t.count--
-	t.root = t.root.remove(key)
-}
-
-func (t *avlTree[K, V]) Search(key K) (V, bool) {
-	n := t.root.search(key)
-	if n == nil {
-		return t.vZero, false
+func (a *avlTree[K, V]) Insert(key K, value V) {
+	new := false
+	a.root = a.root.add(key, value, &new)
+	if new {
+		a.count++
 	}
-	return n.Value, true
 }
 
-func (t *avlTree[K, V]) DisplayInOrder() {
-	t.root.displayNodesInOrder()
+func (a *avlTree[K, V]) Remove(key K) (V, bool) {
+	var (
+		removed avlNode[K, V]
+		ok      bool
+	)
+	a.count--
+	a.root = a.root.remove(key, &removed, &ok)
+	if ok {
+		a.count--
+	}
+	return removed.val, ok
+}
+
+func (a *avlTree[K, V]) Search(key K) (V, bool) {
+	if n := a.root.search(key); n != nil {
+		return n.val, true
+	}
+	return a.vZero, false
+}
+
+func (a *avlTree[K, V]) Max() (K, V, bool) {
+	if n := a.root.findMax(); n != nil {
+		return n.key, n.val, true
+	}
+	return a.kZero, a.vZero, false
+}
+
+func (a *avlTree[K, V]) Min() (K, V, bool) {
+	if n := a.root.findMin(); n != nil {
+		return n.key, n.val, true
+	}
+	return a.kZero, a.vZero, false
+}
+
+func (a *avlTree[K, V]) RemoveMax() (K, V, bool) {
+	var (
+		removed avlNode[K, V]
+		ok      bool
+	)
+	a.root = a.root.removeMax(&removed, &ok)
+	if ok {
+		a.count--
+	}
+	return removed.key, removed.val, ok
+}
+
+func (a *avlTree[K, V]) RemoveMin() (K, V, bool) {
+	var (
+		removed avlNode[K, V]
+		ok      bool
+	)
+	a.root = a.root.removeMin(&removed, &ok)
+	if ok {
+		a.count--
+	}
+	return removed.key, removed.val, ok
+}
+
+func (a *avlTree[K, V]) Ascend(fn TreeIter[K, V]) {
+	a.ascend(a.root, fn)
+}
+
+func (a *avlTree[K, V]) ascend(n *avlNode[K, V], fn TreeIter[K, V]) {
+	if n == nil {
+		return
+	}
+	a.ascend(n.l, fn)
+	fn(n.key, n.val)
+	a.ascend(n.r, fn)
+}
+
+func (a *avlTree[K, V]) Descend(fn TreeIter[K, V]) {
+	a.descend(a.root, fn)
+}
+
+func (a *avlTree[K, V]) descend(n *avlNode[K, V], fn TreeIter[K, V]) {
+	if n == nil {
+		return
+	}
+	a.descend(n.r, fn)
+	fn(n.key, n.val)
+	a.descend(n.l, fn)
 }
 
 // avlNode structure
 type avlNode[K orderable, V any] struct {
-	key   K
-	Value V
+	key K
+	val V
 
 	// height counts nodes (not edges)
 	height int
-	left   *avlNode[K, V]
-	right  *avlNode[K, V]
+	l      *avlNode[K, V]
+	r      *avlNode[K, V]
 }
 
-// Adds a new node
-func (n *avlNode[K, V]) add(key K, value V) *avlNode[K, V] {
+// add adds or updates node value
+func (n *avlNode[K, V]) add(key K, value V, new *bool) *avlNode[K, V] {
 	if n == nil {
+		*new = true
 		return &avlNode[K, V]{key, value, 1, nil, nil}
 	}
 
 	if key < n.key {
-		n.left = n.left.add(key, value)
+		n.l = n.l.add(key, value, new)
 	} else if key > n.key {
-		n.right = n.right.add(key, value)
+		n.r = n.r.add(key, value, new)
 	} else {
 		// if same key exists update value
-		n.Value = value
+		n.val = value
 	}
-	return n.rebalanceTree()
-}
-
-// Removes a node
-func (n *avlNode[K, V]) remove(key K) *avlNode[K, V] {
-	if n == nil {
-		return nil
-	}
-	if key < n.key {
-		n.left = n.left.remove(key)
-	} else if key > n.key {
-		n.right = n.right.remove(key)
-	} else {
-		if n.left != nil && n.right != nil {
-			// node to delete found with both children;
-			// replace values with smallest node of the right sub-tree
-			rightMinNode := n.right.findSmallest()
-			n.key = rightMinNode.key
-			n.Value = rightMinNode.Value
-			// delete smallest node that we replaced
-			n.right = n.right.remove(rightMinNode.key)
-		} else if n.left != nil {
-			// node only has left child
-			n = n.left
-		} else if n.right != nil {
-			// node only has right child
-			n = n.right
-		} else {
-			// node has no children
-			n = nil
-			return n
-		}
-
-	}
-	return n.rebalanceTree()
+	return n.rebalancedTree()
 }
 
 // Searches for a node
@@ -123,24 +160,118 @@ func (n *avlNode[K, V]) search(key K) *avlNode[K, V] {
 	if n == nil {
 		return nil
 	}
+
 	if key < n.key {
-		return n.left.search(key)
-	} else if key > n.key {
-		return n.right.search(key)
-	} else {
-		return n
+		return n.l.search(key)
+	}
+
+	if key > n.key {
+		return n.r.search(key)
+	}
+
+	return n
+}
+
+func (n *avlNode[K, V]) findMax() *avlNode[K, V] {
+	if n == nil {
+		return nil
+	}
+
+	if r := n.r.findMax(); r != nil {
+		return r
+	}
+
+	return n
+}
+
+func (n *avlNode[K, V]) findMin() *avlNode[K, V] {
+	if n == nil {
+		return nil
+	}
+
+	if l := n.l.findMin(); l != nil {
+		return l
+	}
+	return n
+}
+
+// Removes a node
+func (n *avlNode[K, V]) remove(key K, removed *avlNode[K, V], ok *bool) *avlNode[K, V] {
+	if n == nil {
+		return nil
+	}
+	if key < n.key {
+		n.l = n.l.remove(key, removed, ok)
+		return n.rebalancedTree()
+	}
+	if key > n.key {
+		n.r = n.r.remove(key, removed, ok)
+		return n.rebalancedTree()
+	}
+
+	{
+		*removed = *n
+		*ok = true
+		defer func() {
+			n.r, n.l = nil, nil
+		}()
+
+		if n.l == nil {
+			return n.r.rebalancedTree()
+		}
+
+		if n.r == nil {
+			return n.l.rebalancedTree()
+		}
+
+		var (
+			rightMinNode avlNode[K, V]
+			deleted      bool
+		)
+
+		n.r = n.r.removeMin(&rightMinNode, &deleted)
+		rightMinNode.r = n.r
+		rightMinNode.l = n.l
+		return rightMinNode.rebalancedTree()
 	}
 }
 
-// Displays nodes left-depth first (used for debugging)
-func (n *avlNode[K, V]) displayNodesInOrder() {
-	if n.left != nil {
-		n.left.displayNodesInOrder()
+func (n *avlNode[K, V]) removeMax(removed *avlNode[K, V], ok *bool) *avlNode[K, V] {
+	if n == nil {
+		return nil
 	}
-	fmt.Print(n.key, " ")
-	if n.right != nil {
-		n.right.displayNodesInOrder()
+
+	if n.r == nil {
+		defer func() {
+			n.r, n.l = nil, nil
+			n = nil
+		}()
+		*ok = true
+		*removed = *n
+		return n.l.rebalancedTree()
 	}
+
+	n.r = n.r.removeMax(removed, ok)
+	return n.rebalancedTree()
+}
+
+func (n *avlNode[K, V]) removeMin(removed *avlNode[K, V], ok *bool) *avlNode[K, V] {
+	if n == nil {
+		return nil
+	}
+
+	if n.l == nil {
+		defer func() {
+			n.r, n.l = nil, nil
+			n = nil
+		}()
+		*ok = true
+		*removed = *n
+		return n.r.rebalancedTree()
+	}
+
+	n.l = n.l.removeMin(removed, ok)
+	return n
 }
 
 func (n *avlNode[K, V]) getHeight() int {
@@ -151,28 +282,28 @@ func (n *avlNode[K, V]) getHeight() int {
 }
 
 func (n *avlNode[K, V]) recalculateHeight() {
-	n.height = 1 + max(n.left.getHeight(), n.right.getHeight())
+	n.height = 1 + max(n.l.getHeight(), n.r.getHeight())
 }
 
-// Checks if node is balanced and rebalance
-func (n *avlNode[K, V]) rebalanceTree() *avlNode[K, V] {
+// Checks if node is balanced and rebalanced
+func (n *avlNode[K, V]) rebalancedTree() *avlNode[K, V] {
 	if n == nil {
 		return n
 	}
 	n.recalculateHeight()
 
 	// check balance factor and rotateLeft if right-heavy and rotateRight if left-heavy
-	balanceFactor := n.left.getHeight() - n.right.getHeight()
+	balanceFactor := n.l.getHeight() - n.r.getHeight()
 	if balanceFactor == -2 {
 		// check if child is left-heavy and rotateRight first
-		if n.right.left.getHeight() > n.right.right.getHeight() {
-			n.right = n.right.rotateRight()
+		if n.r.l.getHeight() > n.r.r.getHeight() {
+			n.r = n.r.rotateRight()
 		}
 		return n.rotateLeft()
 	} else if balanceFactor == 2 {
 		// check if child is right-heavy and rotateLeft first
-		if n.left.right.getHeight() > n.left.left.getHeight() {
-			n.left = n.left.rotateLeft()
+		if n.l.r.getHeight() > n.l.l.getHeight() {
+			n.l = n.l.rotateLeft()
 		}
 		return n.rotateRight()
 	}
@@ -181,9 +312,9 @@ func (n *avlNode[K, V]) rebalanceTree() *avlNode[K, V] {
 
 // Rotate nodes left to balance node
 func (n *avlNode[K, V]) rotateLeft() *avlNode[K, V] {
-	newRoot := n.right
-	n.right = newRoot.left
-	newRoot.left = n
+	newRoot := n.r
+	n.r = newRoot.l
+	newRoot.l = n
 
 	n.recalculateHeight()
 	newRoot.recalculateHeight()
@@ -192,28 +323,11 @@ func (n *avlNode[K, V]) rotateLeft() *avlNode[K, V] {
 
 // Rotate nodes right to balance node
 func (n *avlNode[K, V]) rotateRight() *avlNode[K, V] {
-	newRoot := n.left
-	n.left = newRoot.right
-	newRoot.right = n
+	newRoot := n.l
+	n.l = newRoot.r
+	newRoot.r = n
 
 	n.recalculateHeight()
 	newRoot.recalculateHeight()
 	return newRoot
-}
-
-// Finds the smallest child (based on the key) for the current node
-func (n *avlNode[K, V]) findSmallest() *avlNode[K, V] {
-	if n.left != nil {
-		return n.left.findSmallest()
-	} else {
-		return n
-	}
-}
-
-// Returns max number - TODO: std lib seemed to only have a method for floats!
-func max(a int, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }

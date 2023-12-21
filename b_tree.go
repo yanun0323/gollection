@@ -131,18 +131,11 @@ type node[K orderable, V any] struct {
 	r   *node[K, V]
 }
 
-func newNode[K orderable, V any](key K, val V) *node[K, V] {
-	return &node[K, V]{
-		key: key,
-		val: val,
-	}
-}
-
 // add adds or updates node value
 func (n *node[K, V]) add(key K, val V, new *bool) *node[K, V] {
 	if n == nil {
 		*new = true
-		return newNode(key, val)
+		return &node[K, V]{key, val, nil, nil}
 	}
 
 	if key < n.key {
