@@ -328,7 +328,6 @@ func (su *BTreeSuite) Test_Descend_Good() {
 	})
 }
 
-// XXX: Remove me
 func (su *BTreeSuite) debug(b *bTree[int, int], name string) {
 	su.T().Log(name)
 	q := []*node[int, int]{b.root}
