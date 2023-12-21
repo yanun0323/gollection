@@ -39,8 +39,6 @@ func (su *BTreeSuite) check(b *bTree[int, int], expected ...any) {
 	i := 0
 	su.Require().Equal(len(expected), b.Len())
 	b.Ascend(func(k, v int) bool {
-		println("check")
-		b.debug()
 		su.Require().Equal(expected[i], k)
 		i++
 		return true
@@ -128,43 +126,38 @@ func (su *BTreeSuite) Test_Remove_Good() {
 
 	println("remove 1")
 	r, ok := b.Remove(1)
+	b.debug()
 	su.Require().True(ok)
 	su.Require().Equal(1, r)
 	su.check(b, 2, 3, 4, 5, 6)
 
-	b.debug()
-
 	println("remove 3")
 	r, ok = b.Remove(3)
+	b.debug()
 	su.Require().True(ok)
 	su.Require().Equal(3, r)
 	su.check(b, 2, 4, 5, 6)
 
-	b.debug()
-
 	println("remove 5")
 	r, ok = b.Remove(5)
+	b.debug()
 	su.Require().True(ok)
 	su.Require().Equal(5, r)
 	su.check(b, 2, 4, 6)
 
-	b.debug()
-
 	println("remove 4")
 	r, ok = b.Remove(4)
+	b.debug()
 	su.Require().True(ok)
 	su.Require().Equal(4, r)
 	su.check(b, 2, 6)
 
-	b.debug()
-
 	println("remove 4")
 	r, ok = b.Remove(4)
+	b.debug()
 	su.Require().False(ok)
 	su.Require().Equal(0, r)
 	su.check(b, 2, 6)
-
-	b.debug()
 }
 
 func (su *BTreeSuite) Test_Search_Good() {

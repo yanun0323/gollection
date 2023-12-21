@@ -52,6 +52,9 @@ func (b *bTree[K, V]) Remove(key K) (V, bool) {
 		ok      bool
 	)
 	b.root = b.root.remove(key, &removed, &ok)
+	if ok {
+		b.count--
+	}
 	return removed.val, ok
 }
 
@@ -94,23 +97,6 @@ func (b *bTree[K, V]) RemoveMax() (K, V, bool) {
 		b.count--
 	}
 	return removed.key, removed.val, ok
-	// if b.root == nil {
-	// 	return b.kZero, b.vZero, false
-	// }
-	// if b.root.r == nil {
-	// 	result := b.root
-	// 	b.root = b.root.l
-	// 	b.count--
-	// 	return result.key, result.val, true
-	// }
-
-	// c, result := b.root.r.findExtremeAndRemove(_max)
-	// b.root.r = c
-	// if result == nil {
-	// 	return b.kZero, b.vZero, false
-	// }
-	// b.count--
-	// return result.key, result.val, true
 }
 
 func (b *bTree[K, V]) RemoveMin() (K, V, bool) {
@@ -123,24 +109,6 @@ func (b *bTree[K, V]) RemoveMin() (K, V, bool) {
 		b.count--
 	}
 	return removed.key, removed.val, ok
-
-	if b.root == nil {
-		return b.kZero, b.vZero, false
-	}
-	if b.root.l == nil {
-		result := b.root
-		b.root = b.root.r
-		b.count--
-		return result.key, result.val, true
-	}
-
-	c, result := b.root.l.findExtremeAndRemove(_min)
-	b.root.l = c
-	if result == nil {
-		return b.kZero, b.vZero, false
-	}
-	b.count--
-	return result.key, result.val, true
 }
 
 func (b *bTree[K, V]) Ascend(fn TreeIter[K, V]) {
@@ -239,13 +207,6 @@ func (n *node[K, V]) findMin() *node[K, V] {
 	return n
 }
 
-type side bool
-
-const (
-	_max side = false
-	_min side = true
-)
-
 func (n *node[K, V]) remove(key K, removed *node[K, V], ok *bool) *node[K, V] {
 	if n == nil {
 		return nil
@@ -268,72 +229,15 @@ func (n *node[K, V]) remove(key K, removed *node[K, V], ok *bool) *node[K, V] {
 			return n.l
 		}
 		var (
-			rightMinNode *node[K, V]
+			rightMinNode node[K, V]
 			deleted      bool
 		)
-		n.r = n.r.removeMin(rightMinNode, &deleted)
+		n.r = n.r.removeMin(&rightMinNode, &deleted)
+		rightMinNode.r = n.r
+		rightMinNode.l = n.l
+		*n = rightMinNode
 	}
 	return n
-}
-
-func (n *node[K, V]) findAndRemove(key K) (heir, removed *node[K, V]) {
-	if n == nil {
-		return nil, nil
-	}
-
-	if key > n.key { // find into right to remove
-		n.r, removed = n.r.findAndRemove(key)
-		return n, removed
-	}
-
-	if key < n.key { // find into left to remove
-		n.l, removed = n.l.findAndRemove(key)
-		return n, removed
-	}
-
-	// key == n.key: remove current node
-	left, right := n.removeChildren()
-	if left == nil {
-		return right, n
-	}
-
-	if right == nil {
-		return left, n
-	}
-
-	heir, c := left.removeExtreme(_max)
-	heir.r = right
-	heir.l = c
-	return heir, n
-}
-
-func (n *node[K, V]) findExtremeAndRemove(target side) (heir, removed *node[K, V]) {
-	switch target {
-	case _max:
-		if n.r == nil {
-			return n.l, n
-		}
-
-		heir, removed := n.r.findExtremeAndRemove(target)
-		n.r = heir
-		return n, removed
-	case _min:
-		if n.l == nil {
-			return n.r, n
-		}
-
-		heir, removed := n.l.findExtremeAndRemove(target)
-		n.l = heir
-		return n, removed
-	default:
-		return n, nil
-	}
-}
-
-func (n *node[K, V]) removeChildren() (left, right *node[K, V]) {
-	l, r := n.l, n.r
-	n.l, n.r = nil, nil
-	return l, r
 }
 
 func (n *node[K, V]) removeMax(removed *node[K, V], ok *bool) *node[K, V] {
@@ -368,29 +272,6 @@ func (n *node[K, V]) removeMin(removed *node[K, V], ok *bool) *node[K, V] {
 	return n
 }
 
-func (n *node[K, V]) removeExtreme(target side) (removed *node[K, V], child *node[K, V]) {
-	switch target {
-	case _max:
-		if n.r != nil {
-			nr, nc := n.r.removeExtreme(target)
-			n.r = nc
-			return nr, nil
-		}
-		left, _ := n.removeChildren()
-		return n, left
-	case _min:
-		if n.l != nil {
-			nr, nc := n.l.removeExtreme(target)
-			n.l = nc
-			return nr, nil
-		}
-		_, right := n.removeChildren()
-		return n, right
-	default:
-		return n, nil
-	}
-}
-
 // XXX: Remove me
 func (b *bTree[K, V]) debug(ts ...*testing.T) {
 	q := []*node[K, V]{b.root}
@@ -399,18 +280,17 @@ func (b *bTree[K, V]) debug(ts ...*testing.T) {
 	descendTab := descendTab(height)
 	println("")
 	for i := 0; i < height; i++ {
-		buf := strings.Builder{}
 		for j, l := 0, len(q); j < l; j++ {
 			if j == 0 {
-				buf.WriteString(strings.Repeat(" ", descendTab[i]))
+				print(strings.Repeat(" ", descendTab[i]))
 			} else {
-				buf.WriteString(strings.Repeat(" ", descendOffset[i]))
+				print(strings.Repeat(" ", descendOffset[i]))
 			}
 
 			n := q[0]
 			q = q[1:]
 			if n != nil {
-
+				print(n.val)
 				q = append(q, n.l, n.r)
 			} else {
 				print("x")
@@ -420,15 +300,6 @@ func (b *bTree[K, V]) debug(ts ...*testing.T) {
 		println("")
 	}
 	println("")
-}
-
-func printT(ts ...*testing.T) func(args ...any) {
-	if len(ts) != 0 && ts[0] != nil {
-		return ts[0].Log
-	}
-	return func(args ...any) {
-		println(args)
-	}
 }
 
 func (b *bTree[K, V]) height() int {
