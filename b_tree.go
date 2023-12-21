@@ -66,25 +66,17 @@ func (b *bTree[K, V]) Search(key K) (V, bool) {
 }
 
 func (b *bTree[K, V]) Max() (K, V, bool) {
-	if b.root == nil {
-		return b.kZero, b.vZero, false
+	if n := b.root.findMax(); n != nil {
+		return n.key, n.val, true
 	}
-	n := b.root.findMax()
-	if n == nil {
-		return b.kZero, b.vZero, false
-	}
-	return n.key, n.val, true
+	return b.kZero, b.vZero, false
 }
 
 func (b *bTree[K, V]) Min() (K, V, bool) {
-	if b.root == nil {
-		return b.kZero, b.vZero, false
+	if n := b.root.findMin(); n != nil {
+		return n.key, n.val, true
 	}
-	n := b.root.findMin()
-	if n == nil {
-		return b.kZero, b.vZero, false
-	}
-	return n.key, n.val, true
+	return b.kZero, b.vZero, false
 }
 
 func (b *bTree[K, V]) RemoveMax() (K, V, bool) {
@@ -214,30 +206,37 @@ func (n *node[K, V]) remove(key K, removed *node[K, V], ok *bool) *node[K, V] {
 
 	if key > n.key {
 		n.r = n.r.remove(key, removed, ok)
-	} else if key < n.key {
-		n.l = n.l.remove(key, removed, ok)
-	} else {
-		*removed = *n
-		*ok = true
-		defer func() { n = nil }()
-
-		if n.l == nil {
-			return n.r
-		}
-
-		if n.r == nil {
-			return n.l
-		}
-		var (
-			rightMinNode node[K, V]
-			deleted      bool
-		)
-		n.r = n.r.removeMin(&rightMinNode, &deleted)
-		rightMinNode.r = n.r
-		rightMinNode.l = n.l
-		*n = rightMinNode
+		return n
 	}
-	return n
+
+	if key < n.key {
+		n.l = n.l.remove(key, removed, ok)
+		return n
+	}
+
+	*removed = *n
+	*ok = true
+	defer func() {
+		n.l, n.r = nil, nil
+		n = nil
+	}()
+
+	if n.l == nil {
+		return n.r
+	}
+
+	if n.r == nil {
+		return n.l
+	}
+
+	var (
+		rightMinNode node[K, V]
+		deleted      bool
+	)
+	n.r = n.r.removeMin(&rightMinNode, &deleted)
+	rightMinNode.r = n.r
+	rightMinNode.l = n.l
+	return &rightMinNode
 }
 
 func (n *node[K, V]) removeMax(removed *node[K, V], ok *bool) *node[K, V] {
