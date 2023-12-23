@@ -1,6 +1,6 @@
 package gollection
 
-type AVLTree[K orderable, V any] interface {
+type AvlTree[K orderable, V any] interface {
 	Contain(key K) bool
 	Len() int
 	Insert(key K, value V)
@@ -14,7 +14,7 @@ type AVLTree[K orderable, V any] interface {
 	Descend(fn TreeIter[K, V])
 }
 
-func NewAVLTree[K orderable, V any]() AVLTree[K, V] {
+func NewAvlTree[K orderable, V any]() AvlTree[K, V] {
 	return &avlTree[K, V]{}
 }
 
@@ -46,7 +46,6 @@ func (a *avlTree[K, V]) Remove(key K) (V, bool) {
 		removed avlNode[K, V]
 		ok      bool
 	)
-	a.count--
 	a.root = a.root.remove(key, &removed, &ok)
 	if ok {
 		a.count--
