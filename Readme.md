@@ -1,9 +1,6 @@
 # Gollection
 
-Gollection provides `Generic Data Structure`.
- Queue, Stack and List like C# in go.
-
-
+Gollection provides `Generic Data Structures`.
 
 ## Requirement
 _GO 1.21 or higher_
