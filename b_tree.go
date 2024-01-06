@@ -1,6 +1,6 @@
 package gollection
 
-type BTree[K orderable, V any] interface {
+type BTree[K Orderable, V any] interface {
 	Contain(key K) bool
 	Len() int
 	Insert(key K, value V)
@@ -14,11 +14,11 @@ type BTree[K orderable, V any] interface {
 	Descend(fn TreeIter[K, V])
 }
 
-func NewBTree[K orderable, V any]() BTree[K, V] {
+func NewBTree[K Orderable, V any]() BTree[K, V] {
 	return &bTree[K, V]{}
 }
 
-type bTree[K orderable, V any] struct {
+type bTree[K Orderable, V any] struct {
 	kZero K
 	vZero V
 	count int
@@ -124,7 +124,7 @@ func (b *bTree[K, V]) descend(n *node[K, V], fn TreeIter[K, V]) {
 	b.descend(n.l, fn)
 }
 
-type node[K orderable, V any] struct {
+type node[K Orderable, V any] struct {
 	key K
 	val V
 	l   *node[K, V]

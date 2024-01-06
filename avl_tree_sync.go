@@ -2,16 +2,16 @@ package gollection
 
 import "sync"
 
-type SyncAvlTree[K orderable, V any] AvlTree[K, V]
+type SyncAvlTree[K Orderable, V any] AvlTree[K, V]
 
-func NewSyncAvlTree[K orderable, V any]() SyncAvlTree[K, V] {
+func NewSyncAvlTree[K Orderable, V any]() SyncAvlTree[K, V] {
 	return &syncAvlTree[K, V]{
 		rwLock: &sync.RWMutex{},
 		t:      NewAvlTree[K, V](),
 	}
 }
 
-type syncAvlTree[K orderable, V any] struct {
+type syncAvlTree[K Orderable, V any] struct {
 	rwLock *sync.RWMutex
 	t      AvlTree[K, V]
 }

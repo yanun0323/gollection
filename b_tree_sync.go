@@ -4,16 +4,16 @@ import "sync"
 
 // import "sync"
 
-type SyncBTree[K orderable, V any] BTree[K, V]
+type SyncBTree[K Orderable, V any] BTree[K, V]
 
-func NewSyncBTree[K orderable, V any]() SyncBTree[K, V] {
+func NewSyncBTree[K Orderable, V any]() SyncBTree[K, V] {
 	return &syncBTree[K, V]{
 		rwLock: &sync.RWMutex{},
 		bt:     NewBTree[K, V](),
 	}
 }
 
-type syncBTree[K orderable, V any] struct {
+type syncBTree[K Orderable, V any] struct {
 	rwLock *sync.RWMutex
 	bt     BTree[K, V]
 }
