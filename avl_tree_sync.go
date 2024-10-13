@@ -2,9 +2,7 @@ package gollection
 
 import "sync"
 
-type SyncAvlTree[K orderable, V any] AvlTree[K, V]
-
-func NewSyncAvlTree[K orderable, V any]() SyncAvlTree[K, V] {
+func NewSyncAvlTree[K orderable, V any]() BTree[K, V] {
 	return &syncAvlTree[K, V]{
 		rwLock: &sync.RWMutex{},
 		t:      NewAvlTree[K, V](),
@@ -13,7 +11,7 @@ func NewSyncAvlTree[K orderable, V any]() SyncAvlTree[K, V] {
 
 type syncAvlTree[K orderable, V any] struct {
 	rwLock *sync.RWMutex
-	t      AvlTree[K, V]
+	t      BTree[K, V]
 }
 
 func (a *syncAvlTree[K, V]) Contain(key K) bool {

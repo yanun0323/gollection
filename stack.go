@@ -1,10 +1,19 @@
 package gollection
 
 type Stack[T any] interface {
+	// Len returns the number of elements in the stack.
 	Len() int
+
+	// Peek returns the element at the top of the stack without removing it.
 	Peek() T
+
+	// Pop removes and returns the element at the top of the stack.
 	Pop() T
+
+	// Push adds element to the top of the stack.
 	Push(...T)
+
+	// ToSlice returns a copy of the stack as a slice.
 	ToSlice() []T
 }
 
