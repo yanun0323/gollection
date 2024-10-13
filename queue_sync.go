@@ -2,16 +2,17 @@ package gollection
 
 import "sync"
 
+type syncQueue[T any] struct {
+	rwLock *sync.RWMutex
+	q      Queue[T]
+}
+
+// NewSyncQueue returns a new thread-safe queue.
 func NewSyncQueue[T any]() Queue[T] {
 	return &syncQueue[T]{
 		rwLock: &sync.RWMutex{},
 		q:      NewQueue[T](),
 	}
-}
-
-type syncQueue[T any] struct {
-	rwLock *sync.RWMutex
-	q      Queue[T]
 }
 
 func (s *syncQueue[T]) Len() int {

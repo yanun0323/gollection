@@ -2,16 +2,17 @@ package gollection
 
 import "sync"
 
+type syncPriorityQueue[T any] struct {
+	rwLock *sync.RWMutex
+	pq     Queue[T]
+}
+
+// NewSyncPriorityQueue returns a new thread-safe priority queue.
 func NewSyncPriorityQueue[T any](score func(T, T) bool) Queue[T] {
 	return &syncPriorityQueue[T]{
 		rwLock: &sync.RWMutex{},
 		pq:     NewPriorityQueue[T](score),
 	}
-}
-
-type syncPriorityQueue[T any] struct {
-	rwLock *sync.RWMutex
-	pq     Queue[T]
 }
 
 func (s *syncPriorityQueue[T]) Len() int {

@@ -1,5 +1,6 @@
 package gollection
 
+// Set is an interface for a set data structure.
 type Set[T comparable] interface {
 	// Contain returns true if the set contains the element.
 	Contain(T) bool
@@ -21,6 +22,7 @@ type set[T comparable] struct {
 	m map[T]struct{}
 }
 
+// NewSet returns a new set.
 func NewSet[T comparable]() Set[T] {
 	return &set[T]{
 		m: make(map[T]struct{}, 0),

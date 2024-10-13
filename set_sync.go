@@ -2,16 +2,17 @@ package gollection
 
 import "sync"
 
+type syncSet[T comparable] struct {
+	rwLock *sync.RWMutex
+	set    Set[T]
+}
+
+// NewSyncSet returns a new thread-safe set.
 func NewSyncSet[T comparable]() Set[T] {
 	return &syncSet[T]{
 		rwLock: &sync.RWMutex{},
 		set:    NewSet[T](),
 	}
-}
-
-type syncSet[T comparable] struct {
-	rwLock *sync.RWMutex
-	set    Set[T]
 }
 
 func (s *syncSet[T]) Contain(a T) bool {

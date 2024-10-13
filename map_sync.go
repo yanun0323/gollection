@@ -2,6 +2,7 @@ package gollection
 
 import "sync"
 
+// SyncMap is an interface for a thread-safe map data structure.
 type SyncMap[K comparable, V any] interface {
 	// Load returns the value stored in the map for a key, or nil if no value is present.
 	Clear()
@@ -36,6 +37,7 @@ type syncMap[K comparable, V any] struct {
 	data map[K]V
 }
 
+// NewSyncMap returns a new thread-safe map.
 func NewSyncMap[K comparable, V any]() SyncMap[K, V] {
 	return &syncMap[K, V]{
 		lock: &sync.RWMutex{},

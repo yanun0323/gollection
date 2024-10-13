@@ -1,5 +1,6 @@
 package gollection
 
+// BTree is an interface for a binary tree data structure.
 type BTree[K Orderable, V any] interface {
 	// Contain returns true if the tree contains the key.
 	Contain(key K) bool
@@ -37,15 +38,16 @@ type BTree[K Orderable, V any] interface {
 	Descend(fn TreeIter[K, V])
 }
 
-func NewBTree[K Orderable, V any]() BTree[K, V] {
-	return &bTree[K, V]{}
-}
-
 type bTree[K Orderable, V any] struct {
 	kZero K
 	vZero V
 	count int
 	root  *node[K, V]
+}
+
+// NewBTree returns a new binary tree.
+func NewBTree[K Orderable, V any]() BTree[K, V] {
+	return &bTree[K, V]{}
 }
 
 func (b *bTree[K, V]) Contain(key K) bool {

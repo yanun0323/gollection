@@ -1,5 +1,6 @@
 package gollection
 
+// Stack is an interface for a stack data structure.
 type Stack[T any] interface {
 	// Len returns the number of elements in the stack.
 	Len() int
@@ -22,6 +23,7 @@ type stack[T any] struct {
 	data []T
 }
 
+// NewStack returns a new stack.
 func NewStack[T any]() Stack[T] {
 	return &stack[T]{
 		data: []T{},

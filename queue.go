@@ -1,5 +1,6 @@
 package gollection
 
+// Queue is an interface for a queue data structure.
 type Queue[T any] interface {
 	// Len returns the number of elements in the queue.
 	Len() int
@@ -22,6 +23,7 @@ type queue[T any] struct {
 	data []T
 }
 
+// NewQueue returns a new queue.
 func NewQueue[T any]() Queue[T] {
 	return &queue[T]{
 		data: []T{},

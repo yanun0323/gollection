@@ -2,16 +2,17 @@ package gollection
 
 import "sync"
 
+type syncStack[T any] struct {
+	rwLock *sync.RWMutex
+	stack  Stack[T]
+}
+
+// NewSyncStack returns a new thread-safe stack.
 func NewSyncStack[T any]() Stack[T] {
 	return &syncStack[T]{
 		rwLock: &sync.RWMutex{},
 		stack:  NewStack[T](),
 	}
-}
-
-type syncStack[T any] struct {
-	rwLock *sync.RWMutex
-	stack  Stack[T]
 }
 
 func (s *syncStack[T]) Len() int {

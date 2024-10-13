@@ -1,5 +1,6 @@
 package gollection
 
+// AvlTree is an interface for an AVL tree data structure.
 type AvlTree[K Orderable, V any] interface {
 	// Contain returns true if the tree contains the key.
 	Contain(key K) bool
@@ -37,15 +38,16 @@ type AvlTree[K Orderable, V any] interface {
 	Descend(fn TreeIter[K, V])
 }
 
-func NewAvlTree[K Orderable, V any]() AvlTree[K, V] {
-	return &avlTree[K, V]{}
-}
-
 type avlTree[K Orderable, V any] struct {
 	kZero K
 	vZero V
 	count int
 	root  *avlNode[K, V]
+}
+
+// NewAvlTree returns a new AVL tree.
+func NewAvlTree[K Orderable, V any]() AvlTree[K, V] {
+	return &avlTree[K, V]{}
 }
 
 func (a *avlTree[K, V]) Contain(key K) bool {

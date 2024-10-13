@@ -2,16 +2,17 @@ package gollection
 
 import "sync"
 
+type syncBTree[K Orderable, V any] struct {
+	rwLock *sync.RWMutex
+	bt     BTree[K, V]
+}
+
+// NewSyncBTree returns a new thread-safe binary tree.
 func NewSyncBTree[K Orderable, V any]() BTree[K, V] {
 	return &syncBTree[K, V]{
 		rwLock: &sync.RWMutex{},
 		bt:     NewBTree[K, V](),
 	}
-}
-
-type syncBTree[K Orderable, V any] struct {
-	rwLock *sync.RWMutex
-	bt     BTree[K, V]
 }
 
 func (s *syncBTree[K, V]) Contain(key K) bool {

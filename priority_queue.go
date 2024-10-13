@@ -2,17 +2,18 @@ package gollection
 
 import "container/heap"
 
+type priorityQueue[T any] struct {
+	zero  T
+	data  []T
+	score func(T, T) bool
+}
+
+// NewPriorityQueue returns a new priority queue.
 func NewPriorityQueue[T any](score func(T, T) bool) Queue[T] {
 	return &priorityQueue[T]{
 		data:  []T{},
 		score: score,
 	}
-}
-
-type priorityQueue[T any] struct {
-	zero  T
-	data  []T
-	score func(T, T) bool
 }
 
 func (pq *priorityQueue[T]) Len() int {

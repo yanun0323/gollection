@@ -2,16 +2,17 @@ package gollection
 
 import "sync"
 
+type syncAvlTree[K Orderable, V any] struct {
+	rwLock *sync.RWMutex
+	t      BTree[K, V]
+}
+
+// NewSyncAvlTree returns a new thread-safe AVL tree.
 func NewSyncAvlTree[K Orderable, V any]() BTree[K, V] {
 	return &syncAvlTree[K, V]{
 		rwLock: &sync.RWMutex{},
 		t:      NewAvlTree[K, V](),
 	}
-}
-
-type syncAvlTree[K Orderable, V any] struct {
-	rwLock *sync.RWMutex
-	t      BTree[K, V]
 }
 
 func (a *syncAvlTree[K, V]) Contain(key K) bool {
