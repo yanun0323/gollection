@@ -2,11 +2,7 @@ package gollection
 
 import "sync"
 
-// import "sync"
-
-type SyncBTree[K Orderable, V any] BTree[K, V]
-
-func NewSyncBTree[K Orderable, V any]() SyncBTree[K, V] {
+func NewSyncBTree[K Orderable, V any]() BTree[K, V] {
 	return &syncBTree[K, V]{
 		rwLock: &sync.RWMutex{},
 		bt:     NewBTree[K, V](),

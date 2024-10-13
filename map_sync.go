@@ -3,14 +3,31 @@ package gollection
 import "sync"
 
 type SyncMap[K comparable, V any] interface {
+	// Load returns the value stored in the map for a key, or nil if no value is present.
 	Clear()
+
+	// Load returns the value stored in the map for a key, or nil if no value is present.
 	Clone() map[K]V
-	Iter(fn func(key K, value V) bool)
+
+	// Delete deletes the value for a key.
+	Iter(fn MapIter[K, V])
+
+	// Len returns the number of items in the map.
 	Len() int
+
+	// Load returns the value stored in the map for a key, or nil if no value is present.
 	Load(key K) (V, bool)
+
+	// LoadAndSet loads the value stored in the map for a key, and sets it to the result of the given function.
 	LoadAndSet(key K, fn func(value V) V)
+
+	// Store sets the value for a key.
 	Store(key K, value V)
+
+	// Stores stores multiple values.
 	Stores(fn func(store func(key K, value V)))
+
+	// Delete deletes the value for a key.
 	Delete(key K)
 }
 
@@ -59,7 +76,7 @@ func (m *syncMap[K, V]) LoadAndSet(key K, fn func(value V) V) {
 	m.data[key] = fn(m.data[key])
 }
 
-func (m *syncMap[K, V]) Iter(fn func(key K, value V) bool) {
+func (m *syncMap[K, V]) Iter(fn MapIter[K, V]) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 

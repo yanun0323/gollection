@@ -2,9 +2,7 @@ package gollection
 
 import "sync"
 
-type SyncStack[T any] Stack[T]
-
-func NewSyncStack[T any]() SyncStack[T] {
+func NewSyncStack[T any]() Stack[T] {
 	return &syncStack[T]{
 		rwLock: &sync.RWMutex{},
 		stack:  NewStack[T](),

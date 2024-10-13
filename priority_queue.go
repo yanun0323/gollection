@@ -2,15 +2,7 @@ package gollection
 
 import "container/heap"
 
-type PriorityQueue[T any] interface {
-	Len() int
-	Dequeue() T
-	Enqueue(...T)
-	Peek() T
-	ToSlice() []T
-}
-
-func NewPriorityQueue[T any](score func(T, T) bool) PriorityQueue[T] {
+func NewPriorityQueue[T any](score func(T, T) bool) Queue[T] {
 	return &priorityQueue[T]{
 		data:  []T{},
 		score: score,

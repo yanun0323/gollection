@@ -1,10 +1,19 @@
 package gollection
 
 type Set[T comparable] interface {
+	// Contain returns true if the set contains the element.
 	Contain(T) bool
+
+	// Len returns the number of elements in the set.
 	Len() int
+
+	// Insert adds elements to the set.
 	Insert(...T)
+
+	// Remove removes all elements in a from the set.
 	Remove(...T)
+
+	// ToSlice returns a copy of the set as a slice.
 	ToSlice() []T
 }
 

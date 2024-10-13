@@ -2,9 +2,7 @@ package gollection
 
 import "sync"
 
-type SyncPriorityQueue[T any] PriorityQueue[T]
-
-func NewSyncPriorityQueue[T any](score func(T, T) bool) SyncPriorityQueue[T] {
+func NewSyncPriorityQueue[T any](score func(T, T) bool) Queue[T] {
 	return &syncPriorityQueue[T]{
 		rwLock: &sync.RWMutex{},
 		pq:     NewPriorityQueue[T](score),
@@ -13,7 +11,7 @@ func NewSyncPriorityQueue[T any](score func(T, T) bool) SyncPriorityQueue[T] {
 
 type syncPriorityQueue[T any] struct {
 	rwLock *sync.RWMutex
-	pq     PriorityQueue[T]
+	pq     Queue[T]
 }
 
 func (s *syncPriorityQueue[T]) Len() int {

@@ -2,9 +2,7 @@ package gollection
 
 import "sync"
 
-type SyncQueue[T any] Queue[T]
-
-func NewSyncQueue[T any]() SyncQueue[T] {
+func NewSyncQueue[T any]() Queue[T] {
 	return &syncQueue[T]{
 		rwLock: &sync.RWMutex{},
 		q:      NewQueue[T](),

@@ -1,16 +1,39 @@
 package gollection
 
 type BTree[K Orderable, V any] interface {
+	// Contain returns true if the tree contains the key.
 	Contain(key K) bool
+
+	// Len returns the number of elements in the tree.
 	Len() int
+
+	// Insert adds a key-value pair to the tree.
 	Insert(key K, value V)
+
+	// Remove removes the key-value pair from the tree.
 	Remove(key K) (V, bool)
+
+	// Search returns the value associated with the key, or nil if the key is not found.
 	Search(key K) (V, bool)
+
+	// Max returns the key and value of the maximum element in the tree, or nil if the tree is empty.
 	Max() (K, V, bool)
+
+	// Min returns the key and value of the minimum element in the tree, or nil if the tree is empty.
 	Min() (K, V, bool)
+
+	// RemoveMax removes the key and value of the maximum element in the tree, or nil if the tree is empty.
 	RemoveMax() (K, V, bool)
+
+	// RemoveMin removes the key and value of the minimum element in the tree, or nil if the tree is empty.
 	RemoveMin() (K, V, bool)
+
+	// Ascend calls the given function for each key and value in the tree in ascending order.
+	// The function should return true to continue the iteration or false to stop it.
 	Ascend(fn TreeIter[K, V])
+
+	// Descend calls the given function for each key and value in the tree in descending order.
+	// The function should return true to continue the iteration or false to stop it.
 	Descend(fn TreeIter[K, V])
 }
 
@@ -102,26 +125,47 @@ func (b *bTree[K, V]) Ascend(fn TreeIter[K, V]) {
 	b.ascend(b.root, fn)
 }
 
-func (b *bTree[K, V]) ascend(n *node[K, V], fn TreeIter[K, V]) {
+func (b *bTree[K, V]) ascend(n *node[K, V], fn TreeIter[K, V]) bool {
 	if n == nil {
-		return
+		return true
 	}
-	b.ascend(n.l, fn)
-	fn(n.key, n.val)
-	b.ascend(n.r, fn)
+
+	if !b.ascend(n.l, fn) {
+		return false
+	}
+
+	if !fn(n.key, n.val) {
+		return false
+	}
+
+	if !b.ascend(n.r, fn) {
+		return false
+	}
+
+	return true
 }
 
 func (b *bTree[K, V]) Descend(fn TreeIter[K, V]) {
 	b.descend(b.root, fn)
 }
 
-func (b *bTree[K, V]) descend(n *node[K, V], fn TreeIter[K, V]) {
+func (b *bTree[K, V]) descend(n *node[K, V], fn TreeIter[K, V]) bool {
 	if n == nil {
-		return
+		return true
 	}
-	b.descend(n.r, fn)
-	fn(n.key, n.val)
-	b.descend(n.l, fn)
+	if !b.descend(n.r, fn) {
+		return false
+	}
+
+	if !fn(n.key, n.val) {
+		return false
+	}
+
+	if !b.descend(n.l, fn) {
+		return false
+	}
+
+	return true
 }
 
 type node[K Orderable, V any] struct {

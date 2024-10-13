@@ -2,9 +2,7 @@ package gollection
 
 import "sync"
 
-type SyncSet[T comparable] Set[T]
-
-func NewSyncSet[T comparable]() SyncSet[T] {
+func NewSyncSet[T comparable]() Set[T] {
 	return &syncSet[T]{
 		rwLock: &sync.RWMutex{},
 		set:    NewSet[T](),

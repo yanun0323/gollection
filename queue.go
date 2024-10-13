@@ -1,10 +1,19 @@
 package gollection
 
 type Queue[T any] interface {
+	// Len returns the number of elements in the queue.
 	Len() int
+
+	// Dequeue removes and returns the element at the front of the queue.
 	Dequeue() T
+
+	// Enqueue adds element to the back of the queue.
 	Enqueue(...T)
+
+	// Peek returns the element at the front of the queue without removing it.
 	Peek() T
+
+	// ToSlice returns a copy of the queue as a slice.
 	ToSlice() []T
 }
 
