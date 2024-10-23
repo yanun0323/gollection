@@ -23,10 +23,16 @@ type set[T comparable] struct {
 }
 
 // NewSet returns a new set.
-func NewSet[T comparable]() Set[T] {
-	return &set[T]{
+func NewSet[T comparable](elems ...T) Set[T] {
+	s := &set[T]{
 		m: make(map[T]struct{}, 0),
 	}
+
+	for _, e := range elems {
+		s.Insert(e)
+	}
+
+	return s
 }
 
 func (s *set[T]) Insert(a ...T) {

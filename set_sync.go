@@ -8,10 +8,10 @@ type syncSet[T comparable] struct {
 }
 
 // NewSyncSet returns a new thread-safe set.
-func NewSyncSet[T comparable]() Set[T] {
+func NewSyncSet[T comparable](elems ...T) Set[T] {
 	return &syncSet[T]{
 		rwLock: &sync.RWMutex{},
-		set:    NewSet[T](),
+		set:    NewSet[T](elems...),
 	}
 }
 

@@ -8,10 +8,10 @@ type syncBTree[K Orderable, V any] struct {
 }
 
 // NewSyncBTree returns a new thread-safe binary tree.
-func NewSyncBTree[K Orderable, V any]() BTree[K, V] {
+func NewSyncBTree[K Orderable, V any](elems ...map[K]V) BTree[K, V] {
 	return &syncBTree[K, V]{
 		rwLock: &sync.RWMutex{},
-		bt:     NewBTree[K, V](),
+		bt:     NewBTree[K, V](elems...),
 	}
 }
 

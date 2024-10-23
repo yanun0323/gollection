@@ -8,10 +8,10 @@ type syncQueue[T any] struct {
 }
 
 // NewSyncQueue returns a new thread-safe queue.
-func NewSyncQueue[T any]() Queue[T] {
+func NewSyncQueue[T any](elems ...T) Queue[T] {
 	return &syncQueue[T]{
 		rwLock: &sync.RWMutex{},
-		q:      NewQueue[T](),
+		q:      NewQueue[T](elems...),
 	}
 }
 

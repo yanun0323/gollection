@@ -38,11 +38,19 @@ type syncMap[K comparable, V any] struct {
 }
 
 // NewSyncMap returns a new thread-safe map.
-func NewSyncMap[K comparable, V any]() SyncMap[K, V] {
-	return &syncMap[K, V]{
+func NewSyncMap[K comparable, V any](elems ...map[K]V) SyncMap[K, V] {
+	m := &syncMap[K, V]{
 		lock: &sync.RWMutex{},
 		data: map[K]V{},
 	}
+
+	for _, e := range elems {
+		for k, v := range e {
+			m.Store(k, v)
+		}
+	}
+
+	return m
 }
 
 func (m *syncMap[K, V]) Load(key K) (V, bool) {

@@ -24,10 +24,16 @@ type stack[T any] struct {
 }
 
 // NewStack returns a new stack.
-func NewStack[T any]() Stack[T] {
-	return &stack[T]{
+func NewStack[T any](elems ...T) Stack[T] {
+	s := &stack[T]{
 		data: []T{},
 	}
+
+	for _, e := range elems {
+		s.Push(e)
+	}
+
+	return s
 }
 
 func (s *stack[T]) Push(a ...T) {

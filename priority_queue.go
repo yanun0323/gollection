@@ -9,11 +9,17 @@ type priorityQueue[T any] struct {
 }
 
 // NewPriorityQueue returns a new priority queue.
-func NewPriorityQueue[T any](score func(T, T) bool) Queue[T] {
-	return &priorityQueue[T]{
+func NewPriorityQueue[T any](score func(T, T) bool, elems ...T) Queue[T] {
+	q := &priorityQueue[T]{
 		data:  []T{},
 		score: score,
 	}
+
+	for _, e := range elems {
+		q.Enqueue(e)
+	}
+
+	return q
 }
 
 func (pq *priorityQueue[T]) Len() int {

@@ -46,8 +46,15 @@ type bTree[K Orderable, V any] struct {
 }
 
 // NewBTree returns a new binary tree.
-func NewBTree[K Orderable, V any]() BTree[K, V] {
-	return &bTree[K, V]{}
+func NewBTree[K Orderable, V any](elems ...map[K]V) BTree[K, V] {
+	t := &bTree[K, V]{}
+	for _, e := range elems {
+		for k, v := range e {
+			t.Insert(k, v)
+		}
+	}
+
+	return t
 }
 
 func (b *bTree[K, V]) Contain(key K) bool {

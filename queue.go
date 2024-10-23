@@ -24,10 +24,16 @@ type queue[T any] struct {
 }
 
 // NewQueue returns a new queue.
-func NewQueue[T any]() Queue[T] {
-	return &queue[T]{
+func NewQueue[T any](elems ...T) Queue[T] {
+	q := &queue[T]{
 		data: []T{},
 	}
+
+	for _, e := range elems {
+		q.Enqueue(e)
+	}
+
+	return q
 }
 
 func (q *queue[T]) Enqueue(a ...T) {

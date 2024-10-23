@@ -46,8 +46,16 @@ type avlTree[K Orderable, V any] struct {
 }
 
 // NewAvlTree returns a new AVL tree.
-func NewAvlTree[K Orderable, V any]() AvlTree[K, V] {
-	return &avlTree[K, V]{}
+func NewAvlTree[K Orderable, V any](elems ...map[K]V) AvlTree[K, V] {
+	t := &avlTree[K, V]{}
+
+	for _, e := range elems {
+		for k, v := range e {
+			t.Insert(k, v)
+		}
+	}
+
+	return t
 }
 
 func (a *avlTree[K, V]) Contain(key K) bool {

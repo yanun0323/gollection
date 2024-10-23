@@ -8,10 +8,10 @@ type syncPriorityQueue[T any] struct {
 }
 
 // NewSyncPriorityQueue returns a new thread-safe priority queue.
-func NewSyncPriorityQueue[T any](score func(T, T) bool) Queue[T] {
+func NewSyncPriorityQueue[T any](score func(T, T) bool, elems ...T) Queue[T] {
 	return &syncPriorityQueue[T]{
 		rwLock: &sync.RWMutex{},
-		pq:     NewPriorityQueue[T](score),
+		pq:     NewPriorityQueue[T](score, elems...),
 	}
 }
 

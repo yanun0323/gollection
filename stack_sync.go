@@ -8,10 +8,10 @@ type syncStack[T any] struct {
 }
 
 // NewSyncStack returns a new thread-safe stack.
-func NewSyncStack[T any]() Stack[T] {
+func NewSyncStack[T any](elems ...T) Stack[T] {
 	return &syncStack[T]{
 		rwLock: &sync.RWMutex{},
-		stack:  NewStack[T](),
+		stack:  NewStack[T](elems...),
 	}
 }
 
