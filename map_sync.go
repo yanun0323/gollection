@@ -22,11 +22,11 @@ type SyncMap[K comparable, V any] interface {
 	// Exist returns true if the map contains a value for the key.
 	Exist(key K) bool
 
-	// LoadAndSet loads the value stored in the map for a key, and sets it to the result of the given function.
-	LoadAndSet(key K, fn func(value V) V)
-
 	// LoadAndStore loads the value stored in the map for a key, and sets it to the result of the given function.
-	LoadAndStore(fn map[K]func(value V) V)
+	LoadAndStore(key K, fn func(value V) V)
+
+	// LoadAndStores loads the value stored in the map for a key, and sets it to the result of the given function.
+	LoadAndStores(fn map[K]func(value V) V)
 
 	// Store sets the value for a key.
 	Store(key K, value V)
@@ -92,14 +92,14 @@ func (m *syncMap[K, V]) Stores(fn func(store func(key K, value V))) {
 	fn(action)
 }
 
-func (m *syncMap[K, V]) LoadAndSet(key K, fn func(value V) V) {
+func (m *syncMap[K, V]) LoadAndStore(key K, fn func(value V) V) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
 	m.data[key] = fn(m.data[key])
 }
 
-func (m *syncMap[K, V]) LoadAndStore(fn map[K]func(value V) V) {
+func (m *syncMap[K, V]) LoadAndStores(fn map[K]func(value V) V) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
