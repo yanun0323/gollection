@@ -4,10 +4,10 @@ import "sync"
 
 // SyncMap is an interface for a thread-safe map data structure.
 type SyncMap[K comparable, V any] interface {
-	// Load returns the value stored in the map for a key, or nil if no value is present.
+	// Clear removes all elements from the map.
 	Clear()
 
-	// Load returns the value stored in the map for a key, or nil if no value is present.
+	// Clone returns a copy of the map.
 	Clone() map[K]V
 
 	// Delete deletes the value for a key.
@@ -16,8 +16,11 @@ type SyncMap[K comparable, V any] interface {
 	// Len returns the number of items in the map.
 	Len() int
 
-	// Load returns the value stored in the map for a key, or nil if no value is present.
-	Load(key K) (V, bool)
+	// Load returns the value stored in the map for a key, or zero value if no value is present.
+	Load(key K) V
+
+	// Exist returns true if the map contains a value for the key.
+	Exist(key K) bool
 
 	// LoadAndSet loads the value stored in the map for a key, and sets it to the result of the given function.
 	LoadAndSet(key K, fn func(value V) V)
@@ -53,12 +56,19 @@ func NewSyncMap[K comparable, V any](elems ...map[K]V) SyncMap[K, V] {
 	return m
 }
 
-func (m *syncMap[K, V]) Load(key K) (V, bool) {
+func (m *syncMap[K, V]) Load(key K) V {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
-	d, ok := m.data[key]
-	return d, ok
+	return m.data[key]
+}
+
+func (m *syncMap[K, V]) Exist(key K) bool {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	_, ok := m.data[key]
+	return ok
 }
 
 func (m *syncMap[K, V]) Store(key K, value V) {
