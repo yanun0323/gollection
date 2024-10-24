@@ -136,8 +136,8 @@ func (m *syncMap[K, V]) Iter(fn MapIter[K, V]) {
 }
 
 func (m *syncMap[K, V]) IterAndDelete(fn MapIter[K, V]) {
-	m.lock.RLock()
-	defer m.lock.RUnlock()
+	m.lock.Lock()
+	defer m.lock.Unlock()
 
 	for k, v := range m.data {
 		if !fn(k, v) {
