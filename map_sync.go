@@ -28,14 +28,17 @@ type SyncMap[K comparable, V any] interface {
 	// LoadAndStores loads the value stored in the map for a key, and sets it to the result of the given function.
 	LoadAndStores(fn map[K]func(value V) V)
 
+	// LoadAndDelete loads the value stored in the map for a key, and deletes it.
+	LoadAndDelete(fn map[K]func(value V) V)
+
 	// Store sets the value for a key.
 	Store(key K, value V)
 
 	// Stores stores multiple values.
 	Stores(fn func(store func(key K, value V)))
 
-	// Delete deletes the value for a key.
-	Delete(key K)
+	// Delete deletes the value for a key and returns the deleted value, or zero value if no value is present.
+	Delete(key K) V
 }
 
 type syncMap[K comparable, V any] struct {
@@ -108,6 +111,16 @@ func (m *syncMap[K, V]) LoadAndStores(fn map[K]func(value V) V) {
 	}
 }
 
+func (m *syncMap[K, V]) LoadAndDelete(fn map[K]func(value V) V) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
+	for k, f := range fn {
+		f(m.data[k])
+		delete(m.data, k)
+	}
+}
+
 func (m *syncMap[K, V]) Iter(fn MapIter[K, V]) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
@@ -142,9 +155,12 @@ func (m *syncMap[K, V]) Clear() {
 	clear(m.data)
 }
 
-func (m *syncMap[K, V]) Delete(key K) {
+func (m *syncMap[K, V]) Delete(key K) V {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
+	dirty := m.data[key]
 	delete(m.data, key)
+
+	return dirty
 }
