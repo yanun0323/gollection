@@ -10,8 +10,11 @@ type SyncMap[K comparable, V any] interface {
 	// Clone returns a copy of the map.
 	Clone() map[K]V
 
-	// Delete deletes the value for a key.
+	// Iter iterates over the map.
 	Iter(fn MapIter[K, V])
+
+	// IterAndDelete iterates over the map and deletes the values.
+	IterAndDelete(fn MapIter[K, V])
 
 	// Len returns the number of items in the map.
 	Len() int
@@ -129,6 +132,19 @@ func (m *syncMap[K, V]) Iter(fn MapIter[K, V]) {
 		if !fn(k, v) {
 			return
 		}
+	}
+}
+
+func (m *syncMap[K, V]) IterAndDelete(fn MapIter[K, V]) {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	for k, v := range m.data {
+		if !fn(k, v) {
+			return
+		}
+
+		delete(m.data, k)
 	}
 }
 
