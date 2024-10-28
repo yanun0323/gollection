@@ -36,6 +36,9 @@ type AvlTree[K Orderable, V any] interface {
 	// Descend calls the given function for each key and value in the tree in descending order.
 	// The function should return true to continue the iteration or false to stop it.
 	Descend(fn TreeIter[K, V])
+
+	// Clear removes all elements from the tree.
+	Clear()
 }
 
 type avlTree[K Orderable, V any] struct {
@@ -378,4 +381,9 @@ func (n *avlNode[K, V]) rotateRight() *avlNode[K, V] {
 	n.recalculateHeight()
 	newRoot.recalculateHeight()
 	return newRoot
+}
+
+func (a *avlTree[K, V]) Clear() {
+	a.root = nil
+	a.count = 0
 }

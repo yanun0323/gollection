@@ -80,3 +80,9 @@ func (s *syncBTree[K, V]) Descend(fn TreeIter[K, V]) {
 	defer s.rwLock.RUnlock()
 	s.bt.Descend(fn)
 }
+
+func (s *syncBTree[K, V]) Clear() {
+	s.rwLock.Lock()
+	defer s.rwLock.Unlock()
+	s.bt.Clear()
+}

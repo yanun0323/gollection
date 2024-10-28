@@ -2,8 +2,8 @@ package gollection
 
 import "sync"
 
-// SyncMap is an interface for a thread-safe map data structure.
-type SyncMap[K comparable, V any] interface {
+// Map is an interface map data structure.
+type Map[K comparable, V any] interface {
 	// Clear removes all elements from the map.
 	Clear()
 
@@ -50,7 +50,7 @@ type syncMap[K comparable, V any] struct {
 }
 
 // NewSyncMap returns a new thread-safe map.
-func NewSyncMap[K comparable, V any](elems ...map[K]V) SyncMap[K, V] {
+func NewSyncMap[K comparable, V any](elems ...map[K]V) Map[K, V] {
 	m := &syncMap[K, V]{
 		lock: &sync.RWMutex{},
 		data: map[K]V{},

@@ -16,6 +16,9 @@ type Queue[T any] interface {
 
 	// ToSlice returns a copy of the queue as a slice.
 	ToSlice() []T
+
+	// Clear removes all elements from the queue.
+	Clear()
 }
 
 type queue[T any] struct {
@@ -62,4 +65,8 @@ func (q *queue[T]) Peek() T {
 
 func (q *queue[T]) ToSlice() []T {
 	return append(make([]T, 0, len(q.data)), q.data...)
+}
+
+func (q *queue[T]) Clear() {
+	clear(q.data)
 }

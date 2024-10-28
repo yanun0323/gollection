@@ -75,3 +75,7 @@ func (pq *priorityQueue[T]) Pop() interface{} {
 	pq.data = pq.data[:pq.Len()-1]
 	return x
 }
+
+func (pq *priorityQueue[T]) Clear() {
+	clear(pq.data)
+}

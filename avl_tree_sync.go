@@ -8,7 +8,7 @@ type syncAvlTree[K Orderable, V any] struct {
 }
 
 // NewSyncAvlTree returns a new thread-safe AVL tree.
-func NewSyncAvlTree[K Orderable, V any](elems ...map[K]V) BTree[K, V] {
+func NewSyncAvlTree[K Orderable, V any](elems ...map[K]V) AvlTree[K, V] {
 	return &syncAvlTree[K, V]{
 		rwLock: &sync.RWMutex{},
 		t:      NewAvlTree[K, V](elems...),
@@ -79,4 +79,10 @@ func (a *syncAvlTree[K, V]) Descend(fn TreeIter[K, V]) {
 	a.rwLock.RLock()
 	defer a.rwLock.RUnlock()
 	a.t.Descend(fn)
+}
+
+func (a *syncAvlTree[K, V]) Clear() {
+	a.rwLock.Lock()
+	defer a.rwLock.Unlock()
+	a.t.Clear()
 }

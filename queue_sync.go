@@ -44,3 +44,9 @@ func (s *syncQueue[T]) ToSlice() []T {
 	defer s.rwLock.RUnlock()
 	return s.q.ToSlice()
 }
+
+func (s *syncQueue[T]) Clear() {
+	s.rwLock.Lock()
+	defer s.rwLock.Unlock()
+	s.q.Clear()
+}

@@ -44,3 +44,9 @@ func (s *syncPriorityQueue[T]) ToSlice() []T {
 	defer s.rwLock.RUnlock()
 	return s.pq.ToSlice()
 }
+
+func (s *syncPriorityQueue[T]) Clear() {
+	s.rwLock.Lock()
+	defer s.rwLock.Unlock()
+	s.pq.Clear()
+}

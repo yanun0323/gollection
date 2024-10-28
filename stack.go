@@ -16,6 +16,9 @@ type Stack[T any] interface {
 
 	// ToSlice returns a copy of the stack as a slice.
 	ToSlice() []T
+
+	// Clear removes all elements from the stack.
+	Clear()
 }
 
 type stack[T any] struct {
@@ -66,4 +69,8 @@ func (s *stack[T]) ToSlice() []T {
 		result = append(result, s.data[i])
 	}
 	return result
+}
+
+func (s *stack[T]) Clear() {
+	clear(s.data)
 }

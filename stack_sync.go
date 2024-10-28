@@ -44,3 +44,9 @@ func (s *syncStack[T]) ToSlice() []T {
 	defer s.rwLock.RUnlock()
 	return s.stack.ToSlice()
 }
+
+func (s *syncStack[T]) Clear() {
+	s.rwLock.Lock()
+	defer s.rwLock.Unlock()
+	s.stack.Clear()
+}

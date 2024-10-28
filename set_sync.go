@@ -43,3 +43,9 @@ func (s *syncSet[T]) ToSlice() []T {
 	defer s.rwLock.RUnlock()
 	return s.set.ToSlice()
 }
+
+func (s *syncSet[T]) Clear() {
+	s.rwLock.Lock()
+	defer s.rwLock.Unlock()
+	s.set.Clear()
+}

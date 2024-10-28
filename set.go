@@ -16,6 +16,9 @@ type Set[T comparable] interface {
 
 	// ToSlice returns a copy of the set as a slice.
 	ToSlice() []T
+
+	// Clear removes all elements from the set.
+	Clear()
 }
 
 type set[T comparable] struct {
@@ -62,4 +65,8 @@ func (s *set[T]) ToSlice() []T {
 		result = append(result, k)
 	}
 	return result
+}
+
+func (s *set[T]) Clear() {
+	clear(s.m)
 }

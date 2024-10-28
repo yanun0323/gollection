@@ -36,6 +36,9 @@ type BTree[K Orderable, V any] interface {
 	// Descend calls the given function for each key and value in the tree in descending order.
 	// The function should return true to continue the iteration or false to stop it.
 	Descend(fn TreeIter[K, V])
+
+	// Clear removes all elements from the tree.
+	Clear()
 }
 
 type bTree[K Orderable, V any] struct {
@@ -316,4 +319,9 @@ func (n *node[K, V]) removeMin(removed *node[K, V], ok *bool) *node[K, V] {
 
 	n.l = n.l.removeMin(removed, ok)
 	return n
+}
+
+func (b *bTree[K, V]) Clear() {
+	b.root = nil
+	b.count = 0
 }
