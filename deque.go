@@ -1,5 +1,7 @@
 package gollection
 
+import "slices"
+
 // Deque is an interface for a double-ended queue data structure.
 type Deque[T any] interface {
 	// Len returns the number of elements in the queue.
@@ -72,6 +74,7 @@ func (dq *deque[T]) PopBack() T {
 }
 
 func (dq *deque[T]) PushFront(a ...T) {
+	slices.Reverse(a)
 	dq.data = append(a, dq.data...)
 }
 
@@ -102,5 +105,5 @@ func (dq *deque[T]) ToSlice() []T {
 }
 
 func (dq *deque[T]) Clear() {
-	clear(dq.data)
+	dq.data = []T{}
 }
