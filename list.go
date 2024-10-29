@@ -1,6 +1,6 @@
 package gollection
 
-type List[T any] interface {
+type hiddenList[T any] interface {
 	Back() *element[T]
 	Front() *element[T]
 	InsertAfter(v T, mark *element[T]) *element[T]
@@ -11,9 +11,9 @@ type List[T any] interface {
 	MoveToBack(e *element[T])
 	MoveToFront(e *element[T])
 	PushBack(v T) *element[T]
-	PushBackList(other List[T])
+	PushBackList(other hiddenList[T])
 	PushFront(v T) *element[T]
-	PushFrontList(other List[T])
+	PushFrontList(other hiddenList[T])
 	Remove(e *element[T]) T
 }
 
@@ -68,7 +68,7 @@ func (l *list[T]) Init() *list[T] {
 	return l
 }
 
-func NewLinkedList[T any]() List[T] {
+func hiddenNewLinkedList[T any]() hiddenList[T] {
 	return newList[T]()
 }
 
@@ -232,7 +232,7 @@ func (l *list[T]) MoveAfter(e, mark *element[T]) {
 
 // PushBackList inserts a copy of another list at the back of list l.
 // The lists l and other may be the same. They must not be nil.
-func (l *list[T]) PushBackList(other List[T]) {
+func (l *list[T]) PushBackList(other hiddenList[T]) {
 	l.lazyInit()
 	for i, e := other.Len(), other.Front(); i > 0; i, e = i-1, e.Next() {
 		l.insertValue(e.Value, l.root.prev)
@@ -241,7 +241,7 @@ func (l *list[T]) PushBackList(other List[T]) {
 
 // PushFrontList inserts a copy of another list at the front of list l.
 // The lists l and other may be the same. They must not be nil.
-func (l *list[T]) PushFrontList(other List[T]) {
+func (l *list[T]) PushFrontList(other hiddenList[T]) {
 	l.lazyInit()
 	for i, e := other.Len(), other.Back(); i > 0; i, e = i-1, e.Prev() {
 		l.insertValue(e.Value, &l.root)
