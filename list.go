@@ -68,10 +68,6 @@ func (l *list[T]) Init() *list[T] {
 	return l
 }
 
-func hiddenNewLinkedList[T any]() hiddenList[T] {
-	return newList[T]()
-}
-
 // newList returns an initialized list.
 func newList[T any]() *list[T] { return new(list[T]).Init() }
 
