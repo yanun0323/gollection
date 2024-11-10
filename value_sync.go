@@ -24,13 +24,23 @@ func (v *syncValue[T]) CompareAndSwap(old T, new T) (swapped bool) {
 
 // Load returns the value set by the most recent Store.
 // It returns zero value if there has been no call to Store for this Value.
-func (v *syncValue[T]) Load() (val T) {
+func (v *syncValue[T]) Load() T {
 	if vv, ok := v.val.Load().(T); ok {
 		return vv
 	}
 
 	var zero T
 	return zero
+}
+
+func (v *syncValue[T]) TryLoad() (T, bool) {
+	raw := v.val.Load()
+	if raw == nil {
+		return *new(T), false
+	}
+
+	vv, ok := raw.(T)
+	return vv, ok
 }
 
 // Store sets the value of the Value v to val.
