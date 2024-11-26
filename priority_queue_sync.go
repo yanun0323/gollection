@@ -50,3 +50,9 @@ func (s *syncPriorityQueue[T]) Clear() {
 	defer s.rwLock.Unlock()
 	s.pq.Clear()
 }
+
+func (s *syncPriorityQueue[T]) Shrink(n uint) {
+	s.rwLock.Lock()
+	defer s.rwLock.Unlock()
+	s.pq.Shrink(n)
+}

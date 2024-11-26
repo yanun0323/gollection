@@ -72,5 +72,5 @@ func (s *stack[T]) ToSlice() []T {
 }
 
 func (s *stack[T]) Clear() {
-	clear(s.data)
+	s.data = []T{}
 }

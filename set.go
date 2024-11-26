@@ -68,5 +68,5 @@ func (s *set[T]) ToSlice() []T {
 }
 
 func (s *set[T]) Clear() {
-	clear(s.m)
+	s.m = map[T]struct{}{}
 }

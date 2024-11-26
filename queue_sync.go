@@ -50,3 +50,9 @@ func (s *syncQueue[T]) Clear() {
 	defer s.rwLock.Unlock()
 	s.q.Clear()
 }
+
+func (s *syncQueue[T]) Shrink(n uint) {
+	s.rwLock.Lock()
+	defer s.rwLock.Unlock()
+	s.q.Shrink(n)
+}

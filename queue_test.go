@@ -77,3 +77,23 @@ func (su *QueueSuite) Test_ToSlice_Good() {
 	su.Equal(0, q.data[0])
 	su.Equal(123, sli[0])
 }
+
+func (su *QueueSuite) Test_Clear_Good() {
+	q := su.mockQueue()
+	q.Clear()
+	for i := range q.data {
+		su.Zero(q.data[i])
+	}
+}
+
+func (su *QueueSuite) Test_Shrink_Good() {
+	q := su.mockQueue()
+	q.Shrink(100)
+	su.Equal(10, len(q.data))
+	q.Shrink(10)
+	su.Equal(10, len(q.data))
+	q.Shrink(5)
+	su.Equal(5, len(q.data))
+	q.Shrink(0)
+	su.Equal(0, len(q.data))
+}

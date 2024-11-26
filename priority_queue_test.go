@@ -37,3 +37,16 @@ func (su *PriorityQueueSuite) Test() {
 	su.Equal(7, pq.Peek())
 	su.Equal(6, pq.Len())
 }
+
+func (su *PriorityQueueSuite) TestShrink() {
+	pq := NewPriorityQueue[int](func(i1, i2 int) bool {
+		return i1 > i2
+	})
+
+	pq.Enqueue(7, 3, 8, 2, 6, 1, 4)
+	su.Equal(7, pq.Len())
+	pq.Shrink(2)
+	su.Equal(2, pq.Len())
+	pq.Shrink(0)
+	su.Equal(0, pq.Len())
+}

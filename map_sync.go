@@ -167,8 +167,7 @@ func (m *syncMap[K, V]) Clone() map[K]V {
 func (m *syncMap[K, V]) Clear() {
 	m.lock.Lock()
 	defer m.lock.Unlock()
-
-	clear(m.data)
+	m.data = map[K]V{}
 }
 
 func (m *syncMap[K, V]) Delete(key K) V {

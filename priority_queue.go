@@ -77,5 +77,20 @@ func (pq *priorityQueue[T]) Pop() interface{} {
 }
 
 func (pq *priorityQueue[T]) Clear() {
-	clear(pq.data)
+	pq.data = []T{}
+}
+
+func (pq *priorityQueue[T]) Shrink(n uint) {
+	if n == 0 {
+		pq.Clear()
+		return
+	}
+
+	if len(pq.data) <= int(n) {
+		return
+	}
+
+	for pq.Len() > int(n) {
+		pq.Pop()
+	}
 }

@@ -19,6 +19,9 @@ type Queue[T any] interface {
 
 	// Clear removes all elements from the queue.
 	Clear()
+
+	// Shrink shrinks the length of the queue to the given length.
+	Shrink(uint)
 }
 
 type queue[T any] struct {
@@ -68,5 +71,18 @@ func (q *queue[T]) ToSlice() []T {
 }
 
 func (q *queue[T]) Clear() {
-	clear(q.data)
+	q.data = []T{}
+}
+
+func (q *queue[T]) Shrink(n uint) {
+	if n == 0 {
+		q.Clear()
+		return
+	}
+
+	if len(q.data) <= int(n) {
+		return
+	}
+
+	q.data = q.data[:n]
 }
