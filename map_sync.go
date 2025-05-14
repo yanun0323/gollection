@@ -22,26 +22,40 @@ type Map[K comparable, V any] interface {
 	// Load returns the value stored in the map for a key, or zero value if no value is present.
 	Load(key K) V
 
+	// LoadOrStore returns the value stored in the map for a key, or the result of the given function if no value is present.
+	LoadOrStore(key K, value V) (actual V, loaded bool)
+
 	// Exist returns true if the map contains a value for the key.
 	Exist(key K) bool
 
 	// LoadAndStore loads the value stored in the map for a key, and sets it to the result of the given function.
+	//
+	// [DEPRECATED] Use `Update` instead.
 	LoadAndStore(key K, fn func(value V) V)
 
 	// LoadAndStores loads the value stored in the map for a key, and sets it to the result of the given function.
+	//
+	// [DEPRECATED] Use `Update` instead.
 	LoadAndStores(fn map[K]func(value V) V)
 
 	// LoadAndDelete loads the value stored in the map for a key, and deletes it.
+	//
+	// [DEPRECATED] Use `Update` instead.
 	LoadAndDelete(fn map[K]func(value V) V)
 
 	// Store sets the value for a key.
 	Store(key K, value V)
 
 	// Stores stores multiple values.
+	//
+	// [DEPRECATED] Use `Update` instead.
 	Stores(fn func(store func(key K, value V)))
 
 	// Delete deletes the value for a key and returns the deleted value, or zero value if no value is present.
 	Delete(key K) V
+
+	// Update updates the map.
+	Update(fn func(map[K]V) map[K]V)
 }
 
 type syncMap[K comparable, V any] struct {
@@ -72,6 +86,20 @@ func (m *syncMap[K, V]) Load(key K) V {
 	return m.data[key]
 }
 
+func (m *syncMap[K, V]) LoadOrStore(key K, value V) (actual V, loaded bool) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
+	val, ok := m.data[key]
+	if ok {
+		return val, true
+	}
+
+	m.data[key] = value
+
+	return value, false
+}
+
 func (m *syncMap[K, V]) Exist(key K) bool {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
@@ -87,6 +115,7 @@ func (m *syncMap[K, V]) Store(key K, value V) {
 	m.data[key] = value
 }
 
+// XXX: Remove me
 func (m *syncMap[K, V]) Stores(fn func(store func(key K, value V))) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
@@ -98,6 +127,7 @@ func (m *syncMap[K, V]) Stores(fn func(store func(key K, value V))) {
 	fn(action)
 }
 
+// XXX: Remove me
 func (m *syncMap[K, V]) LoadAndStore(key K, fn func(value V) V) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
@@ -105,6 +135,7 @@ func (m *syncMap[K, V]) LoadAndStore(key K, fn func(value V) V) {
 	m.data[key] = fn(m.data[key])
 }
 
+// XXX: Remove me
 func (m *syncMap[K, V]) LoadAndStores(fn map[K]func(value V) V) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
@@ -114,6 +145,7 @@ func (m *syncMap[K, V]) LoadAndStores(fn map[K]func(value V) V) {
 	}
 }
 
+// XXX: Remove me
 func (m *syncMap[K, V]) LoadAndDelete(fn map[K]func(value V) V) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
@@ -124,6 +156,7 @@ func (m *syncMap[K, V]) LoadAndDelete(fn map[K]func(value V) V) {
 	}
 }
 
+// XXX: Remove me
 func (m *syncMap[K, V]) Iter(fn MapIter[K, V]) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
@@ -135,6 +168,7 @@ func (m *syncMap[K, V]) Iter(fn MapIter[K, V]) {
 	}
 }
 
+// XXX: Remove me
 func (m *syncMap[K, V]) IterAndDelete(fn MapIter[K, V]) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
@@ -178,4 +212,11 @@ func (m *syncMap[K, V]) Delete(key K) V {
 	delete(m.data, key)
 
 	return dirty
+}
+
+func (m *syncMap[K, V]) Update(fn func(map[K]V) map[K]V) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
+	m.data = fn(m.data)
 }
