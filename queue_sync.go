@@ -4,14 +4,14 @@ import "sync"
 
 type syncQueue[T any] struct {
 	rwLock *sync.RWMutex
-	q      Queue[T]
+	q      queue[T]
 }
 
 // NewSyncQueue returns a new thread-safe queue.
 func NewSyncQueue[T any](elems ...T) Queue[T] {
 	return &syncQueue[T]{
 		rwLock: &sync.RWMutex{},
-		q:      NewQueue[T](elems...),
+		q:      queue[T]{data: elems},
 	}
 }
 
@@ -27,10 +27,10 @@ func (s *syncQueue[T]) Dequeue() T {
 	return s.q.Dequeue()
 }
 
-func (s *syncQueue[T]) Enqueue(...T) {
+func (s *syncQueue[T]) Enqueue(elems ...T) {
 	s.rwLock.Lock()
 	defer s.rwLock.Unlock()
-	s.q.Enqueue()
+	s.q.Enqueue(elems...)
 }
 
 func (s *syncQueue[T]) Peek() T {
